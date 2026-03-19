@@ -931,7 +931,7 @@
      AI CHAT — Portfolio Assistant
      ══════════════════════════════════════════════════ */
   function initAIChat() {
-    var WORKER_URL = 'https://portfolio-chat.mailtotheroman.workers.dev';
+    var WORKER_URL = 'https://chat.the-roman.com/api/chat';
     var MAX_MESSAGES = 10;
 
     var input = document.getElementById('chat-input');
