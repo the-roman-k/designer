@@ -941,14 +941,23 @@
     if (!input || !sendBtn || !messagesEl) return;
 
     console.log('[AI Chat] initialized');
+    if (statusEl) statusEl.textContent = 'Chat online';
 
     var conversationHistory = [];
     var messageCount = 0;
     var isLoading = false;
 
     function setStatus(text) {
-      if (statusEl) statusEl.textContent = text;
       console.log('[AI Chat]', text);
+      if (!statusEl) return;
+      // Show user-friendly status only
+      if (text === 'Message limit reached') {
+        statusEl.textContent = 'Chat offline';
+      } else if (text.startsWith('Error') || text.startsWith('Connection error')) {
+        statusEl.textContent = 'Chat offline';
+      } else {
+        statusEl.textContent = 'Chat online';
+      }
     }
 
     // Show/hide send button when typing
