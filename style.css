@@ -1494,7 +1494,7 @@ p em {
   font-family: var(--font-serif);
   font-size: clamp(24px, 4vw, 44px);
   color: var(--color-text);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-sm);
   transition: color 0.2s ease;
   letter-spacing: -0.02em;
 }
@@ -1505,10 +1505,12 @@ p em {
 
 .contact-linkedin {
   display: block;
-  font-size: 14px;
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 2.5vw, 24px);
   color: var(--color-text-secondary);
-  margin-top: calc(var(--space-xs) * -1);
-  margin-bottom: var(--space-xl);
+  letter-spacing: -0.02em;
+  margin-top: calc(var(--space-md) * -1);
+  margin-bottom: var(--space-3xl);
   transition: color 0.2s ease;
 }
 
