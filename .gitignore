@@ -5,3 +5,6 @@
 .claude
 CLAUDE.md
 index-old.html
+.env
+.env.*
+node_modules/
