@@ -1504,12 +1504,21 @@ p em {
 }
 
 .contact-linkedin {
-  display: block;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-top: calc(var(--space-xs) * -1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 2.5vw, 24px);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
   margin-bottom: var(--space-xl);
   transition: color 0.2s ease;
+}
+
+.contact-linkedin svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
 }
 
 .contact-linkedin:hover {
