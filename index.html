@@ -1371,8 +1371,18 @@
 
               <div class="contact-badge reveal">
                 <span class="dot" aria-hidden="true"></span>
-                Open to projects · 2 spots in Q2 2026
+                Open to projects · <span id="quarter-label"></span>
               </div>
+              <script>
+                (function() {
+                  var future = new Date();
+                  future.setDate(future.getDate() + 21);
+                  var q = Math.ceil((future.getMonth() + 1) / 3);
+                  var y = future.getFullYear();
+                  var el = document.getElementById('quarter-label');
+                  if (el) el.textContent = '2 spots in Q' + q + ' ' + y;
+                })();
+              </script>
             </div>
           </section>
         </div>
