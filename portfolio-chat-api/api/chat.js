@@ -20,10 +20,10 @@ export default async function handler(req, res) {
     const { messages, messageCount } = req.body;
 
     // Rate limit
-    const MAX_MESSAGES = 10;
+    const MAX_MESSAGES = 50;
     if (messageCount > MAX_MESSAGES) {
       return res.status(200).json({
-        reply: "Thanks for your curiosity! Let's continue in person — mailtotheroman@gmail.com",
+        reply: "Thanks for the great conversation! Let's continue directly — reach out via email at mailtotheroman@gmail.com or connect on LinkedIn: linkedin.com/in/krizhanovsky",
         limitReached: true
       });
     }

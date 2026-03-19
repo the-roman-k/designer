@@ -932,7 +932,7 @@
      ══════════════════════════════════════════════════ */
   function initAIChat() {
     var WORKER_URL = 'https://chat.the-roman.com/api/chat';
-    var MAX_MESSAGES = 10;
+    var MAX_MESSAGES = 50;
 
     var input = document.getElementById('chat-input');
     var sendBtn = document.getElementById('chat-send');
@@ -977,7 +977,7 @@
 
       // Check limit
       if (messageCount > MAX_MESSAGES) {
-        addBubble('limit', 'Thanks for your curiosity! Let\u2019s continue in person \u2014 <a href="mailto:mailtotheroman@gmail.com">mailtotheroman@gmail.com</a>');
+        addBubble('limit', 'Thanks for the great conversation! Let\u2019s continue directly \u2014 <a href="mailto:mailtotheroman@gmail.com">mailtotheroman@gmail.com</a> or <a href="https://linkedin.com/in/krizhanovsky" target="_blank" rel="noopener">LinkedIn</a>');
         input.disabled = true;
         sendBtn.disabled = true;
         sendBtn.classList.remove('visible');
