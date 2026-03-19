@@ -928,6 +928,177 @@
   }
 
   /* ══════════════════════════════════════════════════
+     AI CHAT — Portfolio Assistant
+     ══════════════════════════════════════════════════ */
+  function initAIChat() {
+    var WORKER_URL = 'https://portfolio-chat.mailtotheroman.workers.dev';
+    var MAX_MESSAGES = 10;
+
+    var input = document.getElementById('chat-input');
+    var sendBtn = document.getElementById('chat-send');
+    var messagesEl = document.getElementById('chat-messages');
+    var statusEl = document.getElementById('chat-status');
+    if (!input || !sendBtn || !messagesEl) return;
+
+    console.log('[AI Chat] initialized');
+
+    var conversationHistory = [];
+    var messageCount = 0;
+    var isLoading = false;
+
+    function setStatus(text) {
+      if (statusEl) statusEl.textContent = text;
+      console.log('[AI Chat]', text);
+    }
+
+    // Show/hide send button when typing
+    input.addEventListener('input', function () {
+      var hasText = input.value.trim().length > 0;
+      sendBtn.classList.toggle('visible', hasText);
+    });
+
+    // Send on Enter
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Send on button click
+    sendBtn.addEventListener('click', sendMessage);
+
+    function sendMessage() {
+      var text = input.value.trim();
+      if (!text || isLoading) return;
+
+      messageCount++;
+      setStatus('Sending message #' + messageCount + '...');
+
+      // Check limit
+      if (messageCount > MAX_MESSAGES) {
+        addBubble('limit', 'Thanks for your curiosity! Let\u2019s continue in person \u2014 <a href="mailto:mailtotheroman@gmail.com">mailtotheroman@gmail.com</a>');
+        input.disabled = true;
+        sendBtn.disabled = true;
+        sendBtn.classList.remove('visible');
+        input.placeholder = 'Message limit reached';
+        setStatus('Message limit reached');
+        return;
+      }
+
+      // Add user bubble
+      addBubble('user', text);
+      conversationHistory.push({ role: 'user', content: text });
+
+      // Clear input
+      input.value = '';
+      sendBtn.classList.remove('visible');
+
+      // Show typing indicator
+      var typing = showTyping();
+      isLoading = true;
+      sendBtn.disabled = true;
+
+      setStatus('Connecting to API...');
+
+      // Send to Worker
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: conversationHistory,
+          messageCount: messageCount
+        })
+      })
+      .then(function (res) {
+        setStatus('Response received (status ' + res.status + '), parsing...');
+        return res.json();
+      })
+      .then(function (data) {
+        removeTyping(typing);
+        isLoading = false;
+        sendBtn.disabled = false;
+
+        console.log('[AI Chat] Response data:', data);
+
+        if (data.error) {
+          setStatus('Error: ' + data.error);
+          addBubble('ai', 'Error: ' + data.error);
+          return;
+        }
+
+        if (data.limitReached) {
+          addBubble('limit', data.reply.replace(
+            'mailtotheroman@gmail.com',
+            '<a href="mailto:mailtotheroman@gmail.com">mailtotheroman@gmail.com</a>'
+          ));
+          input.disabled = true;
+          sendBtn.disabled = true;
+          sendBtn.classList.remove('visible');
+          input.placeholder = 'Message limit reached';
+          setStatus('Message limit reached');
+          return;
+        }
+
+        var reply = data.reply || 'Sorry, something went wrong. Please try again.';
+        addBubble('ai', reply);
+        conversationHistory.push({ role: 'assistant', content: reply });
+        setStatus('Ready');
+      })
+      .catch(function (err) {
+        removeTyping(typing);
+        isLoading = false;
+        sendBtn.disabled = false;
+        setStatus('Connection error: ' + err.message);
+        addBubble('ai', 'Connection error. Please try again in a moment.');
+        console.error('[AI Chat] Fetch error:', err);
+      });
+    }
+
+    var mainContent = document.querySelector('.main-content');
+
+    function scrollToBottom() {
+      if (!mainContent) return;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          mainContent.scrollTo({ top: mainContent.scrollHeight, behavior: 'smooth' });
+        });
+      });
+    }
+
+    function addBubble(type, text) {
+      messagesEl.classList.add('has-messages');
+
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble chat-bubble--' + type;
+
+      if (type === 'limit') {
+        bubble.innerHTML = text;
+      } else {
+        bubble.textContent = text;
+      }
+
+      messagesEl.appendChild(bubble);
+      scrollToBottom();
+    }
+
+    function showTyping() {
+      messagesEl.classList.add('has-messages');
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'chat-bubble chat-bubble--ai chat-typing';
+      wrapper.innerHTML = '<span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span>';
+      messagesEl.appendChild(wrapper);
+      scrollToBottom();
+      return wrapper;
+    }
+
+    function removeTyping(el) {
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════
      INIT
      ══════════════════════════════════════════════════ */
   function init() {
@@ -938,6 +1109,7 @@
     initCardHover();
     initInteractiveNavigation();
     initCatchMe();
+    initAIChat();
   }
 
   if (document.readyState === 'loading') {
