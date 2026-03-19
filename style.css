@@ -975,6 +975,7 @@ p em {
   margin-top: var(--space-3xl);
   font-weight: 400;
 }
+
 .projects-coming-soon em {
   font-style: italic;
   color: var(--color-accent);
@@ -1502,6 +1503,19 @@ p em {
   color: var(--color-accent);
 }
 
+.contact-linkedin {
+  display: block;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--space-xs) * -1);
+  margin-bottom: var(--space-xl);
+  transition: color 0.2s ease;
+}
+
+.contact-linkedin:hover {
+  color: var(--color-accent);
+}
+
 .contact-actions {
   display: flex;
   justify-content: center;
@@ -1733,8 +1747,15 @@ p em {
 }
 
 @keyframes hib-blink {
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 0.9; }
+
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 0.9;
+  }
 }
 
 /* Static fallback for reduced motion */
