@@ -1,0 +1,78 @@
+<svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4-step decision framework for visualization selection">
+  <title>4-Step Decision Framework</title>
+  <desc>Four universal variables that narrow chart selection from 144 patterns to a single defensible recommendation: Goal, Temporal Context, Variables Count, Data Volume.</desc>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#050505"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="880" height="260" fill="#EAEAEA" rx="0"/>
+
+  <!-- Section label -->
+  <text x="44" y="36" font-family="'Space Mono', monospace" font-size="10" fill="#666666" letter-spacing="0.08em">DECISION FLOW</text>
+
+  <!-- Step 1: Goal -->
+  <rect x="28" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+  <text x="102" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 01</text>
+  <line x1="48" y1="90" x2="156" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+  <text x="102" y="118" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Goal</text>
+  <text x="102" y="140" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What do you</text>
+  <text x="102" y="156" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">want to show?</text>
+
+  <!-- Arrow 1 -->
+  <line x1="180" y1="120" x2="204" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 2: Temporal Context -->
+  <rect x="208" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+  <text x="282" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 02</text>
+  <line x1="228" y1="90" x2="336" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+  <text x="282" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Temporal</text>
+  <text x="282" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Context</text>
+  <text x="282" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What is the</text>
+  <text x="282" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">time context?</text>
+
+  <!-- Arrow 2 -->
+  <line x1="360" y1="120" x2="384" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 3: Variables Count -->
+  <rect x="388" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+  <text x="462" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 03</text>
+  <line x1="408" y1="90" x2="516" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+  <text x="462" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Variables</text>
+  <text x="462" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Count</text>
+  <text x="462" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">How many data</text>
+  <text x="462" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">dimensions?</text>
+
+  <!-- Arrow 3 -->
+  <line x1="540" y1="120" x2="564" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 4: Data Volume -->
+  <rect x="568" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+  <text x="642" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 04</text>
+  <line x1="588" y1="90" x2="696" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+  <text x="642" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Data</text>
+  <text x="642" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Volume</text>
+  <text x="642" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What density</text>
+  <text x="642" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">will users see?</text>
+
+  <!-- Arrow 4 to recommendation -->
+  <line x1="720" y1="120" x2="744" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- Recommendation box — lime highlight -->
+  <rect x="748" y="36" width="108" height="168" rx="4" fill="#CCFF00" stroke="#050505" stroke-width="1.5"/>
+  <text x="802" y="66" font-family="'Space Mono', monospace" font-size="9" fill="#050505" text-anchor="middle" letter-spacing="0.06em">OUTPUT</text>
+  <text x="802" y="100" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">Recom-</text>
+  <text x="802" y="118" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">menda-</text>
+  <text x="802" y="136" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">tion</text>
+  <text x="802" y="162" font-family="'Inter', sans-serif" font-size="10" fill="#050505" text-anchor="middle">+ reasoning</text>
+  <text x="802" y="178" font-family="'Inter', sans-serif" font-size="10" fill="#050505" text-anchor="middle">path</text>
+
+  <!-- Caption -->
+  <text x="440" y="226" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">4 universal variables · 144 patterns → 1 defensible chart choice</text>
+
+  <!-- 4 operating rules note -->
+  <text x="440" y="247" font-family="'Space Mono', monospace" font-size="9" fill="#050505" text-anchor="middle" letter-spacing="0.04em">4 embedded operating rules prevent common errors in high-load contexts</text>
+</svg>

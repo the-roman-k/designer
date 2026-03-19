@@ -1,0 +1,331 @@
+/* ═══════════════════════════════════════════════════════
+   Landing Page Styles — style-new.css
+   Override and specific additions for the interactive ChatGPT-like UI
+   ═══════════════════════════════════════════════════════ */
+
+/* Reset base layout */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent global scroll */
+}
+
+/* Main Layout */
+.desktop {
+  display: flex;
+  align-items: stretch;
+  background-color: var(--color-bg);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 320px;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 32px;
+  height: 100%;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+/* Question Styles */
+.question {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.question::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.question p {
+  padding: 10px;
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: normal;
+  font-style: normal;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Active Question Styles */
+.question-active::before {
+  inset: -1px;
+  border: 1px solid var(--color-accent);
+  border-radius: 9px;
+  box-shadow: 0 0 10px var(--color-accent-dim);
+}
+
+.question-active p {
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.question:hover {
+  transform: translateX(4px);
+}
+
+.question:not(.question-active):hover::before {
+  border: 1px solid var(--color-border-hover);
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 64px max(32px, 5%);
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: 100%;
+  position: relative;
+}
+
+/* Fix Hero spacing inside wrapper to avoid huge padding-top from original css */
+#view-hero .hero {
+  min-height: auto;
+  padding-top: 0;
+  padding-bottom: var(--space-xl);
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Chat Section */
+.chat {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Recommendations override */
+#view-recommendations .recommendations {
+  background: transparent;
+  border-top: none;
+  border-bottom: none;
+}
+
+#view-recommendations .rec-marquee {
+  overflow: visible;
+  padding-bottom: var(--space-xl);
+}
+
+#view-recommendations .rec-marquee::before,
+#view-recommendations .rec-marquee::after {
+  display: none;
+}
+
+#view-recommendations .rec-marquee-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
+  width: 100%;
+  padding: 0;
+  animation: none !important;
+  transform: none !important;
+}
+
+#view-recommendations .rec-card {
+  width: 100%;
+  height: auto;
+}
+
+.text-field {
+  position: relative;
+  width: 100%;
+  height: 94px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--color-surface);
+}
+
+.text-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0px 0px 16px 0px var(--color-accent-dim);
+}
+
+.chat-input {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 16px;
+  color: var(--color-text);
+  outline: none;
+}
+
+.chat-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* Interactive Tabs */
+.tab-content {
+  display: none;
+  opacity: 0;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  min-height: calc(100vh - 128px);
+}
+
+/* Hide broken images in stack items (useful if cdn isn't available) */
+img.stack-item-icon:-moz-loading,
+img.stack-item-icon:-webkit-loading {
+  visibility: hidden;
+}
+
+/* Firefox / Chrome trick to hide broken image border/alt text when image fails */
+img.stack-item-icon {
+  font-size: 0;
+  color: transparent;
+}
+
+/* How I Build — break out of content-wrapper padding */
+#view-how-i-build {
+  margin: -64px calc(-1 * max(32px, 5%));
+  width: calc(100% + 2 * max(32px, 5%));
+  min-height: 100vh;
+}
+
+/* Mobile header & Overlay (Hidden on Desktop) */
+.mobile-header,
+.sidebar-overlay {
+  display: none;
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .desktop {
+    flex-direction: column;
+  }
+  
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .mobile-logo {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .hamburger-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 150;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    max-height: 100vh;
+    z-index: 200;
+    background-color: var(--color-bg);
+    border-right: 1px solid var(--color-border);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+  }
+  
+  .sidebar-content {
+    justify-content: flex-start;
+    padding: 32px 24px;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  .content-wrapper {
+    padding: 32px 24px;
+  }
+
+  #view-how-i-build {
+    margin: -32px -24px;
+    width: calc(100% + 48px);
+  }
+
+  /* Reset hero padding */
+  .hero {
+    padding-top: 32px;
+  }
+}

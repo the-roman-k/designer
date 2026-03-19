@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<!--
+  motoshare-case-study.html
+  Assembly Agent — Engine v5.1
+  Generated: 2026-03-15
+  Style: LIGHT | Density: NORMAL | Fonts: Inter + Space Mono
+  Structure: 11 focused sections (v2.4 synthesis)
+  Theme: Monochromatic (#050505 + #CCFF00 + #EAEAEA)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>MotoShare UX Redesign — 3× Conversion · Roman Kryzhanovskyi</title>
+  <meta name="description" content="How I redesigned MotoShare's peer-to-peer motorcycle rental platform end-to-end — research, flows, A/B testing, and a 3× conversion rate improvement.">
+  <meta name="keywords" content="UX design, case study, motorcycle rental, conversion rate optimisation, user research, A/B testing, responsive design, Roman Kryzhanovskyi">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <link rel="canonical" href="https://roman.design/case-studies/motoshare">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="MotoShare UX Redesign — 3× Conversion · Roman Kryzhanovskyi">
+  <meta property="og:description" content="How a full-product UX redesign of a motorcycle rental marketplace tripled conversion rate.">
+  <meta property="og:image" content="./assets/img/motoshare-hero-image@2x.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/motoshare">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi · Portfolio">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MotoShare UX Redesign — 3× Conversion · Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="How a full-product UX redesign of a motorcycle rental marketplace tripled conversion rate.">
+  <meta name="twitter:image" content="./assets/img/motoshare-hero-image@2x.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "MotoShare UX Redesign — 3× Conversion",
+    "description": "How I redesigned MotoShare's peer-to-peer motorcycle rental platform end-to-end — research, flows, A/B testing, and a 3× conversion rate improvement.",
+    "author": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-15",
+    "dateModified": "2026-03-15",
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi" }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — v5.1 Monochromatic Light Theme
+       ============================================================ */
+    :root {
+      --bg-primary:    #EAEAEA;
+      --bg-secondary:  #F5F5F5;
+      --bg-card:       #FFFFFF;
+      --bg-card-hover: #F9FAFB;
+
+      --accent-lime:        #CCFF00;
+      --accent-lime-dim:    rgba(204,255,0,0.12);
+
+      --text-primary:   #050505;
+      --text-secondary: #1A1A1A;
+      --text-muted:     #555555;
+
+      --border:        rgba(0,0,0,0.10);
+      --border-strong: rgba(0,0,0,0.22);
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'Space Mono', monospace;
+
+      --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+      --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px; --s-12: 96px;
+
+      --r-sm: 6px; --r-md: 12px; --r-lg: 20px;
+
+      --shadow-card:  0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+
+      --ease: cubic-bezier(.4,0,.2,1);
+      --dur:  220ms;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: #050505; text-decoration: none; transition: opacity var(--dur) var(--ease); }
+    a:hover { opacity: .65; }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .container      { max-width: 860px;  margin: 0 auto; padding: 0 var(--s-3); }
+    .container--wide{ max-width: 1100px; margin: 0 auto; padding: 0 var(--s-3); }
+    .section        { padding: var(--s-12) 0; border-bottom: 1px solid var(--border); }
+    .section:last-of-type { border-bottom: none; }
+
+    /* ============================================================
+       SKIP TO CONTENT
+       ============================================================ */
+    .skip-to-content {
+      position: absolute; top: -60px; left: 0; background: #050505;
+      color: #CCFF00; padding: var(--s-1) var(--s-3); z-index: 200;
+      text-decoration: none; border-radius: var(--r-sm); font-weight: 700;
+      font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase;
+    }
+    .skip-to-content:focus { top: var(--s-1); opacity: 1; }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.1; font-weight: 900; }
+    h1 { font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: -0.04em; text-transform: uppercase; }
+    h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); letter-spacing: -0.03em; margin-bottom: var(--s-3); text-transform: uppercase; }
+    h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); letter-spacing: -0.02em; margin-bottom: var(--s-2); font-weight: 700; }
+    h4 { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-2); font-family: var(--font-mono); font-weight: 400; }
+    p  { color: var(--text-secondary); line-height: 1.75; margin-bottom: var(--s-2); font-size: 1.0625rem; }
+    p:last-child { margin-bottom: 0; }
+
+    .mono { font-family: var(--font-mono); }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: .78rem; letter-spacing: .1em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-muted);
+      margin-bottom: var(--s-3);
+    }
+    .section-label::before { content: ''; width: 24px; height: 1px; background: var(--text-muted); }
+
+    /* ============================================================
+       NAV DOTS
+       ============================================================ */
+    .nav-dots {
+      position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 12px; z-index: 100;
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 1.5px solid rgba(0,0,0,.25); background: transparent;
+      cursor: pointer; transition: all .2s; position: relative; padding: 0;
+    }
+    .nav-dot.active { background: #050505; border-color: #050505; }
+    .nav-dot::after {
+      content: attr(data-label); position: absolute; right: 18px; top: 50%;
+      transform: translateY(-50%); white-space: nowrap; font-size: .7rem;
+      color: var(--text-muted); opacity: 0; transition: opacity .2s;
+      font-family: var(--font-mono); pointer-events: none;
+    }
+    .nav-dot:hover::after { opacity: 1; }
+    @media (max-width: 1100px) { .nav-dots { display: none; } }
+
+    /* ============================================================
+       MARQUEE STRIP
+       ============================================================ */
+    .marquee-strip {
+      background: #050505; color: #CCFF00; padding: 14px 0;
+      overflow: hidden; white-space: nowrap;
+      font-family: var(--font-mono); font-size: .875rem;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .marquee-content {
+      display: inline-block;
+      animation: marquee-scroll 28s linear infinite;
+    }
+    @keyframes marquee-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============================================================
+       BACK LINK
+       ============================================================ */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: var(--s-3) 0; font-family: var(--font-mono);
+      font-size: .8rem; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: .06em; transition: color var(--dur);
+    }
+    .back-link:hover { color: var(--text-primary); opacity: 1; }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    #s-hero {
+      position: relative; overflow: hidden;
+      min-height: 90vh; display: flex; flex-direction: column;
+      justify-content: flex-end; padding-bottom: var(--s-10);
+      background: var(--bg-primary);
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-family: var(--font-mono); font-size: .8rem; letter-spacing: .12em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-muted);
+      margin-bottom: var(--s-4); display: block;
+    }
+    .hero-title {
+      color: var(--text-primary); margin-bottom: var(--s-4);
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      letter-spacing: -0.04em; line-height: 0.9; text-transform: uppercase;
+    }
+    .hero-title .hero-line { display: block; }
+    .hero-title .hero-line--accent { color: #CCFF00; }
+    .hero-lead {
+      max-width: 580px; font-size: 1.125rem; color: var(--text-secondary);
+      line-height: 1.7; margin-bottom: var(--s-6);
+    }
+    .hero-meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--s-3); max-width: 640px;
+      border-top: 1px solid var(--border-strong); padding-top: var(--s-4);
+    }
+    .meta-item__label {
+      font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; display: block;
+    }
+    .meta-item__value { font-size: .9375rem; font-weight: 700; color: var(--text-primary); }
+
+    /* ============================================================
+       METRICS STRIP
+       ============================================================ */
+    .metrics-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px; background: var(--border-strong);
+      border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+      overflow: hidden; margin: var(--s-10) 0;
+    }
+    .metric-block { background: var(--bg-card); padding: var(--s-5) var(--s-4); text-align: center; }
+    .metric-block__number {
+      font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 900; color: #050505; line-height: 1;
+      display: block; margin-bottom: 10px; letter-spacing: -0.04em;
+    }
+    .metric-block__number--accent { color: #CCFF00; background: #050505; padding: 0 8px; }
+    .metric-block__label {
+      font-family: var(--font-mono); font-size: .75rem; color: var(--text-muted);
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+
+    /* ============================================================
+       CARD SYSTEM
+       ============================================================ */
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: var(--s-4);
+      box-shadow: var(--shadow-card);
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+    .card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .card.dark { background: #050505; color: #FFFFFF; border-color: #050505; }
+    .card.dark p, .card.dark h3 { color: #FFFFFF; }
+    .card.dark .card-sub { color: #CCFF00; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-3); }
+    .card-grid--3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card-sub {
+      font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: var(--s-2);
+    }
+
+    /* ============================================================
+       INSIGHT CALLOUT BLOCK
+       ============================================================ */
+    .insight-block {
+      background: rgba(204,255,0,0.08); border: 1px solid rgba(204,255,0,0.4);
+      border-left: 4px solid #CCFF00; border-radius: var(--r-md);
+      padding: var(--s-3) var(--s-4); margin: var(--s-4) 0;
+    }
+    .insight-block__label {
+      font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em;
+      text-transform: uppercase; color: #555; font-weight: 700;
+      margin-bottom: 8px; display: block;
+    }
+    .insight-block p { color: var(--text-primary); font-size: .9375rem; margin: 0; }
+
+    /* ============================================================
+       KEY INSIGHTS LIST
+       ============================================================ */
+    .insights-list { list-style: none; display: grid; gap: var(--s-2); margin: var(--s-3) 0; }
+    .insights-list li {
+      display: grid; grid-template-columns: 20px 1fr; gap: 16px; align-items: start;
+      padding: var(--s-3); background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: var(--r-md);
+      transition: border-color var(--dur);
+    }
+    .insights-list li:hover { border-color: var(--border-strong); }
+    .insights-list li::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: #CCFF00; border: 2px solid #050505; margin-top: 8px; flex-shrink: 0;
+    }
+    .insights-list p { margin: 0; font-size: .9375rem; }
+    .insights-list strong { color: var(--text-primary); font-weight: 700; }
+
+    /* ============================================================
+       DECISION CARDS
+       ============================================================ */
+    .decision-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: var(--s-4);
+      display: grid; gap: var(--s-2);
+      transition: border-color var(--dur), transform var(--dur);
+    }
+    .decision-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    .decision-card__number {
+      font-family: var(--font-display); font-size: 3.5rem; font-weight: 900;
+      color: rgba(0,0,0,.08); line-height: 1; letter-spacing: -0.04em;
+    }
+    .decision-card__title { font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: -0.02em; }
+    .decision-card__chosen {
+      font-family: var(--font-mono); font-size: .78rem; color: #555;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .decision-card__chosen strong { color: #050505; }
+    .decision-card__rationale { font-size: .9375rem; color: var(--text-secondary); }
+    .decision-card__outcome {
+      font-family: var(--font-mono); font-size: .8rem; padding: 10px 14px;
+      background: #050505; color: #CCFF00; border-radius: var(--r-sm);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+
+    /* ============================================================
+       IMPACT GRID
+       ============================================================ */
+    .impact-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--s-3); margin: var(--s-5) 0;
+    }
+    .impact-item {
+      text-align: center; padding: var(--s-6) var(--s-4);
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); transition: transform var(--dur), box-shadow var(--dur);
+    }
+    .impact-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .impact-item__number {
+      font-family: var(--font-display); font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 900; line-height: 1; display: block; margin-bottom: 12px;
+      letter-spacing: -0.04em; color: #050505;
+    }
+    .impact-item__number--accent { background: #CCFF00; padding: 2px 10px; display: inline-block; }
+    .impact-item__label { font-family: var(--font-mono); font-size: .78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+
+    /* ============================================================
+       TOOLS ROW
+       ============================================================ */
+    .tools-row { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-3) 0; }
+    .tool-tag {
+      font-family: var(--font-mono); font-size: .78rem; font-weight: 700;
+      padding: 8px 18px; border-radius: 100px;
+      border: 1.5px solid #050505; color: #050505; background: transparent;
+      text-transform: uppercase; letter-spacing: .06em;
+      transition: all var(--dur);
+    }
+    .tool-tag:hover { background: #CCFF00; border-color: #CCFF00; }
+    .tool-tag--accent { background: #050505; color: #CCFF00; border-color: #050505; }
+
+    /* ============================================================
+       REFLECTION CARD
+       ============================================================ */
+    .reflection-card {
+      background: #050505; color: #FFFFFF;
+      border-radius: var(--r-lg); padding: var(--s-6); margin: var(--s-4) 0;
+    }
+    .reflection-card h3 { color: #CCFF00; text-transform: uppercase; margin-bottom: var(--s-3); }
+    .reflection-card p { color: rgba(255,255,255,.8); }
+
+    /* ============================================================
+       BEFORE/AFTER + IMAGE SYSTEM
+       ============================================================ */
+    .cs-img { width: 100%; height: auto; display: block; border-radius: var(--r-md); }
+    .cs-img--full { width: 100%; border-radius: var(--r-lg); margin: var(--s-4) 0; }
+    .cs-figure { margin: var(--s-5) 0; }
+    .cs-figure figcaption {
+      font-family: var(--font-mono); font-size: .75rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .08em; margin-top: var(--s-2);
+    }
+    .cs-before-after {
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin: var(--s-5) 0;
+    }
+    .cs-before-after__col { display: flex; flex-direction: column; gap: var(--s-2); }
+    .cs-before-after__label {
+      font-family: var(--font-mono); font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      padding: 4px 12px; border-radius: 4px; display: inline-block; width: fit-content;
+    }
+    .cs-before-after__label--before { background: rgba(239,68,68,.12); color: #DC2626; }
+    .cs-before-after__label--after  { background: #CCFF00; color: #050505; }
+    .cs-img-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--s-3); margin: var(--s-5) 0;
+    }
+    .cs-img-row__label {
+      font-family: var(--font-mono); font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: var(--s-2);
+      color: var(--text-muted);
+    }
+    .cs-gallery {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--s-3); margin: var(--s-5) 0;
+    }
+
+    /* ============================================================
+       DIAGRAM WRAP
+       ============================================================ */
+    .diagram-wrap {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: var(--s-5); overflow-x: auto;
+      margin: var(--s-5) 0;
+    }
+    .diagram-wrap svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+
+    /* ============================================================
+       CTA SECTION
+       ============================================================ */
+    .cta-section { text-align: center; padding: var(--s-12) 0; background: var(--bg-primary); }
+    .cta-section h2 { margin-bottom: var(--s-2); }
+    .cta-section p { max-width: 500px; margin: 0 auto var(--s-5); font-size: 1.1rem; }
+    .cta-buttons { display: flex; gap: var(--s-2); justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px; border-radius: 100px; font-weight: 700;
+      font-family: var(--font-mono); font-size: .875rem;
+      text-transform: uppercase; letter-spacing: .06em;
+      transition: all var(--dur) var(--ease); cursor: pointer; border: 1.5px solid transparent;
+    }
+    .btn--primary { background: #050505; color: #CCFF00; border-color: #050505; }
+    .btn--primary:hover { background: #CCFF00; color: #050505; border-color: #CCFF00; opacity: 1; }
+    .btn--ghost { background: transparent; color: #050505; border-color: #050505; }
+    .btn--ghost:hover { background: #050505; color: #CCFF00; opacity: 1; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .site-footer {
+      border-top: 1px solid var(--border); padding: var(--s-5) 0;
+      text-align: center; background: var(--bg-secondary);
+    }
+    .site-footer p { font-family: var(--font-mono); font-size: .78rem; color: var(--text-muted); margin: 4px 0; text-transform: uppercase; letter-spacing: .08em; }
+
+    /* ============================================================
+       ACCESSIBILITY
+       ============================================================ */
+    :focus-visible { outline: 2px solid #050505; outline-offset: 4px; border-radius: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      .section { padding: var(--s-8) 0; }
+      .card-grid, .card-grid--3 { grid-template-columns: 1fr; }
+      .impact-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+      .hero-meta { grid-template-columns: repeat(2, 1fr); }
+      .cs-before-after { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2.5rem, 10vw, 4rem); }
+    }
+    @media (max-width: 480px) {
+      .impact-grid { grid-template-columns: 1fr; }
+      .metrics-strip { grid-template-columns: 1fr; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+    @media (max-width: 600px) {
+      .cs-before-after { grid-template-columns: 1fr; }
+      .cs-img-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+  <!-- NAV DOTS -->
+  <nav class="nav-dots" aria-label="Section navigation">
+    <button class="nav-dot active" data-label="Hero" aria-label="Jump to Hero" onclick="document.getElementById('s-hero').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Context" aria-label="Jump to Context" onclick="document.getElementById('s-context').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Discovery" aria-label="Jump to Discovery" onclick="document.getElementById('s-discovery').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Insights" aria-label="Jump to Key Insights" onclick="document.getElementById('s-insights').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Strategy" aria-label="Jump to Strategy" onclick="document.getElementById('s-strategy').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Decisions" aria-label="Jump to Key Decisions" onclick="document.getElementById('s-decisions').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Impact" aria-label="Jump to Impact" onclick="document.getElementById('s-impact').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-label="Reflection" aria-label="Jump to Reflection" onclick="document.getElementById('s-reflection').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <!-- MARQUEE -->
+  <div class="marquee-strip" role="presentation" aria-hidden="true">
+    <div class="marquee-content">
+      MOTOSHARE // UX REDESIGN // CONVERSION OPTIMISATION // USER RESEARCH // A/B TESTING // RESPONSIVE DESIGN // NETHERLANDS // PEER-TO-PEER // MOTORCYCLE RENTAL // MOTOSHARE // UX REDESIGN // CONVERSION OPTIMISATION // USER RESEARCH // A/B TESTING // RESPONSIVE DESIGN // NETHERLANDS // PEER-TO-PEER // MOTORCYCLE RENTAL //&nbsp;
+    </div>
+  </div>
+
+  <!-- BACK LINK -->
+  <div class="container">
+    <a href="../index.html" class="back-link" aria-label="Back to all projects">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      All Projects
+    </a>
+  </div>
+
+  <main id="main-content">
+
+    <!-- ══════════════════════════════════════════
+         S01 · HERO
+         ══════════════════════════════════════════ -->
+    <section id="s-hero" class="section" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-eyebrow">Lead UX Designer · Peer-to-Peer Motorcycle Rental · Netherlands</span>
+
+          <h1 class="hero-title" id="hero-title">
+            <span class="hero-line">Moto</span>
+            <span class="hero-line">Share</span>
+          </h1>
+
+          <p class="hero-lead">
+            MotoShare v1 shipped fast. It accumulated usability debt faster. I led a full-product redesign — research, flows, A/B testing, hundreds of screens — and measured a 3× conversion rate improvement on the other side.
+          </p>
+
+          <div class="hero-meta" role="list" aria-label="Project metadata">
+            <div class="meta-item" role="listitem">
+              <span class="meta-item__label">Role</span>
+              <span class="meta-item__value">Lead UX Designer</span>
+            </div>
+            <div class="meta-item" role="listitem">
+              <span class="meta-item__label">Platform</span>
+              <span class="meta-item__value">Web + Mobile</span>
+            </div>
+            <div class="meta-item" role="listitem">
+              <span class="meta-item__label">Timeline</span>
+              <span class="meta-item__value">~4 months</span>
+            </div>
+            <div class="meta-item" role="listitem">
+              <span class="meta-item__label">Outcome</span>
+              <span class="meta-item__value">3× Conversion Rate</span>
+            </div>
+          </div>
+        </div>
+
+        <figure class="cs-figure" style="margin-top: var(--s-6);">
+          <img
+            src="./assets/img/motoshare-hero-image.png"
+            srcset="./assets/img/motoshare-hero-image@2x.png 2x"
+            alt="MotoShare peer-to-peer motorcycle rental platform — desktop and mobile interface"
+            loading="eager" decoding="async" class="cs-img cs-img--full"
+          >
+        </figure>
+      </div>
+    </section>
+
+    <!-- METRICS STRIP -->
+    <div class="container--wide">
+      <div class="metrics-strip" role="list" aria-label="Key project metrics">
+        <div class="metric-block" role="listitem">
+          <span class="metric-block__number"><span class="metric-block__number--accent">3×</span></span>
+          <span class="metric-block__label">Conversion Rate Lift</span>
+        </div>
+        <div class="metric-block" role="listitem">
+          <span class="metric-block__number">400<span style="font-size:1.5rem;vertical-align:super;font-weight:900">+</span></span>
+          <span class="metric-block__label">Screens Designed</span>
+        </div>
+        <div class="metric-block" role="listitem">
+          <span class="metric-block__number">3</span>
+          <span class="metric-block__label">A/B-Validated Decisions</span>
+        </div>
+        <div class="metric-block" role="listitem">
+          <span class="metric-block__number">0</span>
+          <span class="metric-block__label">Backend Changes Required</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         S02 · CONTEXT
+         ══════════════════════════════════════════ -->
+    <section id="s-context" class="section" aria-labelledby="context-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">01 // Context</span>
+
+        <h2 id="context-title">The design wasn't the problem. The accumulation was.</h2>
+
+        <p>MotoShare is a peer-to-peer motorcycle rental marketplace in the Netherlands — connecting owners who want to monetise idle bikes with riders who want European roads without the ownership. The model works. The product, at v1, worked less well.</p>
+
+        <p>The founding team were motorcycle enthusiasts, not product designers. They shipped a v1 that proved demand and attracted early adopters. But early adopters forgive friction. Mainstream users don't. Scaling past the initial audience required a product that could convert browsers into renters without requiring patience for a confusing interface.</p>
+
+        <div class="insight-block" role="note">
+          <span class="insight-block__label">The Hypothesis</span>
+          <p>Usability improvements would directly drive conversion rate, and conversion would unlock growth. The constraint: fix the UX through frontend changes only — no backend modifications.</p>
+        </div>
+
+        <div class="card-grid" style="margin-top: var(--s-5);">
+          <div class="card">
+            <span class="card-sub">The Brief</span>
+            <h3>Full redesign. Frontend only.</h3>
+            <p>Overhaul the UI and UX across all major flows — rental booking, owner listing, payments — without touching the backend. Prove the impact through measured outcomes.</p>
+          </div>
+          <div class="card dark">
+            <span class="card-sub">The Stakes</span>
+            <h3>Every conversion point was revenue.</h3>
+            <p>The business had enough traffic to measure outcomes immediately and precisely. A shallow redesign that moved nothing in the numbers would cost four months with nothing to show for it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S03 · THE PROBLEM
+         ══════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="problem-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">02 // The Problem</span>
+        <h2 id="problem-title">Three flows, all broken in different ways</h2>
+
+        <p>The rental booking flow dropped users at multiple decision points. The owner-side listing experience had inconsistent form patterns that created uncertainty about what information was required. The payment and confirmation flow had no clear visual hierarchy guiding users through the final critical steps.</p>
+
+        <p>Each flow had been designed in isolation, at different times, by different hands. Nothing was catastrophically wrong in any single screen — but the accumulation of small inconsistencies created an experience that never felt trustworthy. And in a marketplace where users hand over motorcycle keys or credit cards, trust is the only thing that matters.</p>
+
+        <figure class="cs-figure" style="margin-top: var(--s-5);">
+          <img src="./assets/img/heatmap.png"
+               alt="Hotjar heatmap of MotoShare v1 booking flow — showing drop-off clusters at listing selection and form entry"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>Heatmap analysis — users abandoning at the same friction points across every session</figcaption>
+        </figure>
+
+        <div class="cs-before-after" aria-label="v1 interface — before redesign">
+          <div class="cs-before-after__col">
+            <span class="cs-before-after__label cs-before-after__label--before">v1 — Before</span>
+            <img src="./assets/img/before-01.png" srcset="./assets/img/before-01@2x.png 2x"
+                 alt="MotoShare v1 booking flow — fragmented UI with unclear hierarchy"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+          <div class="cs-before-after__col">
+            <span class="cs-before-after__label cs-before-after__label--before">v1 — Owner Side</span>
+            <img src="./assets/img/before-02.png" srcset="./assets/img/before-02@2x.png 2x"
+                 alt="MotoShare v1 owner listing form — inconsistent field patterns"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S04 · MY ROLE
+         ══════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="role-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">03 // My Role</span>
+        <h2 id="role-title">Full design ownership, end to end</h2>
+        <p>I was the sole designer on this project, reporting directly to the founders. My scope covered every layer: research, strategy, information architecture, wireframing, visual design, prototyping, and developer handoff. I also ran the workshops and facilitated the decisions that shaped which direction the team committed to.</p>
+
+        <div class="tools-row" role="list" aria-label="Responsibilities">
+          <span class="tool-tag" role="listitem">User Research</span>
+          <span class="tool-tag" role="listitem">Competitive Analysis</span>
+          <span class="tool-tag" role="listitem">Flow Mapping</span>
+          <span class="tool-tag" role="listitem">Wireframing</span>
+          <span class="tool-tag" role="listitem">Design Thinking Workshop</span>
+          <span class="tool-tag" role="listitem">Hi-Fi Mockups</span>
+          <span class="tool-tag" role="listitem">A/B Testing</span>
+          <span class="tool-tag" role="listitem">InVision Prototype</span>
+          <span class="tool-tag" role="listitem">Zeplin Handoff</span>
+          <span class="tool-tag tool-tag--accent" role="listitem">Hotjar + Analytics</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S05 · DISCOVERY
+         ══════════════════════════════════════════ -->
+    <section id="s-discovery" class="section" aria-labelledby="discovery-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">04 // Discovery</span>
+        <h2 id="discovery-title">Research before pixels — every time</h2>
+
+        <p>I started with the flows, not the screens. The first two weeks were documentation: mapping every business process in the product — how a user found and booked a bike, how an owner listed and managed their vehicle, how money moved between parties. These as-is flow diagrams immediately surfaced where the design had made assumptions the product couldn't support.</p>
+
+        <p>Then I talked to users. Surveys gave me breadth — quantitative signal on where people dropped off and what confused them. Interviews gave me the reasons behind the numbers. I spoke with both sides of the marketplace: renters who completed bookings, renters who abandoned, and owners who listed motorcycles. The patterns that emerged were consistent enough to act on without ambiguity.</p>
+
+        <!-- Process diagram -->
+        <div class="diagram-wrap" role="img" aria-label="MotoShare research and design process diagram">
+          <svg viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg" width="820" height="180" aria-hidden="true">
+            <defs>
+              <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#050505"/>
+              </marker>
+            </defs>
+            <rect x="10"  y="50" width="90"  height="80" rx="10" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <rect x="130" y="50" width="90"  height="80" rx="10" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <rect x="250" y="50" width="90"  height="80" rx="10" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <rect x="370" y="50" width="90"  height="80" rx="10" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <rect x="490" y="50" width="90"  height="80" rx="10" fill="#CCFF00" stroke="#050505" stroke-width="1.5"/>
+            <rect x="610" y="50" width="90"  height="80" rx="10" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <rect x="720" y="50" width="90"  height="80" rx="10" fill="#050505" stroke="#050505" stroke-width="1.5"/>
+            <line x1="100" y1="90" x2="130" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <line x1="220" y1="90" x2="250" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <line x1="340" y1="90" x2="370" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <line x1="460" y1="90" x2="490" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <line x1="580" y1="90" x2="610" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <line x1="700" y1="90" x2="720" y2="90" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"/>
+            <text x="55"  y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">01</text>
+            <text x="175" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">02</text>
+            <text x="295" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">03</text>
+            <text x="415" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">04</text>
+            <text x="535" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">05</text>
+            <text x="655" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">06</text>
+            <text x="765" y="42" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" fill="#555">07</text>
+            <text x="55"  y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Research</text>
+            <text x="55"  y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">+ Surveys</text>
+            <text x="175" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Flow</text>
+            <text x="175" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Mapping</text>
+            <text x="295" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Ideation</text>
+            <text x="295" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Workshop</text>
+            <text x="415" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Wire-</text>
+            <text x="415" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">frames</text>
+            <text x="535" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">A/B</text>
+            <text x="535" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Testing</text>
+            <text x="655" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Hi-Fi</text>
+            <text x="655" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Design</text>
+            <text x="765" y="84" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#CCFF00">Hand-</text>
+            <text x="765" y="98" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#CCFF00">off</text>
+          </svg>
+        </div>
+
+        <div class="card-grid--3 card-grid" style="margin-top: var(--s-4);">
+          <div class="card">
+            <span class="card-sub">Quantitative</span>
+            <h3>Surveys + Funnel Analysis</h3>
+            <p>Where users dropped off. Which screens had the highest exit rate. Hotjar heatmaps showed where attention went and what was being ignored.</p>
+          </div>
+          <div class="card">
+            <span class="card-sub">Qualitative</span>
+            <h3>User Interviews</h3>
+            <p>One-on-one sessions with riders and motorcycle owners on both sides of the marketplace. The why behind the numbers.</p>
+          </div>
+          <div class="card">
+            <span class="card-sub">Structural</span>
+            <h3>Flow Documentation</h3>
+            <p>As-is diagrams for every business process. Funnel analysis. Sitemap audit. The foundation for everything that came after.</p>
+          </div>
+        </div>
+
+        <figure class="cs-figure" style="margin-top: var(--s-5);">
+          <img src="./assets/img/business-flows.png"
+               alt="Business process map documenting all MotoShare workflows before redesign"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>As-is business flow documentation — 12 processes mapped before touching any screen design</figcaption>
+        </figure>
+
+        <figure class="cs-figure">
+          <img src="./assets/img/wireframes.png" srcset="./assets/img/wireframes@2x.png 2x"
+               alt="Lo-fi wireframes for MotoShare rental booking, owner listing, and payment flows"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>Lo-fi wireframes — over 60 screens sketched before any visual design decisions</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S06 · KEY INSIGHTS
+         ══════════════════════════════════════════ -->
+    <section id="s-insights" class="section" aria-labelledby="insights-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">05 // Key Insights</span>
+        <h2 id="insights-title">What the research surfaced</h2>
+
+        <ul class="insights-list" aria-label="Key research insights">
+          <li>
+            <p><strong>Users abandoned at motorcycle selection — not at payment.</strong> Confusion happened earlier than the founders expected. The listing cards didn't give users enough confidence to choose.</p>
+          </li>
+          <li>
+            <p><strong>Owners were uncertain what information was required.</strong> Inconsistent form field labelling and no mandatory/optional distinction led to incomplete listings and owner frustration.</p>
+          </li>
+          <li>
+            <p><strong>The booking flow had no progress indication.</strong> Users had no sense of how many steps remained, which created anxiety at the highest-commitment moment in the journey.</p>
+          </li>
+          <li>
+            <p><strong>Visual hierarchy worked against the primary action.</strong> On multiple screens, the most important CTAs were competing visually with secondary information and navigation elements.</p>
+          </li>
+          <li>
+            <p><strong>Trust signals were present but invisible.</strong> Reviews, owner verification, insurance details — all there, all buried or inconsistently applied across the booking funnel.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S07 · STRATEGY
+         ══════════════════════════════════════════ -->
+    <section id="s-strategy" class="section" aria-labelledby="strategy-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">06 // Strategy</span>
+        <h2 id="strategy-title">Fix the hierarchy. Close the leaks. Build trust where it counts.</h2>
+
+        <p>Rather than redesigning from scratch, I prioritised changes by potential conversion impact. The highest-leverage interventions: restructuring the visual hierarchy on listing cards, adding progress indication to the checkout flow, surfacing trust signals at the specific moments users needed reassurance, and standardising the owner listing form patterns.</p>
+
+        <p>The approach was deliberate about what not to change. Backend-constrained decisions — pricing structure, insurance model, matching algorithm — stayed off the table. I focused entirely on the layer I could control: what users saw, how information was structured, and what they were asked to do at each step.</p>
+
+        <!-- As-is / To-be flow diagram -->
+        <div class="diagram-wrap" role="img" aria-label="MotoShare business flow redesign — as-is vs to-be">
+          <svg viewBox="0 0 820 260" xmlns="http://www.w3.org/2000/svg" width="820" height="260" aria-hidden="true">
+            <defs>
+              <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#050505"/>
+              </marker>
+            </defs>
+            <text x="10" y="22" font-family="'Space Mono',monospace" font-size="10" font-weight="700" fill="#555">AS-IS FLOW</text>
+            <rect x="10"  y="34" width="110" height="50" rx="8" fill="#FFF" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="150" y="34" width="110" height="50" rx="8" fill="#FFF" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="290" y="34" width="110" height="50" rx="8" fill="#FFF" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="430" y="34" width="110" height="50" rx="8" fill="#FFF" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="570" y="34" width="110" height="50" rx="8" fill="#FFF" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="155" y="30" font-family="'Space Mono',monospace" font-size="9" fill="#DC2626">DROP</text>
+            <text x="295" y="30" font-family="'Space Mono',monospace" font-size="9" fill="#DC2626">DROP</text>
+            <text x="435" y="30" font-family="'Space Mono',monospace" font-size="9" fill="#DC2626">DROP</text>
+            <line x1="120" y1="59" x2="150" y2="59" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <line x1="260" y1="59" x2="290" y2="59" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <line x1="400" y1="59" x2="430" y2="59" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <line x1="540" y1="59" x2="570" y2="59" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <text x="65"  y="56" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Search</text>
+            <text x="65"  y="70" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Bikes</text>
+            <text x="205" y="56" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Select</text>
+            <text x="205" y="70" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Listing</text>
+            <text x="345" y="56" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Booking</text>
+            <text x="345" y="70" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Form</text>
+            <text x="485" y="56" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Payment</text>
+            <text x="485" y="70" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Step</text>
+            <text x="625" y="56" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Confirm</text>
+            <text x="625" y="70" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Booking</text>
+            <line x1="10" y1="115" x2="810" y2="115" stroke="#CCFF00" stroke-width="2"/>
+            <rect x="340" y="107" width="140" height="18" rx="4" fill="#CCFF00"/>
+            <text x="410" y="120" text-anchor="middle" font-family="'Space Mono',monospace" font-size="9" font-weight="700" fill="#050505">REDESIGNED FLOW</text>
+            <rect x="10"  y="162" width="110" height="50" rx="8" fill="#FFF" stroke="#050505" stroke-width="2"/>
+            <rect x="150" y="162" width="110" height="50" rx="8" fill="#CCFF00" stroke="#050505" stroke-width="2"/>
+            <rect x="290" y="162" width="110" height="50" rx="8" fill="#CCFF00" stroke="#050505" stroke-width="2"/>
+            <rect x="430" y="162" width="110" height="50" rx="8" fill="#FFF" stroke="#050505" stroke-width="2"/>
+            <rect x="570" y="162" width="110" height="50" rx="8" fill="#050505" stroke="#050505" stroke-width="2"/>
+            <line x1="120" y1="187" x2="150" y2="187" stroke="#050505" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="260" y1="187" x2="290" y2="187" stroke="#050505" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="400" y1="187" x2="430" y2="187" stroke="#050505" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="540" y1="187" x2="570" y2="187" stroke="#050505" stroke-width="2" marker-end="url(#arr2)"/>
+            <text x="65"  y="184" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Improved</text>
+            <text x="65"  y="198" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Cards</text>
+            <text x="205" y="184" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Trust</text>
+            <text x="205" y="198" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#050505">Signals</text>
+            <text x="345" y="184" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Step</text>
+            <text x="345" y="198" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#050505">Wizard</text>
+            <text x="485" y="184" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#050505">Simplified</text>
+            <text x="485" y="198" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#555">Payment</text>
+            <text x="625" y="184" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" font-weight="700" fill="#CCFF00">Confirmed</text>
+            <text x="625" y="198" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="#CCFF00">Booked</text>
+          </svg>
+        </div>
+
+        <figure class="cs-figure" style="margin-top: var(--s-5);">
+          <img src="./assets/img/validate-solutions.png"
+               alt="User validation session with MotoShare prototype"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>Validation sessions — each design direction tested with real users before hi-fi production</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S08 · KEY DECISIONS
+         ══════════════════════════════════════════ -->
+    <section id="s-decisions" class="section" aria-labelledby="decisions-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">07 // Key Decisions</span>
+        <h2 id="decisions-title">Three decisions that shaped the outcome</h2>
+
+        <div class="card-grid" style="margin-top: var(--s-4);">
+          <article class="decision-card">
+            <div class="decision-card__number" aria-hidden="true">01</div>
+            <h3 class="decision-card__title">Listing Cards vs. Full Search Page</h3>
+            <p class="decision-card__chosen">Chosen: <strong>Listing Cards First</strong></p>
+            <p class="decision-card__rationale">The highest drop-off was at motorcycle selection. Redesigning the full search page would have taken 6+ weeks. Improving the card design — information hierarchy, imagery, trust signals — could ship in two weeks and be tested immediately.</p>
+            <p class="decision-card__outcome">Card redesign validated via A/B test — justified full search page investment in next sprint</p>
+          </article>
+
+          <article class="decision-card">
+            <div class="decision-card__number" aria-hidden="true">02</div>
+            <h3 class="decision-card__title">Single Form vs. Step Wizard</h3>
+            <p class="decision-card__chosen">Chosen: <strong>Step-by-Step Rental Wizard</strong></p>
+            <p class="decision-card__rationale">The original single-page booking form created decision paralysis. Users couldn't tell how much work was ahead. Breaking it into a stepped wizard with clear progress indication reduced cognitive load and made the commitment feel manageable.</p>
+            <p class="decision-card__outcome">Wizard completions significantly higher than original form — confirmed post-launch</p>
+          </article>
+
+          <article class="decision-card">
+            <div class="decision-card__number" aria-hidden="true">03</div>
+            <h3 class="decision-card__title">A/B Test Breadth vs. Depth</h3>
+            <p class="decision-card__chosen">Chosen: <strong>Deep Testing on 3 High-Impact Modules</strong></p>
+            <p class="decision-card__rationale">Rather than testing everything at low statistical confidence, I selected the three modules with the clearest conversion impact — listing card, booking wizard entry, confirmation step — and ran proper tests on each with sufficient traffic and time.</p>
+            <p class="decision-card__outcome">Each test produced a clear winner with high confidence. All three incorporated into the final design.</p>
+          </article>
+        </div>
+
+        <div class="cs-img-row" aria-label="A/B test variants" style="margin-top: var(--s-5);">
+          <div>
+            <p class="cs-img-row__label">Variant A — Control</p>
+            <img src="./assets/img/ab test version 01.png" srcset="./assets/img/ab test version 01@2x.png 2x"
+                 alt="A/B test control variant — original booking CTA and listing card layout"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+          <div>
+            <p class="cs-img-row__label">Variant B — Redesigned</p>
+            <img src="./assets/img/ab test version 02.png" srcset="./assets/img/ab test version 02@2x.png 2x"
+                 alt="A/B test redesigned variant — new CTA placement, trust signals, and booking summary"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S09 · SOLUTION
+         ══════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="solution-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">08 // Solution</span>
+        <h2 id="solution-title">Hundreds of screens. One consistent system.</h2>
+
+        <p>The final design deliverable was a complete, production-ready responsive design covering every state, flow, and edge case. Desktop, mobile, and tablet — each breakpoint designed individually, not just shrunk from the desktop version.</p>
+
+        <p>The visual system unified what had been a fragmented collection of ad-hoc patterns into a coherent design language: a consistent type scale, a clear hierarchy of UI components, standardised form patterns, and a set of trust signal components applied consistently across the booking funnel.</p>
+
+        <div class="card-grid" style="margin-top: var(--s-4);">
+          <div class="card dark">
+            <span class="card-sub">Deliverable</span>
+            <h3>Interactive Prototype</h3>
+            <p>Full InVision prototype covering all major user journeys. Used by founders for stakeholder alignment and investor presentations.</p>
+          </div>
+          <div class="card">
+            <span class="card-sub">Deliverable</span>
+            <h3>Zeplin Handoff Package</h3>
+            <p>Complete developer handoff with component specifications, animations, guidelines, and interaction notes. Zero ambiguity for the engineering team.</p>
+          </div>
+          <div class="card">
+            <span class="card-sub">Deliverable</span>
+            <h3>Responsive Design System</h3>
+            <p>Unified component library across desktop, mobile, and tablet. Every state, every edge case, every breakpoint accounted for.</p>
+          </div>
+        </div>
+
+        <div class="cs-before-after" aria-label="Before and after comparison" style="margin-top: var(--s-5);">
+          <div class="cs-before-after__col">
+            <span class="cs-before-after__label cs-before-after__label--before">Before</span>
+            <img src="./assets/img/before-02.png" srcset="./assets/img/before-02@2x.png 2x"
+                 alt="MotoShare v1 owner listing form — inconsistent fields"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+          <div class="cs-before-after__col">
+            <span class="cs-before-after__label cs-before-after__label--after">After</span>
+            <img src="./assets/img/after-02.png" srcset="./assets/img/after-02@2x.png 2x"
+                 alt="MotoShare redesigned owner listing — progressive disclosure, unified patterns"
+                 loading="lazy" decoding="async" class="cs-img">
+          </div>
+        </div>
+
+        <figure class="cs-figure">
+          <img src="./assets/img/responsive-mockups.png" srcset="./assets/img/responsive-mockups@2x.png 2x"
+               alt="MotoShare redesign across desktop, tablet, and mobile viewports"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>400+ screens — fully responsive across all breakpoints. Desktop, tablet, and mobile each designed individually.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S10 · IMPACT
+         ══════════════════════════════════════════ -->
+    <section id="s-impact" class="section" aria-labelledby="impact-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">09 // Impact</span>
+        <h2 id="impact-title">The numbers came back strong</h2>
+
+        <div class="impact-grid" role="list" aria-label="Project impact metrics">
+          <div class="impact-item" role="listitem">
+            <span class="impact-item__number"><span class="impact-item__number--accent">3×</span></span>
+            <span class="impact-item__label">Conversion rate across all major flows</span>
+          </div>
+          <div class="impact-item" role="listitem">
+            <span class="impact-item__number">400<span style="font-size:2rem;vertical-align:super">+</span></span>
+            <span class="impact-item__label">Responsive screens covering all states and edge cases</span>
+          </div>
+          <div class="impact-item" role="listitem">
+            <span class="impact-item__number">0</span>
+            <span class="impact-item__label">Backend changes required — pure frontend UX impact</span>
+          </div>
+        </div>
+
+        <p>Post-launch, the conversion improvement was measured across every major flow — renting, booking, and payments. The results validated the original hypothesis: fixing the design layer moved the business metric. The founders used the outcome to make the case for continued investment in design as a growth lever, not just a cost centre.</p>
+
+        <figure class="cs-figure" style="margin-top: var(--s-5);">
+          <img src="./assets/img/result.png" srcset="./assets/img/result@2x.png 2x"
+               alt="Post-launch analytics showing 3× conversion rate improvement"
+               loading="lazy" decoding="async" class="cs-img cs-img--full">
+          <figcaption>Post-launch results — conversion rate tripled within the first measurement period</figcaption>
+        </figure>
+
+        <div class="insight-block" role="note">
+          <span class="insight-block__label">Secondary Outcome</span>
+          <p>The redesign surfaced weak points that went beyond design — specific flows where backend constraints were creating UX problems only engineering could solve. This intelligence directly informed the next product development roadmap.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S11 · REFLECTION
+         ══════════════════════════════════════════ -->
+    <section id="s-reflection" class="section" aria-labelledby="reflection-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">10 // Reflection</span>
+        <h2 id="reflection-title">What this project taught me</h2>
+
+        <div class="reflection-card">
+          <h3>The constraint was the lesson</h3>
+          <p>Frontend-only changes were initially frustrating. In hindsight, it was the best forcing function I've ever had. It forced me to distinguish between design problems and problems masquerading as design problems but actually rooted in product architecture. That clarity made my recommendations sharper and my prioritisation more defensible.</p>
+        </div>
+
+        <div class="card-grid" style="margin-top: var(--s-4);">
+          <div class="card">
+            <span class="card-sub">What I'd do differently</span>
+            <h3>Instrument before redesigning</h3>
+            <p>We had to wait for post-launch data to validate what research had already told us. Earlier instrumentation — event-level tracking, funnel analytics, session recording — would have enabled faster iteration and caught edge cases before launch.</p>
+          </div>
+          <div class="card">
+            <span class="card-sub">What I'd expand</span>
+            <h3>Build a testing culture</h3>
+            <p>We tested three modules deeply. With more time, I'd have made A/B testing the default mode for any UI decision above a risk threshold — not a special activity reserved for the highest-stakes screens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         S12 · AI LAYER
+         ══════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="ai-title">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">11 // AI Layer</span>
+        <h2 id="ai-title">A pre-AI project — and what that means</h2>
+
+        <p>MotoShare predates the current generation of AI design tools. Research synthesis was done manually. Ideation happened in in-person workshops. Competitor analysis was done screen by screen, note by note. The work that took days then — interview synthesis, pattern extraction from user sessions, generating design alternatives — takes hours now.</p>
+
+        <p>If I ran this project today, Claude would handle research synthesis. Figma AI would accelerate alternative generation. Hotjar AI would surface session patterns automatically. The human decision-making — which direction to pursue, what trade-offs to make, what to test — would remain mine. The machine handles the processing work that used to consume the time available for thinking.</p>
+
+        <div class="insight-block" role="note">
+          <span class="insight-block__label">Context</span>
+          <p>The judgment demonstrated in this case study is the same judgment I bring to AI-augmented work today. The tools that amplify it have changed. The design thinking behind them hasn't.</p>
+        </div>
+
+        <div class="tools-row" aria-label="Tools used in this project" role="list">
+          <span class="tool-tag" role="listitem">Hotjar</span>
+          <span class="tool-tag" role="listitem">Google Analytics</span>
+          <span class="tool-tag" role="listitem">InVision</span>
+          <span class="tool-tag" role="listitem">Zeplin</span>
+          <span class="tool-tag tool-tag--accent" role="listitem">Now: Claude + Figma AI</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         CTA
+         ══════════════════════════════════════════ -->
+    <section class="cta-section" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title">Let's build something worth measuring.</h2>
+        <p>I design for outcomes. If you're building a product that needs to convert, grow, or prove a hypothesis — let's talk.</p>
+        <div class="cta-buttons">
+          <a href="mailto:mailtotheroman@gmail.com" class="btn btn--primary" aria-label="Get in touch with Roman">Get in touch</a>
+          <a href="../selected-projects.html" class="btn btn--ghost" aria-label="View all case studies">All projects</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>Roman Kryzhanovskyi · AI-First Design Engineer</p>
+      <p>MotoShare case study · <a href="https://roman.design">roman.design</a></p>
+    </div>
+  </footer>
+
+  <!-- NAV DOT SCROLL TRACKING — vanilla JS, no GSAP -->
+  <script>
+    (function(){
+      var sections = ['s-hero','s-context','s-discovery','s-insights','s-strategy','s-decisions','s-impact','s-reflection'];
+      var dots = document.querySelectorAll('.nav-dot');
+
+      function updateDots(){
+        var scrollY = window.scrollY + window.innerHeight * 0.4;
+        var activeIdx = 0;
+        sections.forEach(function(id, i){
+          var el = document.getElementById(id);
+          if(el && el.offsetTop <= scrollY) activeIdx = i;
+        });
+        dots.forEach(function(d, i){
+          d.classList.toggle('active', i === activeIdx);
+          d.setAttribute('aria-current', i === activeIdx ? 'true' : 'false');
+        });
+      }
+
+      window.addEventListener('scroll', updateDots, { passive: true });
+      updateDots();
+    })();
+  </script>
+
+</body>
+</html>

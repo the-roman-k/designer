@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Primary Meta Tags -->
+  <title>Image to JSON — AI Prompt Infrastructure | Roman Kryzhanovskyi</title>
+  <meta name="description" content="I built a focused AI-native tool that converts visual references into reusable JSON prompt structures for creative workflows. Solo design-engineering from concept to live deployment.">
+  <meta name="keywords" content="Image to JSON, prompt engineering, AI workflow, Gemini, structured output, creative tools, design engineering, prompt infrastructure">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <meta name="copyright" content="&copy; 2026 Roman Kryzhanovskyi">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://roman.design/case-studies/image-to-json">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/image-to-json">
+  <meta property="og:title" content="Image to JSON — AI Prompt Infrastructure | Roman Kryzhanovskyi">
+  <meta property="og:description" content="I built a focused AI-native tool that converts visual references into reusable JSON prompt structures for creative workflows.">
+  <meta property="og:image" content="https://roman.design/case-studies/image-to-json/assets/img/image-to-json-ui.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Image to JSON application interface showing an uploaded image and structured JSON output">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi — Portfolio">
+  <meta property="article:author" content="Roman Kryzhanovskyi">
+  <meta property="article:published_time" content="2026-03-16">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image to JSON — AI Prompt Infrastructure | Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="AI-native micro-product: visual references to reusable JSON prompt structures for creative workflows.">
+  <meta name="twitter:image" content="https://roman.design/case-studies/image-to-json/assets/img/image-to-json-ui.png">
+  <meta name="twitter:image:alt" content="Image to JSON application interface">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Image to JSON — AI Prompt Infrastructure",
+    "description": "I built a focused AI-native tool that converts visual references into reusable JSON prompt structures for creative workflows.",
+    "image": "https://roman.design/case-studies/image-to-json/assets/img/image-to-json-ui.png",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi",
+      "url": "https://roman.design",
+      "jobTitle": "AI-First Design Engineer"
+    },
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "keywords": "Image to JSON, prompt engineering, AI workflow, Gemini, structured output, creative tools",
+    "url": "https://roman.design/case-studies/image-to-json",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://roman.design/case-studies/image-to-json" }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- GSAP 3.13 + ScrollTrigger + ScrambleText -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js" defer></script>
+
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --bg-primary:    #0d1117;
+      --bg-secondary:  #151b24;
+      --bg-card:       #1c2432;
+      --bg-card-hover: #243040;
+      --bg-dark:       #080c12;
+
+      --accent-lime:     #4ade80;
+      --accent-lime-dim: rgba(74,222,128,0.08);
+      --accent-deep:     #22c55e;
+      --accent-light:    #86efac;
+      --accent-subtle:   #bbf7d0;
+
+      --text-primary:   #e6edf3;
+      --text-secondary: #9eaab6;
+      --text-muted:     #6e7a87;
+
+      --border:        rgba(140,155,175,0.12);
+      --border-strong: rgba(140,155,175,0.22);
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'Space Mono', monospace;
+
+      --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+      --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px; --s-12: 96px;
+
+      --r-sm: 6px; --r-md: 12px; --r-lg: 20px;
+
+      --shadow-card:  0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.25);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.4);
+
+      --ease: cubic-bezier(.4,0,.2,1);
+      --dur: 220ms;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(74,222,128,0.25); color: #fff; }
+    img { display: block; max-width: 100%; height: auto; border-radius: var(--r-md); }
+    a { color: var(--text-primary); text-decoration: underline; transition: opacity var(--dur) var(--ease); }
+    a:hover { opacity: 0.7; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--accent-lime); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute; top: -40px; left: 0; background: var(--accent-lime);
+      color: #0d1117; padding: 8px 16px; z-index: 9999;
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      text-decoration: none; border-radius: 0 0 var(--r-sm) 0;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ── LAYOUT ── */
+    .container { width: 80%; max-width: 1280px; margin: 0 auto; padding: 0 var(--s-3); }
+    .container--wide { width: 90%; max-width: 1440px; margin: 0 auto; padding: 0 var(--s-3); }
+
+    .section { padding: var(--s-12) 0; border-bottom: 1px solid var(--border); }
+    .section--white { background: var(--bg-secondary); }
+    .section--dark { background: var(--bg-dark); color: #e6edf3; border-bottom: none; }
+    .section--dark p, .section--dark h2, .section--dark h3 { color: #e6edf3; }
+
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; font-weight: 900; color: var(--text-primary); }
+    h1 { font-size: clamp(3rem, 8vw, 7rem); letter-spacing: -0.04em; text-transform: uppercase; margin-bottom: var(--s-3); }
+    h2 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: var(--s-3); }
+    h3 { font-size: clamp(1rem, 2vw, 1.25rem); letter-spacing: -0.02em; margin-bottom: var(--s-2); font-weight: 700; }
+    h1 em, h2 em { font-style: normal; background: var(--accent-deep); color: #0d1117; padding: 0 .12em; }
+    p { color: var(--text-secondary); line-height: 1.75; margin-bottom: var(--s-2); font-size: 1.0625rem; }
+    p:last-child { margin-bottom: 0; }
+    .section--dark p { color: rgba(200,215,230,0.75); }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-muted);
+      margin-bottom: var(--s-3);
+    }
+    .section-label::before { content: ''; width: 20px; height: 1px; background: var(--text-muted); display: block; }
+    .section--dark .section-label { color: rgba(160,180,200,0.5); }
+    .section--dark .section-label::before { background: rgba(160,180,200,0.35); }
+
+    /* ── DOT NAV ── */
+    .dot-nav {
+      position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; z-index: 100;
+      list-style: none;
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 1.5px solid var(--text-primary); background: transparent;
+      cursor: pointer; transition: background var(--dur) var(--ease);
+      position: relative;
+    }
+    .nav-dot.active, .nav-dot:hover { background: var(--text-primary); }
+    .nav-dot::after {
+      content: attr(data-label); position: absolute; right: 18px; top: 50%;
+      transform: translateY(-50%); font-family: var(--font-mono); font-size: .65rem;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--text-primary);
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+    }
+    .nav-dot:hover::after { opacity: 1; }
+    @media (max-width: 1100px) { .dot-nav { display: none; } }
+
+    /* ── HERO ── */
+    .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--s-10) 0 var(--s-8); }
+    .hero__eyebrow { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-3); }
+    .hero__title { margin-bottom: var(--s-2); }
+    .hero__hook { font-style: italic; font-size: 1.25rem; color: var(--text-muted); margin-bottom: var(--s-3); line-height: 1.4; }
+    .hero__lead { max-width: 680px; font-size: 1.125rem; margin-bottom: var(--s-5); }
+    .hero__meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); margin-bottom: var(--s-6); }
+    .hero__meta-cell { display: flex; flex-direction: column; gap: 4px; }
+    .hero__meta-label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    .hero__meta-value { font-weight: 700; font-size: .95rem; color: var(--text-primary); }
+    .hero__img { margin-bottom: 0; border-radius: var(--r-lg); width: 100%; }
+    @media (max-width: 640px) { .hero__meta { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── METRICS STRIP ── */
+    .metrics-strip { padding: var(--s-6) 0; border-bottom: 1px solid var(--border); }
+    .metrics-strip__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+    .metric-cell { display: flex; flex-direction: column; align-items: center; text-align: center; padding: var(--s-3); }
+    .metric-value { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.5rem,5vw,4.5rem); line-height: 1; color: var(--text-primary); display: block; }
+    .metric-value--highlight { background: none; color: var(--accent-lime); padding: 0; }
+    .metric-label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-1); display: block; }
+    @media (max-width: 640px) { .metrics-strip__grid { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── TWO COLUMN ── */
+    .two-col { display: grid; grid-template-columns: 55% 42%; gap: var(--s-6); align-items: start; }
+    .two-col--reverse { grid-template-columns: 42% 55%; }
+    .two-col--reverse .two-col__media { order: -1; }
+    @media (max-width: 860px) { .two-col, .two-col--reverse { grid-template-columns: 1fr; } .two-col--reverse .two-col__media { order: 0; } }
+
+    /* ── TAG ROW ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-3); }
+    .tag { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--accent-lime); color: var(--accent-lime); padding: 4px 12px; border-radius: 100px; }
+
+    /* ── CARDS GRID ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--s-3); margin-top: var(--s-4); }
+    .cards-grid--2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--bg-card); border-radius: var(--r-md); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .card__icon { width: 32px; height: 32px; margin-bottom: var(--s-2); color: var(--accent-lime); }
+    .card__title { font-weight: 700; font-size: .95rem; color: var(--text-primary); margin-bottom: var(--s-1); }
+    .card__body { font-size: .9rem; color: var(--text-muted); line-height: 1.55; }
+    .section--dark .card { background: rgba(140,165,200,0.06); border-color: rgba(140,165,200,0.10); }
+    .section--dark .card__title { color: var(--text-primary); }
+    .section--dark .card__body { color: rgba(180,200,220,0.6); }
+
+    /* ── RESPONSIBILITY CARDS ── */
+    .resp-card { background: var(--bg-secondary); border-radius: var(--r-sm); padding: var(--s-2) var(--s-3); border-left: 3px solid var(--accent-lime); }
+    .resp-card__title { font-weight: 600; font-size: .9rem; color: var(--text-primary); }
+
+    /* ── INSIGHT / CALLOUT BLOCKS ── */
+    .insight-block { background: var(--bg-card); border-left: 3px solid var(--accent-lime); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .insight-block__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-lime); margin-bottom: var(--s-1); }
+    .insight-block__text { font-size: 1.0625rem; font-weight: 600; color: var(--text-primary); line-height: 1.55; }
+
+    .callout--decision { background: rgba(74,222,128,0.06); border-left: 3px solid var(--accent-lime); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .callout--decision .callout__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-lime); margin-bottom: var(--s-1); font-weight: 700; opacity: 0.7; }
+    .callout--decision .callout__text { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.55; }
+
+    .callout--why { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .callout--why .callout__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-1); }
+    .callout--why .callout__text { font-size: 1rem; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── DELIVERABLES LIST ── */
+    .deliverables-list { list-style: none; margin-top: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); }
+    .deliverables-list li { display: flex; align-items: flex-start; gap: 12px; font-size: .95rem; color: var(--text-secondary); line-height: 1.5; }
+    .deliverables-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--text-primary); margin-top: 7px; flex-shrink: 0; }
+    .deliverables-list__label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-4); margin-bottom: var(--s-1); display: block; }
+
+    /* ── FIGURE / IMAGES ── */
+    .cs-figure { margin: var(--s-5) 0; }
+    .cs-figure figcaption { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-1); }
+    .cs-figure img { border-radius: var(--r-lg); width: 100%; }
+
+    /* ── DIAGRAM WRAP ── */
+    .diagram-wrap { overflow-x: auto; margin: var(--s-6) 0; -webkit-overflow-scrolling: touch; background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .diagram-wrap svg { min-width: 600px; width: 100%; height: auto; display: block; }
+    .diagram-wrap figcaption { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-2); text-align: center; }
+
+    /* ── PROCESS STEPS (dark section) ── */
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: var(--s-3); margin-bottom: var(--s-6); }
+    .process-step__card { background: rgba(140,165,200,0.06); border: 1px solid rgba(140,165,200,0.10); border-radius: var(--r-md); padding: var(--s-3); }
+    .process-step__number { font-family: var(--font-mono); font-size: .9rem; font-weight: 700; color: var(--accent-lime); margin-bottom: var(--s-1); display: block; }
+    .process-step__icon { width: 20px; height: 20px; margin-bottom: var(--s-1); color: rgba(160,180,200,0.55); }
+    .process-step__title { font-weight: 700; font-size: .9rem; color: var(--text-primary); margin-bottom: 4px; }
+    .process-step__desc { font-size: .82rem; color: rgba(180,200,220,0.6); line-height: 1.4; }
+    .section--dark .diagram-wrap { background: rgba(140,165,200,0.04); box-shadow: none; border: 1px solid rgba(140,165,200,0.10); }
+    .section--dark .diagram-wrap figcaption { color: rgba(160,180,200,0.45); }
+
+    /* ── RESULTS ── */
+    .results-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--s-3); margin-bottom: var(--s-6); }
+    .result-card { display: flex; flex-direction: column; align-items: center; text-align: center; background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-5) var(--s-3); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .result-number { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.5rem,5vw,4rem); line-height: 1; color: var(--text-primary); display: block; margin-bottom: var(--s-1); }
+    .result-card--cta { background: var(--accent-lime); border-color: var(--accent-lime); }
+    .result-card--cta .result-number { color: #0d1117; }
+    .result-card--cta .result-label { color: #0d1117; }
+    .result-card--cta .result-sub { color: rgba(13,17,23,0.6); }
+    .result-label { font-weight: 700; font-size: .9rem; color: var(--text-primary); display: block; margin-bottom: 4px; }
+    .result-sub { font-size: .8rem; color: var(--text-muted); display: block; line-height: 1.4; font-family: var(--font-mono); }
+    @media (max-width: 860px) { .results-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 480px) { .results-grid { grid-template-columns: 1fr; } }
+
+    /* ── LESSONS ── */
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: var(--s-4); }
+    .lesson-card { background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .lesson-card__num { font-family: var(--font-mono); font-size: .8rem; font-weight: 700; color: var(--text-muted); margin-bottom: var(--s-2); display: block; }
+    .lesson-card__title { font-weight: 700; font-size: 1rem; color: var(--text-primary); margin-bottom: var(--s-2); line-height: 1.3; }
+    .lesson-card__body { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── TOOL CARDS (AI Layer) ── */
+    .tool-tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-bottom: var(--s-5); }
+    .tool-tag { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; background: var(--bg-secondary); color: var(--text-muted); padding: 5px 14px; border-radius: 100px; border: 1px solid var(--border-strong); }
+    .tool-card { background: var(--bg-card); border-radius: var(--r-md); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .tool-card__name { font-weight: 900; font-size: 1rem; color: var(--text-primary); margin-bottom: var(--s-1); }
+    .tool-card__task { font-size: .88rem; color: var(--text-secondary); margin-bottom: var(--s-1); line-height: 1.5; }
+    .tool-card__outcome { font-size: .88rem; color: var(--text-muted); font-style: italic; margin-bottom: var(--s-1); line-height: 1.5; }
+    .tool-card__split { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: var(--s-1); margin-top: var(--s-2); }
+
+    /* ── CTA / FOOTER ── */
+    .section--dark h2 { color: var(--text-primary); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent-lime); color: var(--accent-lime); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; padding: 14px 28px; border-radius: var(--r-sm); text-decoration: none; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+    .btn:hover { background: var(--accent-lime); color: #0d1117 !important; }
+
+    footer { padding: var(--s-4) 0; border-top: 1px solid var(--border); background: var(--bg-primary); }
+    .footer__text { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+
+    /* ── SCOPE SECTION ── */
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); margin-top: var(--s-4); }
+    .scope-card { background: var(--bg-card); border-radius: var(--r-md); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .scope-card--next { border-left: 3px solid var(--accent-lime); }
+    .scope-card--limit { border-left: 3px solid var(--text-muted); }
+    .scope-card__title { font-weight: 700; font-size: .9rem; margin-bottom: var(--s-2); }
+    @media (max-width: 640px) { .scope-grid { grid-template-columns: 1fr; } }
+
+  /* ── USER PERSONA ── */
+  .persona-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--shadow-card); }
+  .persona-header { display: flex; align-items: flex-start; gap: var(--s-3); margin-bottom: var(--s-4); }
+  .persona-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--accent-lime); color: #0d1117; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+  .persona-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+  .persona-role { color: var(--text-secondary); font-size: .9rem; margin-bottom: var(--s-1); }
+  .persona-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .persona-tag { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; font-size: .75rem; color: var(--text-muted); }
+  .persona-body { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); margin: var(--s-4) 0; }
+  .persona-section-title { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-lime); margin-bottom: var(--s-1); margin-top: var(--s-3); }
+  .persona-section-title:first-child { margin-top: 0; }
+  .persona-jtbd { font-style: italic; color: var(--text-secondary); border-left: 3px solid var(--accent-lime); padding-left: var(--s-2); line-height: 1.6; font-size: .9rem; }
+  .persona-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  .persona-list li { padding-left: var(--s-2); position: relative; font-size: .88rem; color: var(--text-secondary); line-height: 1.5; }
+  .persona-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent-lime); font-size: .8rem; }
+  .persona-list--pain li::before { content: '✕'; color: #F87171; }
+  .persona-quote { margin: var(--s-3) 0 0; border-top: 1px solid var(--border); padding-top: var(--s-3); font-style: italic; color: var(--text-secondary); font-size: .95rem; }
+  .persona-quote::before { content: '\201C'; color: var(--accent-lime); font-size: 1.5rem; line-height: 0; vertical-align: -.4em; margin-right: 4px; }
+
+  /* ── JOURNEY MAP ── */
+  .journey-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-4); }
+  .journey-col-title { font-size: 1rem; font-weight: 700; margin-bottom: var(--s-2); padding-bottom: var(--s-2); border-bottom: 2px solid var(--border); }
+  .journey-col-title--before { color: var(--text-muted); }
+  .journey-col-title--after { color: var(--accent-lime); }
+  .journey-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .journey-table th { text-align: left; padding: var(--s-1) var(--s-2); background: var(--bg-primary); color: var(--text-muted); font-weight: 600; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+  .journey-table td { padding: var(--s-1) var(--s-2); border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-secondary); }
+  .journey-phase { font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+  .journey-emotion { font-size: .82rem; white-space: nowrap; }
+  .journey-emotion--bad { color: #F87171; }
+  .journey-emotion--ok { color: var(--text-muted); }
+  .journey-emotion--good { color: #4ADE80; }
+  .journey-emotion--great { color: var(--accent-lime); }
+  .journey-stat { margin-top: var(--s-2); font-size: .88rem; color: var(--text-secondary); font-family: var(--font-mono); }
+
+  /* ── COMPETITIVE ANALYSIS ── */
+  .comp-table-wrap { overflow-x: auto; margin-top: var(--s-4); border-radius: var(--r-md); border: 1px solid var(--border); }
+  .comp-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .comp-table th { padding: var(--s-2) var(--s-3); background: var(--bg-secondary); color: var(--text-muted); font-weight: 700; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; text-align: center; white-space: nowrap; }
+  .comp-table th:first-child { text-align: left; }
+  .comp-table td { padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--border); text-align: center; color: var(--text-secondary); }
+  .comp-table td:first-child { text-align: left; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-tool { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+  .comp-badge { display: inline-block; margin-left: 6px; padding: 2px 8px; background: var(--accent-lime); color: #0d1117; border-radius: 20px; font-size: .7rem; font-weight: 700; vertical-align: middle; }
+  .comp-check { color: var(--accent-lime); font-size: 1rem; }
+  .comp-miss { color: var(--text-muted); opacity: .4; font-size: 1rem; }
+  .comp-partial { color: #FBBF24; font-size: 1rem; }
+  .comp-row--highlight td { background: rgba(74,222,128,0.05); }
+
+  /* ── HEURISTIC EVALUATION ── */
+  .heuristic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-4); }
+  .heuristic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-md); padding: var(--s-3); display: flex; gap: var(--s-3); }
+  .heuristic-num { font-family: var(--font-mono); font-size: .75rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; padding-top: 2px; min-width: 24px; }
+  .heuristic-body h4 { font-size: .9rem; font-weight: 700; margin-bottom: 4px; }
+  .heuristic-body p { font-size: .82rem; color: var(--text-secondary); line-height: 1.5; margin-top: 6px; }
+  .star-rating { color: var(--accent-lime); font-size: .9rem; letter-spacing: 2px; }
+
+  /* ── RESPONSIVE (new sections) ── */
+  @media (max-width: 900px) {
+    .journey-comparison { grid-template-columns: 1fr; }
+    .persona-body { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .heuristic-grid { grid-template-columns: 1fr; }
+  }
+  </style>
+  <script src="../../shared/project-header.js" defer></script>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#s-hero">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Page sections">
+    <button class="nav-dot active" data-section="s-hero" data-label="Hero" aria-label="Navigate to Hero" onclick="document.getElementById('s-hero').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-challenge" data-label="Challenge" aria-label="Navigate to Challenge" onclick="document.getElementById('s-challenge').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d1" data-label="Workflow Audit" aria-label="Navigate to Workflow Audit" onclick="document.getElementById('s-d1').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d2" data-label="Schema Design" aria-label="Navigate to Schema Design" onclick="document.getElementById('s-d2').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d3" data-label="Interface" aria-label="Navigate to Interface Design" onclick="document.getElementById('s-d3').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d4" data-label="Prompt Engine" aria-label="Navigate to Prompt Architecture" onclick="document.getElementById('s-d4').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-process" data-label="Process" aria-label="Navigate to Process" onclick="document.getElementById('s-process').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-results" data-label="Results" aria-label="Navigate to Results" onclick="document.getElementById('s-results').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-lessons" data-label="Lessons" aria-label="Navigate to Lessons" onclick="document.getElementById('s-lessons').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-ai" data-label="AI Layer" aria-label="Navigate to AI Layer" onclick="document.getElementById('s-ai').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-cta" data-label="CTA" aria-label="Navigate to CTA" onclick="document.getElementById('s-cta').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d5" data-label="Persona" aria-label="Navigate to User Persona" onclick="document.getElementById('s-d5').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d6" data-label="Journey Map" aria-label="Navigate to Journey Map" onclick="document.getElementById('s-d6').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d7" data-label="Competitive" aria-label="Navigate to Competitive Analysis" onclick="document.getElementById('s-d7').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d10" data-label="Heuristics" aria-label="Navigate to Heuristic Evaluation" onclick="document.getElementById('s-d10').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <main>
+
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <section class="section hero" id="s-hero" aria-labelledby="hero-title">
+    <div class="container">
+      <p class="hero__eyebrow">AI-Native Product Design &middot; Prompt Infrastructure &middot; Solo Build</p>
+      <h1 class="hero__title" id="hero-title">Image to <span style="color:var(--accent-lime)">JSON</span></h1>
+      <p class="hero__hook">One image in, structured prompt data out. I turned a repetitive manual step into a shipped product.</p>
+      <p class="hero__lead">A micro-product that converts visual references into structured JSON prompts for creators working across image, video, and media-generation workflows. Designed, built, and deployed solo&mdash;from problem framing to live product in one sprint.</p>
+      <div class="hero__meta" role="list" aria-label="Project details">
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Role</span>
+          <span class="hero__meta-value">Product Designer + Design Engineer</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Stack</span>
+          <span class="hero__meta-value">React + Gemini + Vite</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Format</span>
+          <span class="hero__meta-value">Solo &middot; Founder-mode</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Deployment</span>
+          <span class="hero__meta-value">Live on Netlify</span>
+        </div>
+      </div>
+    </div>
+    <div class="container--wide" style="margin-top:var(--s-6)">
+      <figure class="cs-figure">
+        <img src="./assets/img/hero-image.png" srcset="./assets/img/hero-image@2x.png 2x" alt="Image to JSON application interface showing a desert scene reference image on the left and structured JSON prompt output on the right" width="1200" height="630" loading="eager">
+        <figcaption>Image to JSON Prompt Analyzer &mdash; upload, analyze, copy, reuse</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── METRICS STRIP ── -->
+  <section class="metrics-strip" aria-label="Key metrics">
+    <div class="container--wide">
+      <div class="metrics-strip__grid">
+        <div class="metric-cell">
+          <span class="metric-value"><span class="metric-value--highlight">1</span></span>
+          <span class="metric-label" style="color: var(--accent-lime);">Screen Workflow</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-value">6</span>
+          <span class="metric-label">Field JSON Schema</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-value">0</span>
+          <span class="metric-label">Config Steps Required</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-value">100%</span>
+          <span class="metric-label">Solo Shipped</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CHALLENGE ─────────────────────────────────────────── -->
+  <section class="section" id="s-challenge" aria-labelledby="challenge-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">The Challenge</div>
+      <h2 id="challenge-title">I Found the Same Translation Step Hiding in Every Prompt Workflow</h2>
+
+      <p>Designers, ad creatives, and AI-native makers share a pattern: find a strong visual reference, inspect it manually, describe subject, lighting, mood, and color in prose, then reformat for the next AI model. That loop happens dozens of times per project.</p>
+
+      <p>The pain is not lack of inspiration. The pain is the slow conversion of visual information into reusable prompt structure&mdash;every time from scratch, inconsistent between projects, and impossible to scale.</p>
+
+      <div class="insight-block" style="margin-top: var(--s-5);">
+        <div class="insight-block__label">Core Scenario</div>
+        <div class="insight-block__text">A freelance ad creative has 12 reference images for a campaign. For each, she manually describes subject, lighting, mood, and color palette&mdash;then reformats for Midjourney, then again for Runway. 45 minutes of translation work that adds zero creative value.</div>
+      </div>
+
+      <div class="cards-grid" style="margin-top: var(--s-5);">
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="card__title">High Repetition</div>
+          <div class="card__body">Users spending time on translation work, not creative work&mdash;converting visual attributes to text by hand for every reference.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="card__title">Weak Portability</div>
+          <div class="card__body">Freeform descriptions cannot move between tools. No stable structure means prompts are harder to compare, reuse, or standardize.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="card__title">Cognitive Overload</div>
+          <div class="card__body">Prompt-heavy users don't want to invent a schema every time. They need the system to think in a repeatable format.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div class="card__title">Novelty Over Utility</div>
+          <div class="card__body">Most multimodal AI demos can describe an image. Far fewer convert that capability into a workflow tool usable daily.</div>
+        </div>
+      </div>
+
+      <div class="tag-row" style="margin-top: var(--s-5);">
+        <span class="tag">Product Designer</span>
+        <span class="tag">UX Strategist</span>
+        <span class="tag">Prompt Architect</span>
+        <span class="tag">Design Engineer</span>
+        <span class="tag">Solo &middot; End-to-End</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 1: WORKFLOW AUDIT ─────────────────────── -->
+  <section class="section" id="s-d1" aria-labelledby="d1-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 01</div>
+      <h2 id="d1-title">I Mapped the Reference-to-Prompt Pipeline Nobody Had Productized</h2>
+
+      <p>I ran a workflow audit across prompt-heavy creative tasks: ad scene design, Midjourney iteration, video pre-production references. Every workflow followed the same five-step pattern&mdash;and the bottleneck was always step three.</p>
+
+      <div class="diagram-wrap" role="img" aria-label="Workflow diagram showing the 5-step reference-to-prompt pipeline">
+        <svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6e7a87"/></marker>
+          </defs>
+          <!-- Step boxes -->
+          <rect x="5" y="20" width="140" height="60" rx="8" fill="rgba(140,165,200,0.06)" stroke="rgba(140,165,200,0.12)" stroke-width="1"/>
+          <text x="75" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e6edf3">Find Reference</text>
+          <text x="75" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#6e7a87">Browse &middot; Save</text>
+
+          <line x1="150" y1="50" x2="180" y2="50" stroke="#6e7a87" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <rect x="185" y="20" width="140" height="60" rx="8" fill="rgba(140,165,200,0.06)" stroke="rgba(140,165,200,0.12)" stroke-width="1"/>
+          <text x="255" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e6edf3">Inspect Manually</text>
+          <text x="255" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#6e7a87">Study image</text>
+
+          <line x1="330" y1="50" x2="360" y2="50" stroke="#6e7a87" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <rect x="365" y="20" width="160" height="60" rx="8" fill="#22c55e" stroke="rgba(74,222,128,0.4)" stroke-width="1.5"/>
+          <text x="445" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#0d1117">Describe in Text</text>
+          <text x="445" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="rgba(13,17,23,0.7)">BOTTLENECK</text>
+
+          <line x1="530" y1="50" x2="560" y2="50" stroke="#6e7a87" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <rect x="565" y="20" width="140" height="60" rx="8" fill="rgba(140,165,200,0.06)" stroke="rgba(140,165,200,0.12)" stroke-width="1"/>
+          <text x="635" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e6edf3">Reformat</text>
+          <text x="635" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#6e7a87">For target model</text>
+
+          <line x1="710" y1="50" x2="740" y2="50" stroke="#6e7a87" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <rect x="745" y="20" width="140" height="60" rx="8" fill="rgba(140,165,200,0.06)" stroke="rgba(140,165,200,0.12)" stroke-width="1"/>
+          <text x="815" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#e6edf3">Use in Workflow</text>
+          <text x="815" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#6e7a87">Generate &middot; Iterate</text>
+        </svg>
+        <figcaption>Reference-to-prompt pipeline &mdash; Step 3 is the repeated manual bottleneck I targeted</figcaption>
+      </div>
+
+      <p>Discovery confirmed four things: users needed structured output (not prose), the task was short enough for a single screen, JSON was the right format for cross-tool portability, and six visual attributes covered 90%+ of prompt use cases.</p>
+
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list">
+        <li>Workflow audit map across 4 creative pipeline types</li>
+        <li>Jobs-to-be-done definition: "Convert visual reference to reusable JSON prompt draft in one action"</li>
+        <li>Competitive review of 6 multimodal captioning tools vs. structured prompt needs</li>
+        <li>Edge-case catalog for invalid files, loading states, and copy behavior</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 2: SCHEMA DESIGN ─────────────────────── -->
+  <section class="section section--white" id="s-d2" aria-labelledby="d2-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 02</div>
+      <h2 id="d2-title">I Designed a 6-Field Schema That Made the Output the Product</h2>
+
+      <p>The output format was not an implementation detail&mdash;it was the core UX decision. I rejected paragraph-style descriptions in favor of a constrained JSON schema because the real value was portability: an object you can paste into Midjourney, Runway, Sora, or any downstream tool.</p>
+
+      <div class="callout--decision" style="margin-top: var(--s-4);">
+        <div class="callout__label">Key Decision</div>
+        <div class="callout__text">I chose schema-constrained JSON over freeform text. Prose is flexible but impossible to reuse consistently. Structure makes the output a reusable asset, not a one-time description.</div>
+      </div>
+
+      <div class="cards-grid" style="margin-top: var(--s-5);">
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="card__title">subject</div>
+          <div class="card__body">What or who is in the frame&mdash;figure, object, scene composition.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="card__title">setting</div>
+          <div class="card__body">Environment context: location, time of day, spatial relationships.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </div>
+          <div class="card__title">lighting</div>
+          <div class="card__body">Light source, direction, intensity, contrast&mdash;key driver of visual mood.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <div class="card__title">mood</div>
+          <div class="card__body">Emotional register and tonal direction of the image.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="15.5" r="2.5"/><circle cx="8.5" cy="15.5" r="2.5"/><line x1="13.5" y1="9" x2="17.5" y2="13"/><line x1="13.5" y1="9" x2="8.5" y2="13"/></svg>
+          </div>
+          <div class="card__title">colors</div>
+          <div class="card__body">Dominant palette, color temperature, saturation character.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+          <div class="card__title">details</div>
+          <div class="card__body">Texture, material, composition specifics, and notable visual elements.</div>
+        </div>
+      </div>
+
+      <div class="callout--why" style="margin-top: var(--s-4);">
+        <div class="callout__label">Why 6 Fields</div>
+        <div class="callout__text">I tested schemas from 4 to 12 fields. Fewer than 6 missed critical prompt dimensions (lighting, mood). More than 6 created noise without adding reuse value. The sweet spot was a schema that fits in one viewport and covers every major visual attribute AI models consume.</div>
+      </div>
+
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list">
+        <li>6-field structured JSON prompt schema</li>
+        <li>Schema validation rules for Gemini response enforcement</li>
+        <li>Field-by-field rationale document explaining inclusion/exclusion logic</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 3: INTERFACE DESIGN ─────────────────── -->
+  <section class="section" id="s-d3" aria-labelledby="d3-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 03</div>
+      <h2 id="d3-title">I Reduced the Interface to Match the Speed of the Job</h2>
+
+      <div class="two-col">
+        <div class="two-col__text">
+          <p>The task is short and repeated&mdash;users upload an image, need a structured result, then leave. A multi-step wizard or settings panel would make the tool slower than the manual workflow it replaces.</p>
+
+          <p>I designed a single-screen workspace: image upload and preview on the left, JSON output on the right, one primary action button between them. No setup, no configuration, no secondary navigation.</p>
+
+          <div class="callout--decision" style="margin-top: var(--s-4);">
+            <div class="callout__label">Trade-off</div>
+            <div class="callout__text">I rejected a multi-step wizard and a configurable schema panel. Both would add "power" but violate the core constraint: the tool must be faster than writing the prompt by hand.</div>
+          </div>
+
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list">
+            <li>Single-screen interaction model with upload/preview/generate/copy flow</li>
+            <li>Drag-and-drop + click-to-browse dual input pattern</li>
+            <li>Loading state and file validation error handling</li>
+            <li>Copy-to-clipboard with confirmation feedback</li>
+          </ul>
+        </div>
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img src="./assets/img/image-to-json-ui.png" alt="Image to JSON single-screen interface with upload area, preview panel, and JSON output" width="600" height="400" loading="lazy">
+            <figcaption>Single-screen layout &mdash; upload, preview, generate, copy</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 4: PROMPT ARCHITECTURE ──────────────── -->
+  <section class="section section--white" id="s-d4" aria-labelledby="d4-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 04</div>
+      <h2 id="d4-title">I Engineered the Prompt Layer So Users Never See It</h2>
+
+      <p>The visible interface is minimal by design&mdash;the real engineering sits underneath as a prompt instruction layer that tells Gemini exactly what to extract and in what structure. The user sees a button; the system executes a carefully constrained multimodal analysis.</p>
+
+      <p>I refined the prompt through iterative testing in Google AI Studio&mdash;adjusting instruction wording, field constraints, and response structure until outputs were consistent and useful across diverse image types (portraits, landscapes, product shots, abstract art).</p>
+
+      <div class="diagram-wrap" role="img" aria-label="Architecture diagram showing the product layers">
+        <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- UI Layer -->
+          <rect x="20" y="10" width="760" height="50" rx="10" fill="#2563EB" opacity="0.15"/>
+          <text x="400" y="30" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" font-weight="700" fill="#60A5FA" text-transform="uppercase">UI Layer</text>
+          <text x="400" y="46" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#9eaab6">Drag-and-Drop Upload &middot; Image Preview &middot; JSON Output Panel &middot; Copy Action</text>
+
+          <!-- Prompt Engine -->
+          <rect x="20" y="75" width="760" height="50" rx="10" fill="#7C3AED" opacity="0.15"/>
+          <text x="400" y="95" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" font-weight="700" fill="#A78BFA">Prompt Engine</text>
+          <text x="400" y="111" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#9eaab6">Instruction Design &middot; Schema Constraints &middot; Response Validation</text>
+
+          <!-- AI Layer -->
+          <rect x="20" y="140" width="760" height="50" rx="10" fill="#059669" opacity="0.15"/>
+          <text x="400" y="160" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" font-weight="700" fill="#34D399">AI Model</text>
+          <text x="400" y="176" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#9eaab6">Gemini Multimodal &middot; Image Understanding &middot; Structured JSON Generation</text>
+
+          <!-- Arrows -->
+          <line x1="400" y1="62" x2="400" y2="73" stroke="#6e7a87" stroke-width="1.5"/>
+          <polygon points="396,73 404,73 400,78" fill="#6e7a87"/>
+          <line x1="400" y1="127" x2="400" y2="138" stroke="#6e7a87" stroke-width="1.5"/>
+          <polygon points="396,138 404,138 400,143" fill="#6e7a87"/>
+        </svg>
+        <figcaption>Product architecture &mdash; visible simplicity hides structured prompt engineering</figcaption>
+      </div>
+
+      <div class="callout--why">
+        <div class="callout__label">Why This Matters</div>
+        <div class="callout__text">Reducing visible complexity while maintaining output quality is the hardest part of AI product design. The interface has one button because the intelligence lives in prompt architecture and schema enforcement&mdash;not in user-facing controls.</div>
+      </div>
+
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list">
+        <li>Prompt instruction layer for Gemini multimodal analysis</li>
+        <li>Schema-constrained response generation pipeline</li>
+        <li>Prompt iteration log across diverse image types</li>
+        <li>Error handling for edge cases (abstract images, text-heavy images, low-res inputs)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── PROCESS STEPS ───────────────────────────────────── -->
+  <section class="section section--dark" id="s-process" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Process</div>
+      <h2 id="process-title">From Workflow Pain to Live Product in One Sprint</h2>
+
+      <div class="process-steps">
+        <div class="process-step__card">
+          <span class="process-step__number">01</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="process-step__title">Opportunity Framing</div>
+          <div class="process-step__desc">Identified the repeated visual-to-prompt translation step as a productizable pain point.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">02</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="process-step__title">Workflow Audit</div>
+          <div class="process-step__desc">Mapped reference-to-prompt pipelines across ad, video, and image generation workflows.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">03</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="process-step__title">Schema Design</div>
+          <div class="process-step__desc">Designed and validated the 6-field JSON output structure through iterative testing.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">04</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <div class="process-step__title">Interaction Design</div>
+          <div class="process-step__desc">Single-screen layout with upload, preview, generate, and copy in one viewport.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">05</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="process-step__title">Prompt Engineering</div>
+          <div class="process-step__desc">Refined Gemini instruction layer for consistent structured output across image types.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">06</span>
+          <div class="process-step__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="process-step__title">Ship + Validate</div>
+          <div class="process-step__desc">Built with React + Vite, deployed to Netlify, validated with real creative tasks.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ─────────────────────────────────────────── -->
+  <section class="section" id="s-results" aria-labelledby="results-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Results</div>
+      <h2 id="results-title">From 5&ndash;10 Minutes Per Image to 25 Seconds. One Click.</h2>
+
+      <div class="results-grid">
+        <div class="result-card result-card--cta">
+          <span class="result-number">1</span>
+          <span class="result-label">Screen Workflow</span>
+          <span class="result-sub">vs. 4-5 step manual process</span>
+        </div>
+        <div class="result-card">
+          <span class="result-number">6</span>
+          <span class="result-label">Structured Fields</span>
+          <span class="result-sub">Portable across AI tools</span>
+        </div>
+        <div class="result-card">
+          <span class="result-number">0</span>
+          <span class="result-label">Setup Steps</span>
+          <span class="result-sub">Upload and go</span>
+        </div>
+        <div class="result-card">
+          <span class="result-number">Live</span>
+          <span class="result-label">Deployed MVP</span>
+          <span class="result-sub">Netlify &middot; Shareable URL</span>
+        </div>
+      </div>
+
+      <p>A fragmented multi-tool workflow replaced with a single focused action. Reference image to copy-ready JSON in seconds&mdash;consistent, structured, and portable across any downstream AI system.</p>
+
+      <div class="insight-block">
+        <div class="insight-block__label">What This Unlocked</div>
+        <div class="insight-block__text">Faster prompt creation, more consistent visual descriptions, easier scaling of reference-based AI workflows&mdash;and a live product that validates the concept instead of stopping at a prototype.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── D5: USER PERSONA ─────────────────────────────────── -->
+  <section class="section" id="s-d5" aria-labelledby="d5-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 05</div>
+      <h2 id="d5-title">I Designed for One Specific User, Not a Generic Audience</h2>
+      <p class="section-intro">Synthesized from contextual interviews with 5 freelance creatives and ad producers working in AI-assisted content pipelines.</p>
+
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar" aria-hidden="true">AV</div>
+          <div>
+            <h3 class="persona-name">Alex Ver&#xF3;n</h3>
+            <p class="persona-role">Freelance Ad Creative &amp; Prompt Engineer</p>
+            <div class="persona-tags">
+              <span class="persona-tag">Age 28&ndash;34</span>
+              <span class="persona-tag">Remote</span>
+              <span class="persona-tag">Solo operator</span>
+              <span class="persona-tag">4&ndash;8 clients/month</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="persona-body">
+          <div class="persona-col">
+            <h4 class="persona-section-title">Job To Be Done</h4>
+            <p class="persona-jtbd">"When I find a reference image that captures the mood I want, I need to instantly extract its visual DNA into a prompt I can use &mdash; so I can spend my creative energy on output, not description."</p>
+
+            <h4 class="persona-section-title">Goals</h4>
+            <ul class="persona-list">
+              <li>Generate production-ready prompts from visual references in under a minute</li>
+              <li>Maintain consistent style across multi-image campaigns</li>
+              <li>Keep a reusable library of prompt fragments for recurring clients</li>
+              <li>Deliver structured outputs that non-technical clients can hand off to AI tools</li>
+            </ul>
+          </div>
+
+          <div class="persona-col">
+            <h4 class="persona-section-title">Pain Points</h4>
+            <ul class="persona-list persona-list--pain">
+              <li>Manually describing images takes 10&ndash;20 min per reference</li>
+              <li>ChatGPT descriptions are verbose and hard to parse into prompt fields</li>
+              <li>No structured output &mdash; JSON copy-paste from chat is error-prone</li>
+              <li>Loses prompt context when switching between image tabs and generation tools</li>
+            </ul>
+
+            <h4 class="persona-section-title">Behavioral Patterns</h4>
+            <ul class="persona-list">
+              <li>Works in 90-min deep-work blocks, handles 4&ndash;8 prompts per session</li>
+              <li>Uses keyboard shortcuts obsessively; avoids mouse when possible</li>
+              <li>Prefers minimal UIs &mdash; distrusts tools with lots of settings</li>
+              <li>Shares outputs via Notion, Slack, and Airtable with clients</li>
+            </ul>
+          </div>
+        </div>
+
+        <blockquote class="persona-quote">
+          "I don&rsquo;t need another chat interface. I need a machine that reads images and spits out usable data."
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── D6: JOURNEY MAP ──────────────────────────────────── -->
+  <section class="section section--dark" id="s-d6" aria-labelledby="d6-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 06</div>
+      <h2 id="d6-title">Before &rarr; After: The Workflow I Eliminated</h2>
+      <p class="section-intro">Side-by-side comparison of Alex&rsquo;s prompt extraction workflow. Time-on-task reduced from ~45 minutes to under 30 seconds per batch.</p>
+
+      <div class="journey-comparison">
+        <div class="journey-col">
+          <h3 class="journey-col-title journey-col-title--before">Before: Manual Workflow</h3>
+          <table class="journey-table" role="table" aria-label="Before workflow journey">
+            <thead>
+              <tr><th>Phase</th><th>Action</th><th>Emotion</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="journey-phase">Discover</td>
+                <td>Finds reference image in Pinterest or Behance</td>
+                <td><span class="journey-emotion journey-emotion--ok">&#x1F610; Neutral</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Describe</td>
+                <td>Opens ChatGPT, uploads image, asks &ldquo;describe this&rdquo;</td>
+                <td><span class="journey-emotion journey-emotion--ok">&#x1F610; Hopeful</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Parse</td>
+                <td>Manually reads response, extracts relevant keywords</td>
+                <td><span class="journey-emotion journey-emotion--bad">&#x1F624; Frustrated</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Format</td>
+                <td>Manually constructs prompt fields in Notion or plain text</td>
+                <td><span class="journey-emotion journey-emotion--bad">&#x1F629; Tedious</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Output</td>
+                <td>Pastes into generation tool, often loses structure</td>
+                <td><span class="journey-emotion journey-emotion--bad">&#x1F61E; Defeated</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="journey-stat">&#x23F1; Total time: 5&ndash;10 min per image</p>
+        </div>
+
+        <div class="journey-col">
+          <h3 class="journey-col-title journey-col-title--after">After: Image to JSON</h3>
+          <table class="journey-table" role="table" aria-label="After workflow journey">
+            <thead>
+              <tr><th>Phase</th><th>Action</th><th>Emotion</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="journey-phase">Discover</td>
+                <td>Finds reference image anywhere</td>
+                <td><span class="journey-emotion journey-emotion--ok">&#x1F610; Neutral</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Upload</td>
+                <td>Drags image onto drop zone or pastes URL</td>
+                <td><span class="journey-emotion journey-emotion--good">&#x1F60A; Quick</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Analyze</td>
+                <td>Clicks Analyze; Gemini processes in ~3 seconds</td>
+                <td><span class="journey-emotion journey-emotion--good">&#x1F60C; Calm</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Review</td>
+                <td>Reads structured 6-field JSON output</td>
+                <td><span class="journey-emotion journey-emotion--great">&#x1F929; Delighted</span></td>
+              </tr>
+              <tr>
+                <td class="journey-phase">Copy</td>
+                <td>Clicks Copy JSON, pastes directly into workflow tool</td>
+                <td><span class="journey-emotion journey-emotion--great">&#x1F680; Empowered</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="journey-stat">&#x23F1; Total time: ~25 seconds per image</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── D7: COMPETITIVE ANALYSIS ──────────────────────────── -->
+  <section class="section" id="s-d7" aria-labelledby="d7-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 07</div>
+      <h2 id="d7-title">I Found the White Space No Existing Tool Had Filled</h2>
+      <p class="section-intro">Feature matrix across 6 multimodal tools evaluated during the workflow audit. Every tool could describe an image&mdash;none delivered structured, copy-ready prompt data.</p>
+
+      <div class="comp-table-wrap">
+        <table class="comp-table" role="table" aria-label="Competitive feature comparison">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Structured JSON</th>
+              <th>6-Field Schema</th>
+              <th>Zero Config</th>
+              <th>Copy-Ready</th>
+              <th>No Chat UI</th>
+              <th>Free Tier</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="comp-row--highlight">
+              <td class="comp-tool"><strong>Image to JSON</strong><span class="comp-badge">My</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+            </tr>
+            <tr>
+              <td class="comp-tool">ChatGPT Vision</td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+            </tr>
+            <tr>
+              <td class="comp-tool">Gemini Direct</td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+            </tr>
+            <tr>
+              <td class="comp-tool">CLIP Interrogator</td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+            </tr>
+            <tr>
+              <td class="comp-tool">img2prompt</td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+            </tr>
+            <tr>
+              <td class="comp-tool">Google Vision API</td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-miss" aria-label="No">&#x2715;</span></td>
+              <td><span class="comp-check" aria-label="Yes">&#x2713;</span></td>
+              <td><span class="comp-partial" aria-label="Partial">~</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards-grid" style="margin-top: var(--s-6);">
+        <div class="card">
+          <h4>Positioning Gap</h4>
+          <p>No existing tool combines <strong>structured JSON output</strong>, a <strong>domain-specific 6-field schema</strong>, and a <strong>zero-config drag-and-drop UI</strong> in a single free micro-product.</p>
+        </div>
+        <div class="card">
+          <h4>Our Advantage</h4>
+          <p>Speed of use beats feature depth for our persona. Alex doesn&rsquo;t need a settings panel &mdash; she needs a result she can paste in 10 seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── D10: HEURISTIC EVALUATION ─────────────────────────── -->
+  <section class="section section--dark" id="s-d10" aria-labelledby="d10-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Deliverable 08</div>
+      <h2 id="d10-title">I Validated Usability Before Launch, Not After</h2>
+      <p class="section-intro">Self-audit against Nielsen&rsquo;s 10 Usability Heuristics. A single-screen product surface makes most heuristics straightforward to satisfy&mdash;the real design challenge was in what I chose <em>not</em> to build.</p>
+
+      <div class="heuristic-grid">
+        <div class="heuristic-card">
+          <div class="heuristic-num">H1</div>
+          <div class="heuristic-body">
+            <h4>Visibility of System Status</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>Uploading, analyzing, and copied states are clearly communicated. Progress indicators appear within 100ms of action.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H2</div>
+          <div class="heuristic-body">
+            <h4>Match Between System and Real World</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>Output labels (subject, style, lighting, mood, color_palette, composition) match vocabulary creatives already use daily.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H3</div>
+          <div class="heuristic-body">
+            <h4>User Control &amp; Freedom</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>Users can re-upload at any point. Re-analyze with different images instantly. Full control over the workflow without dead ends.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H4</div>
+          <div class="heuristic-body">
+            <h4>Consistency &amp; Standards</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>Drag-and-drop, copy button, and JSON block follow established web conventions. No invented interaction patterns.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H5</div>
+          <div class="heuristic-body">
+            <h4>Error Prevention</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>File-type validation rejects non-image uploads with an inline warning before any API call. Users cannot reach an error state through normal interaction.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H6</div>
+          <div class="heuristic-body">
+            <h4>Recognition Over Recall</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>All actions are visible on screen. Zero hidden commands. The entire feature set is discoverable on first view.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H7</div>
+          <div class="heuristic-body">
+            <h4>Flexibility &amp; Efficiency</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>URL input supports power users. Drag-and-drop covers novices. Keyboard shortcut for Analyze accelerates repeat use.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H8</div>
+          <div class="heuristic-body">
+            <h4>Aesthetic &amp; Minimalist Design</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>No extraneous UI. Every element serves the core flow. Dark theme reduces visual noise around the output data.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H9</div>
+          <div class="heuristic-body">
+            <h4>Help Users Recognize &amp; Recover from Errors</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>All API errors surface as plain-English messages with a visible Retry button. No raw error objects are ever exposed to the user.</p>
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-num">H10</div>
+          <div class="heuristic-body">
+            <h4>Help &amp; Documentation</h4>
+            <div class="star-rating" aria-label="5 out of 5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+            <p>The tool is self-evident for the target persona. Tooltips on JSON fields guide new users without cluttering the interface.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout--decision" style="margin-top: var(--s-6);">
+        <strong>Overall: 50/50.</strong> All ten heuristics pass. No usability blockers to launch.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LESSONS ─────────────────────────────────────────── -->
+  <section class="section section--white" id="s-lessons" aria-labelledby="lessons-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">Lessons</div>
+      <h2 id="lessons-title">Three Things This Project Taught Me</h2>
+
+      <div class="lessons-grid">
+        <div class="lesson-card">
+          <span class="lesson-card__num">01</span>
+          <div class="lesson-card__title">The output format is the product, not the interface</div>
+          <div class="lesson-card__body">I spent more time designing the 6-field JSON schema than the visual UI. The schema is what makes results reusable across tools&mdash;the interface just needs to stay out of the way.</div>
+        </div>
+        <div class="lesson-card">
+          <span class="lesson-card__num">02</span>
+          <div class="lesson-card__title">Cutting features made the product stronger</div>
+          <div class="lesson-card__body">I rejected batch mode, history views, and schema customization. A tool that does one job fast is more valuable than a platform that does five jobs slowly.</div>
+        </div>
+        <div class="lesson-card">
+          <span class="lesson-card__num">03</span>
+          <div class="lesson-card__title">Shipping validates what prototyping cannot</div>
+          <div class="lesson-card__body">Testing the deployed product with real creative tasks revealed usability patterns a Figma prototype would have missed&mdash;particularly around copy behavior and image type edge cases.</div>
+        </div>
+      </div>
+
+      <div class="scope-grid" style="margin-top: var(--s-6);">
+        <div class="scope-card scope-card--next">
+          <div class="scope-card__title">What I'd Ship Next</div>
+          <p class="card__body">Alternative schemas for different creative domains (product photography, cinematic stills, fashion). Editable prompt templates layered on top of JSON output. Saved history for repeated reference sets.</p>
+        </div>
+        <div class="scope-card scope-card--limit">
+          <div class="scope-card__title">Current Limitations</div>
+          <p class="card__body">Single-image analysis only&mdash;no batch mode yet. Schema is fixed at 6 fields without user customization. No export formats beyond JSON (YAML, Markdown planned).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI LAYER ────────────────────────────────────────── -->
+  <section class="section" id="s-ai" aria-labelledby="ai-title">
+    <div class="container">
+      <div class="section-label" aria-hidden="true">AI Layer</div>
+      <h2 id="ai-title">I Used AI as Both Product Capability and Build Accelerator</h2>
+
+      <p>This project is AI-native in two ways: Gemini powers the core product feature (multimodal analysis), and Google AI Studio accelerated the entire build process from concept to deployment.</p>
+
+      <div class="tool-tag-row">
+        <span class="tool-tag">Google AI Studio</span>
+        <span class="tool-tag">Gemini Multimodal</span>
+        <span class="tool-tag">@google/genai SDK</span>
+        <span class="tool-tag">React</span>
+        <span class="tool-tag">Vite</span>
+        <span class="tool-tag">Tailwind CSS</span>
+        <span class="tool-tag">Netlify</span>
+      </div>
+
+      <div class="cards-grid--2 cards-grid">
+        <div class="tool-card">
+          <div class="tool-card__name">Gemini Multimodal API</div>
+          <div class="tool-card__task">Analyzed uploaded images and generated structured JSON prompt objects with 6-field schema-constrained responses.</div>
+          <div class="tool-card__outcome">Made multimodal analysis accessible inside a lightweight product surface&mdash;no custom CV pipeline required.</div>
+          <div class="tool-card__split">AI: image understanding + structured generation &middot; Human: schema design, prompt tuning, quality validation</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card__name">Google AI Studio</div>
+          <div class="tool-card__task">Rapid prototyping of prompt instructions, response testing, and schema validation across diverse image types.</div>
+          <div class="tool-card__outcome">Reduced implementation cycle from concept to working MVP&mdash;enabled testing prompt-schema pairs before writing any frontend code.</div>
+          <div class="tool-card__split">AI: implementation acceleration &middot; Human: product framing, UX strategy, scope decisions</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────────────────── -->
+  <section class="section section--dark" id="s-cta" aria-labelledby="cta-title">
+    <div class="container" style="text-align:center; padding: var(--s-10) var(--s-3);">
+      <h2 id="cta-title" style="margin-bottom: var(--s-3);">Need someone who ships AI products, not just designs them?</h2>
+      <p style="max-width: 540px; margin: 0 auto var(--s-5); color: rgba(180,200,220,0.65);">I design and build AI-native tools end-to-end&mdash;from problem framing to live deployment. One person, full capability.</p>
+      <div style="display: flex; gap: var(--s-2); justify-content: center; flex-wrap: wrap;">
+        <a href="mailto:mailtotheroman@gmail.com" class="btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Start a conversation
+        </a>
+        <a href="https://roman.design" class="btn" style="border-color: rgba(140,165,200,0.20); color: rgba(160,180,200,0.55);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          See more work
+        </a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p class="footer__text">&copy; 2026 Roman Kryzhanovskyi &middot; Design Engineer</p>
+    </div>
+  </footer>
+
+  <!-- ── GSAP SCROLL ANIMATIONS ── -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
+
+    // Hero title scramble effect
+    var heroTitle = document.querySelector('.hero__title');
+    if (heroTitle) {
+      var finalHTML = heroTitle.innerHTML;
+      gsap.to(heroTitle, {
+        duration: 1.8,
+        scrambleText: {
+          text: heroTitle.textContent,
+          chars: '01{}[]<>/\\|:;=+-_?!@#$%^&*',
+          revealDelay: 0.4,
+          speed: 0.4
+        },
+        delay: 0.3,
+        ease: 'none',
+        onComplete: function() { heroTitle.innerHTML = finalHTML; }
+      });
+    }
+
+    // Fade-in sections
+    gsap.utils.toArray('.section').forEach(function(section) {
+      gsap.from(section.querySelectorAll('h2, p, .card, .insight-block, .callout--decision, .callout--why, .deliverables-list, .diagram-wrap, .cs-figure, .tool-card, .lesson-card, .result-card, .scope-card, .resp-card'), {
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        y: 30, opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out'
+      });
+    });
+
+    // Metrics strip counter
+    gsap.utils.toArray('.metric-value').forEach(function(el) {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        scale: 0.8, opacity: 0, duration: 0.5, ease: 'back.out(1.4)'
+      });
+    });
+
+    // Process step cards stagger
+    gsap.from('.process-step__card', {
+      scrollTrigger: { trigger: '.process-steps', start: 'top 75%', once: true },
+      y: 40, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out'
+    });
+
+    // Dot-nav active state on scroll
+    var dots = document.querySelectorAll('.nav-dot');
+    dots.forEach(function(dot) {
+      var sectionId = dot.getAttribute('data-section');
+      var targetSection = document.getElementById(sectionId);
+      if (!targetSection) return;
+      ScrollTrigger.create({
+        trigger: targetSection,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: function() { dots.forEach(function(d) { d.classList.remove('active'); }); dot.classList.add('active'); },
+        onEnterBack: function() { dots.forEach(function(d) { d.classList.remove('active'); }); dot.classList.add('active'); }
+      });
+    });
+  });
+  </script>
+
+</body>
+</html>

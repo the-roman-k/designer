@@ -1,0 +1,76 @@
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4-layer system architecture: Build, MCP Protocol, Miro API, Visual Output">
+  <title>Miro MCP Server — System Architecture</title>
+  <desc>Four-layer system model showing how Antigravity IDE connects through MCP Protocol to the Miro API to produce structured visual output</desc>
+
+  <!-- Background -->
+  <rect width="900" height="200" fill="#EAEAEA" rx="8"/>
+
+  <!-- Header -->
+  <text x="20" y="24" font-family="Space Mono, monospace" font-size="10" fill="#666666" letter-spacing="0.05em">SYSTEM ARCHITECTURE — 4-LAYER MODEL</text>
+
+  <!-- ─── Layer 1: BUILD (Antigravity) ─── -->
+  <rect x="20" y="36" width="185" height="130" rx="6" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+  <!-- Layer accent bar -->
+  <rect x="20" y="36" width="185" height="6" rx="3" fill="#2563EB"/>
+  <text x="30" y="62" font-family="Space Mono, monospace" font-size="9" fill="#2563EB" letter-spacing="0.04em">BUILD LAYER</text>
+  <text x="30" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">Antigravity</text>
+  <text x="30" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">MCP server</text>
+  <text x="30" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">implementation</text>
+  <text x="30" y="140" font-family="Inter, sans-serif" font-size="10" fill="#888888">+ Claude Code</text>
+  <text x="30" y="154" font-family="Inter, sans-serif" font-size="10" fill="#888888">validation</text>
+
+  <!-- Arrow 1→2 -->
+  <g>
+    <line x1="205" y1="101" x2="230" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+    <text x="207" y="94" font-family="Space Mono, monospace" font-size="8" fill="#888888">calls</text>
+  </g>
+
+  <!-- ─── Layer 2: MCP PROTOCOL ─── -->
+  <rect x="232" y="36" width="185" height="130" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <rect x="232" y="36" width="185" height="6" rx="3" fill="#7C3AED"/>
+  <text x="242" y="62" font-family="Space Mono, monospace" font-size="9" fill="#7C3AED" letter-spacing="0.04em">MCP LAYER</text>
+  <text x="242" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">MCP Protocol</text>
+  <text x="242" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">Tool routing +</text>
+  <text x="242" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">intent translation</text>
+  <text x="242" y="140" font-family="Inter, sans-serif" font-size="10" fill="#888888">Any LLM as the</text>
+  <text x="242" y="154" font-family="Inter, sans-serif" font-size="10" fill="#888888">reasoning layer</text>
+
+  <!-- Arrow 2→3 -->
+  <g>
+    <line x1="417" y1="101" x2="442" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+    <text x="419" y="94" font-family="Space Mono, monospace" font-size="8" fill="#888888">routes</text>
+  </g>
+
+  <!-- ─── Layer 3: MIRO API ─── -->
+  <rect x="444" y="36" width="185" height="130" rx="6" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+  <rect x="444" y="36" width="185" height="6" rx="3" fill="#D97706"/>
+  <text x="454" y="62" font-family="Space Mono, monospace" font-size="9" fill="#D97706" letter-spacing="0.04em">API LAYER</text>
+  <text x="454" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">Miro API</text>
+  <text x="454" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">Board operations +</text>
+  <text x="454" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">object management</text>
+  <text x="454" y="140" font-family="Inter, sans-serif" font-size="10" fill="#888888">Reliability layer +</text>
+  <text x="454" y="154" font-family="Inter, sans-serif" font-size="10" fill="#888888">fallback patterns</text>
+
+  <!-- Arrow 3→4 -->
+  <g>
+    <line x1="629" y1="101" x2="654" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+    <text x="631" y="94" font-family="Space Mono, monospace" font-size="8" fill="#888888">creates</text>
+  </g>
+
+  <!-- ─── Layer 4: VISUAL OUTPUT (Miro Board) ─── -->
+  <rect x="656" y="36" width="224" height="130" rx="6" fill="#050505" stroke="#050505" stroke-width="2"/>
+  <rect x="656" y="36" width="224" height="6" rx="3" fill="#CCFF00"/>
+  <text x="666" y="62" font-family="Space Mono, monospace" font-size="9" fill="#CCFF00" letter-spacing="0.04em">OUTPUT LAYER</text>
+  <text x="666" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Miro Board</text>
+  <text x="666" y="104" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">Structured visual</text>
+  <text x="666" y="118" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">artifacts — frames,</text>
+  <text x="666" y="136" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">diagrams, workshops</text>
+  <text x="666" y="154" font-family="Inter, sans-serif" font-size="10" fill="#CCFF00">Presentation-ready</text>
+
+  <!-- Arrow defs -->
+  <defs>
+    <marker id="arrowH" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#050505"/>
+    </marker>
+  </defs>
+</svg>

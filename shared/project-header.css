@@ -1,0 +1,99 @@
+/* ============================================================
+   PROJECT HEADER — Back / Next Project Navigation
+   Shared component for all project case-study pages
+   ============================================================ */
+
+.project-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8500;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(16px, 4vw, 48px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ── Dark theme (default) ── */
+.project-header--dark {
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.project-header--dark .project-header__back,
+.project-header--dark .project-header__next {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.project-header--dark .project-header__back:hover,
+.project-header--dark .project-header__next:hover {
+  color: #ffffff;
+}
+
+/* ── Light theme ── */
+.project-header--light {
+  background: rgba(240, 240, 238, 0.8);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.project-header--light .project-header__back,
+.project-header--light .project-header__next {
+  color: rgba(5, 5, 5, 0.55);
+}
+
+.project-header--light .project-header__back:hover,
+.project-header--light .project-header__next:hover {
+  color: #050505;
+}
+
+/* ── Links ── */
+.project-header__back,
+.project-header__next {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.project-header__back:focus-visible,
+.project-header__next:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ── Arrows ── */
+.project-header__arrow {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .project-header {
+    height: 44px;
+    font-size: 12px;
+    padding: 0 16px;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .project-header,
+  .project-header__back,
+  .project-header__next {
+    transition: none;
+  }
+}

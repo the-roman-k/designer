@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A0A0A">
+
+  <!-- Primary Meta Tags -->
+  <title>Nano Upscaler — AI Micro-Service for Asset Production | Roman Kryzhanovskyi</title>
+  <meta name="description"
+    content="I built a focused AI micro-service that turns low-quality source images into production-ready assets with explicit control over resolution and aspect ratio. Solo design-engineering from opportunity to deployment.">
+  <meta name="keywords"
+    content="Nano Upscaler, AI upscaling, image enhancement, micro-SaaS, Gemini, design engineering, workflow tool, asset production">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <meta name="copyright" content="&copy; 2026 Roman Kryzhanovskyi">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://roman.design/case-studies/upscaler">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/upscaler">
+  <meta property="og:title" content="Nano Upscaler — AI Micro-Service for Asset Production | Roman Kryzhanovskyi">
+  <meta property="og:description"
+    content="I built a focused AI micro-service that turns low-quality source images into production-ready assets with explicit control over resolution and format.">
+  <meta property="og:image" content="https://roman.design/case-studies/upscaler/assets/img/main-interface-filled.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"
+    content="Nano Upscaler application interface showing source image upload and enhanced output preview">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi — Portfolio">
+  <meta property="article:author" content="Roman Kryzhanovskyi">
+  <meta property="article:published_time" content="2026-03-16">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Nano Upscaler — AI Micro-Service for Asset Production | Roman Kryzhanovskyi">
+  <meta name="twitter:description"
+    content="AI-native micro-product: low-quality images to production-ready assets with full control over output.">
+  <meta name="twitter:image" content="https://roman.design/case-studies/upscaler/assets/img/main-interface-filled.png">
+  <meta name="twitter:image:alt" content="Nano Upscaler application interface">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Nano Upscaler — AI Micro-Service for Asset Production",
+    "description": "I built a focused AI micro-service that turns low-quality source images into production-ready assets with explicit control over resolution and aspect ratio.",
+    "image": "https://roman.design/case-studies/upscaler/assets/img/main-interface-filled.png",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi",
+      "url": "https://roman.design",
+      "jobTitle": "AI-First Design Engineer"
+    },
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "keywords": "Nano Upscaler, AI upscaling, image enhancement, micro-SaaS, Gemini, design engineering",
+    "url": "https://roman.design/case-studies/upscaler",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://roman.design/case-studies/upscaler" }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP 3.12 + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    /* ── DESIGN TOKENS (Dark Theme + Orange Accent) ── */
+    :root {
+      --bg-primary: #0A0A0A;
+      --bg-secondary: #111111;
+      --bg-card: #161616;
+      --bg-card-hover: #1C1C1C;
+      --bg-dark: #050505;
+
+      --accent: #FF6B00;
+      --accent-dim: rgba(255, 107, 0, 0.10);
+      --accent-lime: #CCFF00;
+      --accent-lime-dim: rgba(204, 255, 0, 0.08);
+
+      --text-primary: #F5F5F5;
+      --text-secondary: #D4D4D4;
+      --text-muted: #888888;
+
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --s-1: 8px;
+      --s-2: 16px;
+      --s-3: 24px;
+      --s-4: 32px;
+      --s-5: 40px;
+      --s-6: 48px;
+      --s-8: 64px;
+      --s-10: 80px;
+      --s-12: 96px;
+
+      --r-sm: 6px;
+      --r-md: 12px;
+      --r-lg: 20px;
+
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --dur: 220ms;
+    }
+
+    /* ── ANIMATED BORDER ── */
+    @property --border-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes rotateBorder {
+      to {
+        --border-angle: 360deg;
+      }
+    }
+
+    /* ── RESET ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: clip;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #FFFFFF;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--r-md);
+    }
+
+    a {
+      color: var(--text-primary);
+      text-decoration: underline;
+      transition: opacity var(--dur) var(--ease);
+    }
+
+    a:hover {
+      opacity: 0.7;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      z-index: 9999;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 0 0 var(--r-sm) 0;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      width: 80%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 var(--s-3);
+    }
+
+    .container--wide {
+      width: 90%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--s-3);
+    }
+
+    .section {
+      padding: var(--s-12) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section--elevated {
+      background: var(--bg-secondary);
+    }
+
+    .section--dark {
+      background: var(--bg-dark);
+      color: #FFFFFF;
+      border-bottom: none;
+    }
+
+    .section--dark p,
+    .section--dark h2,
+    .section--dark h3 {
+      color: #FFFFFF;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      line-height: 1.1;
+      font-weight: 900;
+      color: var(--text-primary);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-3);
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-3);
+    }
+
+    h3 {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--s-2);
+      font-weight: 700;
+    }
+
+    h1 em,
+    h2 em {
+      font-style: normal;
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 0 .12em;
+    }
+
+    p {
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: var(--s-2);
+      font-size: 1.0625rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: var(--s-3);
+    }
+
+    .section-label::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--text-muted);
+      display: block;
+    }
+
+    /* ── DOT NAV ── */
+    .dot-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      margin: 0;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), overflow 0s 0.3s;
+      position: relative;
+      -webkit-appearance: none;
+      appearance: none;
+      font-size: 0;
+      line-height: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .nav-dot:hover {
+      overflow: visible;
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), overflow 0s;
+    }
+
+    .nav-dot.active,
+    .nav-dot:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .nav-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+    }
+
+    .nav-dot:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 1100px) {
+      .dot-nav {
+        display: none;
+      }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--s-10) 0 var(--s-8);
+    }
+
+    .hero__eyebrow {
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--s-3);
+    }
+
+    .hero__title {
+      margin-bottom: var(--s-2);
+    }
+
+    .hero__hook {
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: var(--s-3);
+      line-height: 1.4;
+    }
+
+    .hero__lead {
+      max-width: 680px;
+      font-size: 1.125rem;
+      margin-bottom: var(--s-5);
+    }
+
+    .hero__meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-3);
+      margin-bottom: var(--s-6);
+    }
+
+    .hero__meta-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero__meta-label {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .hero__meta-value {
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--text-primary);
+    }
+
+    .hero__img {
+      margin-bottom: 0;
+      border-radius: var(--r-lg);
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .hero__meta {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ── METRICS STRIP ── */
+    .metrics-strip {
+      padding: var(--s-6) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metrics-strip__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-3);
+    }
+
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: var(--s-3);
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1;
+      color: var(--text-primary);
+      display: block;
+    }
+
+    .metric-value--highlight {
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 0 .15em;
+      border-radius: 4px;
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: var(--s-1);
+      display: block;
+    }
+
+    @media (max-width: 640px) {
+      .metrics-strip__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ── TWO COLUMN ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 55% 42%;
+      gap: var(--s-6);
+      align-items: start;
+    }
+
+    .two-col--reverse {
+      grid-template-columns: 42% 55%;
+    }
+
+    .two-col--reverse .two-col__media {
+      order: -1;
+    }
+
+    @media (max-width: 860px) {
+
+      .two-col,
+      .two-col--reverse {
+        grid-template-columns: 1fr;
+      }
+
+      .two-col--reverse .two-col__media {
+        order: 0;
+      }
+    }
+
+    /* ── TAG ROW ── */
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-2);
+      margin-top: var(--s-6);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--s-4);
+      margin-top: var(--s-4);
+      margin-bottom: var(--s-6);
+    }
+
+    .cards-grid--2 {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--r-md);
+      padding: var(--s-4);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .card__icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: var(--s-2);
+      color: var(--accent);
+    }
+
+    .card__title {
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--text-primary);
+      margin-bottom: var(--s-1);
+    }
+
+    .card__body {
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ── RESPONSIBILITY CARDS ── */
+    .resp-card {
+      background: var(--bg-secondary);
+      border-radius: var(--r-sm);
+      padding: var(--s-2) var(--s-3);
+      border-left: 3px solid var(--accent);
+    }
+
+    .resp-card__title {
+      font-weight: 600;
+      font-size: .9rem;
+      color: var(--text-primary);
+    }
+
+    /* ── INSIGHT / CALLOUT BLOCKS ── */
+    .insight-block {
+      background: var(--bg-card);
+      border-left: 3px solid var(--text-primary);
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
+      padding: var(--s-3) var(--s-4);
+      margin-top: var(--s-4);
+    }
+
+    .insight-block__label {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--s-1);
+    }
+
+    .insight-block__text {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.55;
+    }
+
+    .callout--decision {
+      background: var(--accent);
+      border-radius: var(--r-sm);
+      padding: var(--s-3) var(--s-4);
+      margin-top: var(--s-4);
+    }
+
+    .callout--decision .callout__label {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #000;
+      margin-bottom: var(--s-1);
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .callout--decision .callout__text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #000;
+      line-height: 1.55;
+    }
+
+    .callout--why {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: var(--s-3) var(--s-4);
+      margin-top: var(--s-4);
+    }
+
+    .callout--why .callout__label {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--s-1);
+    }
+
+    .callout--why .callout__text {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ── DELIVERABLES LIST ── */
+    .deliverables-list {
+      list-style: none;
+      margin-top: var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .deliverables-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: .95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .deliverables-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .deliverables-list__label {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: var(--s-4);
+      margin-bottom: var(--s-1);
+      display: block;
+    }
+
+    /* ── FIGURE / IMAGES ── */
+    .cs-figure {
+      margin: var(--s-5) 0;
+    }
+
+    .cs-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: var(--s-1);
+    }
+
+    .cs-figure img {
+      border-radius: var(--r-lg);
+      width: 100%;
+    }
+
+    /* ── DIAGRAM WRAP ── */
+    .diagram-wrap {
+      overflow-x: auto;
+      margin: var(--s-6) 0;
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .diagram-wrap svg {
+      min-width: 600px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .diagram-wrap figcaption {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: var(--s-2);
+      text-align: center;
+    }
+
+    /* ── PROCESS STEPS ── */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--s-3);
+      margin-bottom: var(--s-6);
+    }
+
+    .process-step__card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-md);
+      padding: var(--s-3);
+    }
+
+    .process-step__number {
+      font-family: var(--font-mono);
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--s-1);
+      display: block;
+    }
+
+    .process-step__icon {
+      width: 20px;
+      height: 20px;
+      margin-bottom: var(--s-1);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .process-step__title {
+      font-weight: 700;
+      font-size: .9rem;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .process-step__desc {
+      font-size: .82rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.4;
+    }
+
+    /* ── RESULTS ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-3);
+      margin-bottom: var(--s-6);
+    }
+
+    .result-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      padding: var(--s-5) var(--s-3);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .result-number {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: var(--s-1);
+    }
+
+    .result-number--highlight {
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 0 .1em;
+      border-radius: 4px;
+    }
+
+    .result-label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .result-sub {
+      font-size: .8rem;
+      color: var(--text-muted);
+      display: block;
+      line-height: 1.4;
+      font-family: var(--font-mono);
+    }
+
+    .result-card--accent {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .result-card--accent .result-number,
+    .result-card--accent .result-label,
+    .result-card--accent .result-sub {
+      color: #000;
+    }
+
+    @media (max-width: 860px) {
+      .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── LESSONS ── */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--s-4);
+    }
+
+    .lesson-card {
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      padding: var(--s-5);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .lesson-card__num {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--s-2);
+      display: block;
+    }
+
+    .lesson-card__title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: var(--s-2);
+      line-height: 1.3;
+    }
+
+    .lesson-card__body {
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── TOOL CARDS (AI Layer) ── */
+    .tool-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-1);
+      margin-bottom: var(--s-5);
+    }
+
+    .tool-tag {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--border-strong);
+    }
+
+    .tool-card {
+      background: var(--bg-card);
+      border-radius: var(--r-md);
+      padding: var(--s-4);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .tool-card__name {
+      font-weight: 900;
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: var(--s-1);
+    }
+
+    .tool-card__task {
+      font-size: .88rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--s-1);
+      line-height: 1.5;
+    }
+
+    .tool-card__outcome {
+      font-size: .88rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: var(--s-1);
+      line-height: 1.5;
+    }
+
+    .tool-card__split {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .04em;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: var(--s-1);
+      margin-top: var(--s-2);
+    }
+
+    /* ── CTA / FOOTER ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      opacity: 1;
+    }
+
+    footer {
+      padding: var(--s-4) 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg-primary);
+    }
+
+    .footer__text {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ── SCOPE SECTION ── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4);
+      margin-top: var(--s-4);
+    }
+
+    .scope-card {
+      background: var(--bg-card);
+      border-radius: var(--r-md);
+      padding: var(--s-4);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+    }
+
+    .scope-card--next {
+      border-left: 3px solid var(--accent);
+    }
+
+    .scope-card--limit {
+      border-left: 3px solid var(--text-muted);
+    }
+
+    .scope-card__title {
+      font-weight: 700;
+      font-size: .9rem;
+      margin-bottom: var(--s-2);
+    }
+
+    @media (max-width: 640px) {
+      .scope-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── CARD HOVER — animated gradient border ── */
+    .card,
+    .result-card,
+    .lesson-card,
+    .scope-card,
+    .tool-card,
+    .process-step__card {
+      position: relative;
+      border: 1px solid transparent;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s ease;
+    }
+
+    .card::before,
+    .result-card::before,
+    .lesson-card::before,
+    .scope-card::before,
+    .tool-card::before,
+    .process-step__card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(var(--border), var(--border));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      transition: background 0.3s ease;
+    }
+
+    .card:hover,
+    .result-card:hover,
+    .lesson-card:hover,
+    .scope-card:hover,
+    .tool-card:hover,
+    .process-step__card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(255, 107, 0, 0.1), 0 24px 64px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before,
+    .result-card:hover::before,
+    .lesson-card:hover::before,
+    .scope-card:hover::before,
+    .tool-card:hover::before,
+    .process-step__card:hover::before {
+      background: conic-gradient(from var(--border-angle), transparent 25%, var(--accent) 50%, transparent 75%);
+      animation: rotateBorder 3s linear infinite;
+    }
+
+    /* Keep scope-card left accent on hover */
+    .scope-card--next:hover {
+      border-left: 3px solid var(--accent);
+    }
+
+    .scope-card--limit:hover {
+      border-left: 3px solid var(--text-muted);
+    }
+  </style>
+  <script src="../../shared/project-header.js" defer></script>
+</head>
+
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#s-hero">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Page sections">
+    <button class="nav-dot active" data-section="s-hero" data-label="Hero" aria-label="Navigate to Hero"
+      onclick="document.getElementById('s-hero').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-challenge" data-label="Challenge" aria-label="Navigate to Challenge"
+      onclick="document.getElementById('s-challenge').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d1" data-label="Workflow Audit" aria-label="Navigate to Workflow Audit"
+      onclick="document.getElementById('s-d1').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d2" data-label="Product Scope" aria-label="Navigate to Product Scope"
+      onclick="document.getElementById('s-d2').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d3" data-label="Interface" aria-label="Navigate to Interface Design"
+      onclick="document.getElementById('s-d3').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d4" data-label="AI Integration" aria-label="Navigate to AI Integration"
+      onclick="document.getElementById('s-d4').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-process" data-label="Process" aria-label="Navigate to Process"
+      onclick="document.getElementById('s-process').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-results" data-label="Results" aria-label="Navigate to Results"
+      onclick="document.getElementById('s-results').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-lessons" data-label="Lessons" aria-label="Navigate to Lessons"
+      onclick="document.getElementById('s-lessons').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-ai" data-label="AI Layer" aria-label="Navigate to AI Layer"
+      onclick="document.getElementById('s-ai').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-cta" data-label="CTA" aria-label="Navigate to CTA"
+      onclick="document.getElementById('s-cta').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────── -->
+    <section class="section hero" id="s-hero" aria-labelledby="hero-title">
+      <div class="container">
+        <p class="hero__eyebrow">AI Micro-Service &middot; Workflow Compression &middot; Solo Build</p>
+        <h1 class="hero__title" id="hero-title"><span class="hero__title-nano" style="display:inline-block;">Nano</span>
+          <span class="hero__title-zoom" style="display:inline-block;cursor:pointer;">Upscaler</span></h1>
+        <p class="hero__hook">I did not design another image editor. I designed a faster decision system for visual
+          asset prep.</p>
+        <p class="hero__lead">A focused AI micro-service that turns low-quality source images into production-ready
+          assets with explicit control over resolution and aspect ratio. From workflow bottleneck to live product in one
+          sprint.</p>
+        <div class="hero__meta" role="list" aria-label="Project details">
+          <div class="hero__meta-cell" role="listitem">
+            <span class="hero__meta-label">Role</span>
+            <span class="hero__meta-value">Product Designer + Design Engineer</span>
+          </div>
+          <div class="hero__meta-cell" role="listitem">
+            <span class="hero__meta-label">Stack</span>
+            <span class="hero__meta-value">Google AI Studio + Gemini</span>
+          </div>
+          <div class="hero__meta-cell" role="listitem">
+            <span class="hero__meta-label">Format</span>
+            <span class="hero__meta-value">Solo &middot; Founder-mode</span>
+          </div>
+          <div class="hero__meta-cell" role="listitem">
+            <span class="hero__meta-label">Type</span>
+            <span class="hero__meta-value">AI Micro-SaaS</span>
+          </div>
+        </div>
+      </div>
+      <div class="container--wide" style="margin-top:var(--s-6)">
+        <figure class="cs-figure">
+          <img src="./assets/img/mac-preview.png"
+            alt="Nano Upscaler application running on a Mac, showing source image upload with resolution and orientation controls on the left, and enhanced output preview on the right"
+            width="1200" height="630" loading="eager"
+            srcset="./assets/img/mac-preview.png 1x, ./assets/img/mac-preview@2x.png 2x">
+          <figcaption>Nano Upscaler &mdash; upload, configure, enhance, download</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ── METRICS STRIP ── -->
+    <section class="metrics-strip" aria-label="Key metrics">
+      <div class="container--wide">
+        <div class="metrics-strip__grid">
+          <div class="metric-cell">
+            <span class="metric-value"><span class="metric-value--highlight">1</span></span>
+            <span class="metric-label">Screen Workflow</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-value">3</span>
+            <span class="metric-label">Output Resolutions</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-value">5</span>
+            <span class="metric-label">Aspect Presets</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-value">3</span>
+            <span class="metric-label">Input Methods</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CHALLENGE ─────────────────────────────────────────── -->
+    <section class="section" id="s-challenge" aria-labelledby="challenge-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">The Challenge</div>
+        <h2 id="challenge-title">I Found the Same Asset-Rescue Loop Hiding in Every Creative Workflow</h2>
+
+        <p>Low-quality source images quietly break a surprising amount of digital work. A presentation looks weak, a
+          landing page feels cheap, a thumbnail underperforms&mdash;and the team loses time jumping between tools to
+          make one asset usable.</p>
+
+        <p>The pain was not lack of creative tools. The pain was a fragmented multi-tool recovery workflow that repeated
+          across every project&mdash;screenshots, old files, compressed sources, client scraps, chat exports.</p>
+
+        <div class="insight-block" style="margin-top: var(--s-5);">
+          <div class="insight-block__label">Core Scenario</div>
+          <div class="insight-block__text">A content manager needs a hero image for a campaign landing page. The only
+            source is a 400px screenshot from a Slack thread. She opens Photoshop, upscales manually, switches to an
+            online enhancer, re-exports, adjusts the crop&mdash;30 minutes of rescue work for one asset.</div>
+        </div>
+
+        <div class="cards-grid" style="margin-top: var(--s-5);">
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+                <line x1="7" y1="2" x2="7" y2="22" />
+                <line x1="17" y1="2" x2="17" y2="22" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <line x1="2" y1="7" x2="7" y2="7" />
+                <line x1="2" y1="17" x2="7" y2="17" />
+                <line x1="17" y1="17" x2="22" y2="17" />
+                <line x1="17" y1="7" x2="22" y2="7" />
+              </svg>
+            </div>
+            <div class="card__title">Inconsistent Sources</div>
+            <div class="card__body">Teams started with images too small, blurry, or compressed for the actual usage
+              context&mdash;from screenshots to old files to chat exports.</div>
+          </div>
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 3 21 3 21 8" />
+                <line x1="4" y1="20" x2="21" y2="3" />
+                <polyline points="21 16 21 21 16 21" />
+                <line x1="15" y1="15" x2="21" y2="21" />
+                <line x1="4" y1="4" x2="9" y2="9" />
+              </svg>
+            </div>
+            <div class="card__title">Fragmented Workflow</div>
+            <div class="card__body">Upscaling, reframing, exporting, and quality-checking happened across multiple
+              disconnected tools every single time.</div>
+          </div>
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div class="card__title">Black-Box AI</div>
+            <div class="card__body">Most AI tools generated &ldquo;something better&rdquo; but gave weak control over
+              the exact output needed for production&mdash;wrong size, wrong ratio, wrong format.</div>
+          </div>
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+            <div class="card__title">Cost-to-Value Gap</div>
+            <div class="card__body">For narrow recurring tasks, heavy creative suites created too much interface and too
+              little speed. The subscription cost rarely matched the job.</div>
+          </div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">Product Designer</span>
+          <span class="tag">UX Strategist</span>
+          <span class="tag">Design Engineer</span>
+          <span class="tag">AI Product Design</span>
+          <span class="tag">Solo &middot; End-to-End</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DELIVERABLE 1: WORKFLOW AUDIT ─────────────────────── -->
+    <section class="section section--elevated" id="s-d1" aria-labelledby="d1-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Deliverable 01</div>
+        <h2 id="d1-title">I Mapped the Asset-Recovery Pipeline Nobody Had Productized</h2>
+
+        <p>I ran a workflow audit across my own creative production tasks: presentations, landing pages, social media
+          assets, video thumbnails, ad campaigns. Every workflow followed the same pattern&mdash;and the bottleneck was
+          always the image rescue step.</p>
+
+        <div class="diagram-wrap" role="img"
+          aria-label="Workflow diagram showing the fragmented asset recovery pipeline">
+          <svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#888888" />
+              </marker>
+            </defs>
+            <rect x="5" y="20" width="140" height="60" rx="8" fill="rgba(255,255,255,0.06)"
+              stroke="rgba(255,255,255,0.10)" stroke-width="1" />
+            <text x="75" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700"
+              fill="#F5F5F5">Find Source</text>
+            <text x="75" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#888888">Dig
+              through files</text>
+
+            <line x1="150" y1="50" x2="180" y2="50" stroke="#888888" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <rect x="185" y="20" width="140" height="60" rx="8" fill="rgba(255,255,255,0.06)"
+              stroke="rgba(255,255,255,0.10)" stroke-width="1" />
+            <text x="255" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700"
+              fill="#F5F5F5">Assess Quality</text>
+            <text x="255" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+              fill="#888888">Too small? Blurry?</text>
+
+            <line x1="330" y1="50" x2="360" y2="50" stroke="#888888" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <rect x="365" y="20" width="160" height="60" rx="8" fill="#FF6B00" stroke="rgba(255,107,0,0.3)"
+              stroke-width="1.5" />
+            <text x="445" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900"
+              fill="#FFFFFF">Rescue &amp; Upscale</text>
+            <text x="445" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+              fill="rgba(255,255,255,0.8)">BOTTLENECK</text>
+
+            <line x1="530" y1="50" x2="560" y2="50" stroke="#888888" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <rect x="565" y="20" width="140" height="60" rx="8" fill="rgba(255,255,255,0.06)"
+              stroke="rgba(255,255,255,0.10)" stroke-width="1" />
+            <text x="635" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700"
+              fill="#F5F5F5">Reframe &amp; Crop</text>
+            <text x="635" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+              fill="#888888">Fit target format</text>
+
+            <line x1="710" y1="50" x2="740" y2="50" stroke="#888888" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <rect x="745" y="20" width="140" height="60" rx="8" fill="rgba(255,255,255,0.06)"
+              stroke="rgba(255,255,255,0.10)" stroke-width="1" />
+            <text x="815" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700"
+              fill="#F5F5F5">Use in Project</text>
+            <text x="815" y="62" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+              fill="#888888">Design &middot; Publish</text>
+          </svg>
+          <figcaption>Asset recovery pipeline &mdash; Steps 3-4 were the repeated manual bottleneck I compressed into
+            one action</figcaption>
+        </div>
+
+        <p>Discovery confirmed: users needed explicit output control (not magic), the task was short enough for a single
+          screen, and combining upscale + reframe into one action would eliminate the multi-tool shuffle entirely.</p>
+
+        <span class="deliverables-list__label">Deliverables</span>
+        <ul class="deliverables-list">
+          <li>Workflow audit across 5 creative production contexts</li>
+          <li>Jobs-to-be-done definition: &ldquo;Turn weak source image into usable asset at the right size, right
+            now&rdquo;</li>
+          <li>Competitive review of online upscalers, AI enhancers, and heavyweight editors</li>
+          <li>Gap analysis: &ldquo;powerful but heavy&rdquo; vs. &ldquo;fast but shallow&rdquo;</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── DELIVERABLE 2: PRODUCT SCOPE ─────────────────────── -->
+    <section class="section" id="s-d2" aria-labelledby="d2-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Deliverable 02</div>
+        <h2 id="d2-title">I Defined the MVP by What I Deliberately Excluded</h2>
+
+        <p>The product could easily become another overloaded editing tool. I rejected that path and narrowed the scope
+          to three user decisions: source image, target resolution, target orientation.</p>
+
+        <div class="callout--decision" style="margin-top: var(--s-4);">
+          <div class="callout__label">Key Decision</div>
+          <div class="callout__text">I rejected a multi-step editor, batch mode, visual comparison tools, and
+            configurable enhancement settings from v1. The value came from workflow compression, not feature breadth.
+          </div>
+        </div>
+
+        <div class="cards-grid" style="margin-top: var(--s-5);">
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 14 10 14 10 20" />
+                <polyline points="20 10 14 10 14 4" />
+                <line x1="14" y1="10" x2="21" y2="3" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            </div>
+            <div class="card__title">3 Resolutions</div>
+            <div class="card__body">1K, 2K, 4K&mdash;directly tied to common production usage contexts from social media
+              to print.</div>
+          </div>
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+            </div>
+            <div class="card__title">5 Orientations</div>
+            <div class="card__body">Square, Landscape (16:9), Portrait (9:16), Wide (4:3), Tall (3:4)&mdash;covering
+              every major media format.</div>
+          </div>
+          <div class="card">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+            </div>
+            <div class="card__title">3 Input Methods</div>
+            <div class="card__body">Click-to-upload, drag-and-drop, clipboard paste&mdash;three zero-friction paths to
+              get the source image in.</div>
+          </div>
+        </div>
+
+        <div class="callout--why" style="margin-top: var(--s-4);">
+          <div class="callout__label">Why Narrow Wins</div>
+          <div class="callout__text">A tool that does one job fast is more valuable than a platform that does five jobs
+            slowly. The restraint is the strategy&mdash;it keeps cognitive load near zero and positions the product as a
+            repeatable pattern for other workflow bottlenecks.</div>
+        </div>
+
+        <span class="deliverables-list__label">Deliverables</span>
+        <ul class="deliverables-list">
+          <li>MVP scope definition with explicit exclusion rationale</li>
+          <li>Three-decision interaction model: source, resolution, orientation</li>
+          <li>JTBD: &ldquo;When I have a low-quality image and need it usable now, help me turn it into a
+            production-ready asset with control over the final format&rdquo;</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── DELIVERABLE 3: INTERFACE DESIGN ─────────────────── -->
+    <section class="section section--elevated" id="s-d3" aria-labelledby="d3-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Deliverable 03</div>
+        <h2 id="d3-title">I Built the Interface Around Three Explicit Decisions, Not Hidden Settings</h2>
+
+        <div class="two-col">
+          <div class="two-col__text">
+            <p>I designed a single-screen split workspace: control panel on the left, output preview on the right. Every
+              important choice is visible, every stage has a clear state.</p>
+
+            <p>The dark interface keeps attention on the imagery, not the chrome. Control blocks are styled as distinct
+              decision groups&mdash;numbered steps that guide without explaining.</p>
+
+            <div class="callout--decision" style="margin-top: var(--s-4);">
+              <div class="callout__label">Trade-off</div>
+              <div class="callout__text">I chose a compact utility-tool aesthetic over a spacious editorial layout. The
+                product is a work tool, not a showcase&mdash;density signals professionalism for the target users.</div>
+            </div>
+
+            <span class="deliverables-list__label">Deliverables</span>
+            <ul class="deliverables-list">
+              <li>Single-screen split layout with explicit 3-step flow</li>
+              <li>Dark UI with orange accent for active states and CTA</li>
+              <li>Loading state with progress indicator and model attribution</li>
+              <li>Full-screen output preview with one-click download</li>
+              <li>API key gate and switch path for cost transparency</li>
+            </ul>
+          </div>
+          <div class="two-col__media">
+            <figure class="cs-figure">
+              <img src="./assets/img/main-interface-empty.png"
+                alt="Nano Upscaler empty state with upload area, resolution buttons, orientation options, and Ready to Upscale placeholder"
+                width="600" height="400" loading="lazy"
+                srcset="./assets/img/main-interface-empty.png 1x, ./assets/img/main-interface-empty@2x.png 2x">
+              <figcaption>Empty state &mdash; numbered steps guide the user through three decisions</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DELIVERABLE 4: AI INTEGRATION ──────────────── -->
+    <section class="section" id="s-d4" aria-labelledby="d4-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Deliverable 04</div>
+        <h2 id="d4-title">I Designed the AI Layer So Users Control the Output, Not the Model</h2>
+
+        <div class="two-col two-col--reverse">
+          <div class="two-col__text">
+            <p>Most AI upscaling tools hide everything behind a single &ldquo;enhance&rdquo; button. I took the opposite
+              approach&mdash;exposing production-relevant controls while hiding model complexity.</p>
+
+            <p>The user chooses resolution and aspect ratio. The system translates those choices into the right Gemini
+              API parameters, handles the generation, and returns a result that fits the downstream use case exactly.
+            </p>
+
+            <div class="diagram-wrap" role="img" aria-label="Architecture diagram showing the product layers"
+              style="margin-top: var(--s-4);">
+              <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- UI Layer -->
+                <rect x="20" y="10" width="760" height="50" rx="10" fill="#2563EB" opacity="0.15" />
+                <text x="400" y="30" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+                  font-weight="700" fill="#60A5FA">UI Layer</text>
+                <text x="400" y="46" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  fill="#D4D4D4">Upload &middot; Resolution Selector &middot; Orientation Picker &middot; Output
+                  Preview</text>
+
+                <!-- Control Layer -->
+                <rect x="20" y="75" width="760" height="50" rx="10" fill="#FF6B00" opacity="0.15" />
+                <text x="400" y="95" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+                  font-weight="700" fill="#FF6B00">Control Layer</text>
+                <text x="400" y="111" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  fill="#D4D4D4">Parameter Translation &middot; API Key Management &middot; Error Recovery</text>
+
+                <!-- AI Layer -->
+                <rect x="20" y="140" width="760" height="50" rx="10" fill="#059669" opacity="0.15" />
+                <text x="400" y="160" text-anchor="middle" font-family="Space Mono,monospace" font-size="9"
+                  font-weight="700" fill="#34D399">AI Model</text>
+                <text x="400" y="176" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  fill="#D4D4D4">Gemini Image Generation &middot; Resolution Upscaling &middot; Aspect Reframing</text>
+
+                <!-- Arrows -->
+                <line x1="400" y1="62" x2="400" y2="73" stroke="#888888" stroke-width="1.5" />
+                <polygon points="396,73 404,73 400,78" fill="#888888" />
+                <line x1="400" y1="127" x2="400" y2="138" stroke="#888888" stroke-width="1.5" />
+                <polygon points="396,138 404,138 400,143" fill="#888888" />
+              </svg>
+              <figcaption>Product architecture &mdash; user controls output parameters, system handles model complexity
+              </figcaption>
+            </div>
+
+            <span class="deliverables-list__label">Deliverables</span>
+            <ul class="deliverables-list">
+              <li>Gemini API integration with parameter mapping from user selections</li>
+              <li>Visible processing state with model attribution (&ldquo;Nano Banana 2 is processing&rdquo;)</li>
+              <li>API key management UI with switch path for cost awareness</li>
+              <li>Error handling for model failures, rate limits, and invalid inputs</li>
+            </ul>
+          </div>
+          <div class="two-col__media">
+            <figure class="cs-figure">
+              <img src="./assets/img/main-interface-filled.png"
+                alt="Nano Upscaler with a completed upscale showing the source image on the left and enhanced high-resolution output on the right with download button"
+                width="600" height="400" loading="lazy"
+                srcset="./assets/img/main-interface-filled.png 1x, ./assets/img/main-interface-filled@2x.png 2x">
+              <figcaption>Completed upscale &mdash; source thumbnail on left, production-ready output on right
+              </figcaption>
+            </figure>
+            <figure class="cs-figure" style="margin-top: var(--s-3);">
+              <img src="./assets/img/upscaling-progress.png"
+                alt="Upscaling in progress with circular progress indicator and Enhancing Pixels message" width="600"
+                height="300" loading="lazy"
+                srcset="./assets/img/upscaling-progress.png 1x, ./assets/img/upscaling-progress@2x.png 2x">
+              <figcaption>Processing state &mdash; intentional loading with model name visible</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PROCESS STEPS ───────────────────────────────────── -->
+    <section class="section section--dark" id="s-process" aria-labelledby="process-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Process</div>
+        <h2 id="process-title">From Workflow Pain to Shipped Product in One Sprint</h2>
+
+        <div class="process-steps">
+          <div class="process-step__card">
+            <span class="process-step__number">01</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+            <div class="process-step__title">Bottleneck Discovery</div>
+            <div class="process-step__desc">Identified the repeated image-rescue step across my own creative production
+              workflows.</div>
+          </div>
+          <div class="process-step__card">
+            <span class="process-step__number">02</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+            <div class="process-step__title">Competitive Audit</div>
+            <div class="process-step__desc">Reviewed editors, AI enhancers, and online upscalers to find the gap between
+              heavy and shallow.</div>
+          </div>
+          <div class="process-step__card">
+            <span class="process-step__number">03</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            </div>
+            <div class="process-step__title">Scope Definition</div>
+            <div class="process-step__desc">Narrowed the MVP to three user decisions: source, resolution, orientation.
+            </div>
+          </div>
+          <div class="process-step__card">
+            <span class="process-step__number">04</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="9" y1="21" x2="9" y2="9" />
+              </svg>
+            </div>
+            <div class="process-step__title">Interaction Design</div>
+            <div class="process-step__desc">Single-screen split layout with explicit numbered decision groups and large
+              output preview.</div>
+          </div>
+          <div class="process-step__card">
+            <span class="process-step__number">05</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div class="process-step__title">AI Integration</div>
+            <div class="process-step__desc">Connected Gemini image model with parameter mapping from user controls to
+              API requests.</div>
+          </div>
+          <div class="process-step__card">
+            <span class="process-step__number">06</span>
+            <div class="process-step__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
+            <div class="process-step__title">Ship + Validate</div>
+            <div class="process-step__desc">Built in Google AI Studio, validated with real creative tasks across 5
+              production contexts.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RESULTS ─────────────────────────────────────────── -->
+    <section class="section" id="s-results" aria-labelledby="results-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Results</div>
+        <h2 id="results-title">I Compressed a Multi-Tool Rescue Workflow Into One Focused Action</h2>
+
+        <div class="results-grid">
+          <div class="result-card result-card--accent">
+            <span class="result-number">1</span>
+            <span class="result-label">Screen Workflow</span>
+            <span class="result-sub">vs. 3-4 tools previously</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number">3</span>
+            <span class="result-label">Output Resolutions</span>
+            <span class="result-sub">1K &middot; 2K &middot; 4K</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number">5</span>
+            <span class="result-label">Aspect Presets</span>
+            <span class="result-sub">Every major media format</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number">3</span>
+            <span class="result-label">Input Methods</span>
+            <span class="result-sub">Upload &middot; Drag &middot; Paste</span>
+          </div>
+        </div>
+
+        <p>The product replaced a fragmented multi-tool workflow with a single focused action. Users go from weak source
+          image to production-ready asset in seconds&mdash;with full control over the output format instead of trusting
+          a black box.</p>
+
+        <div class="insight-block">
+          <div class="insight-block__label">What This Unlocked</div>
+          <div class="insight-block__text">Faster asset readiness for design, content, video, and advertising workflows.
+            A reusable product pattern proving that focused AI micro-services can replace expensive software
+            subscriptions for narrow recurring tasks.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── LESSONS ─────────────────────────────────────────── -->
+    <section class="section section--elevated" id="s-lessons" aria-labelledby="lessons-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">Lessons</div>
+        <h2 id="lessons-title">What This Project Taught Me About AI Product Design</h2>
+
+        <div class="lessons-grid">
+          <div class="lesson-card">
+            <span class="lesson-card__num">01</span>
+            <div class="lesson-card__title">The product did not need more intelligence&mdash;it needed stronger
+              boundaries</div>
+            <div class="lesson-card__body">The more clearly I defined the job, the more valuable the AI became.
+              Constraint was the design tool, not the model capability.</div>
+          </div>
+          <div class="lesson-card">
+            <span class="lesson-card__num">02</span>
+            <div class="lesson-card__title">Trust in AI output increases when the user controls the input constraints
+            </div>
+            <div class="lesson-card__body">Exposing resolution and aspect ratio as explicit choices transformed the
+              experience from &ldquo;hope the AI guesses right&rdquo; to &ldquo;I told it exactly what I need.&rdquo;
+            </div>
+          </div>
+          <div class="lesson-card">
+            <span class="lesson-card__num">03</span>
+            <div class="lesson-card__title">A good micro-SaaS wins by removing interface, not adding capability</div>
+            <div class="lesson-card__body">Every feature I excluded made the product faster and more legible. The
+              restraint reads as senior product judgment&mdash;not as a limitation.</div>
+          </div>
+        </div>
+
+        <div class="scope-grid" style="margin-top: var(--s-6);">
+          <div class="scope-card scope-card--next">
+            <div class="scope-card__title">What I'd Ship Next</div>
+            <p class="card__body">Before/after comparison slider for quality validation. Batch mode for studio workflows
+              processing multiple assets.</p>
+            <p class="card__body">Preset memory by use case so teams can save their common output configurations.</p>
+          </div>
+          <div class="scope-card scope-card--limit">
+            <div class="scope-card__title">Current Limitations</div>
+            <p class="card__body">Single-image processing only&mdash;no batch mode yet. No output history or versioning.
+            </p>
+            <p class="card__body">Export limited to image format&mdash;YAML/JSON metadata export planned for asset
+              management integration.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AI LAYER ────────────────────────────────────────── -->
+    <section class="section" id="s-ai" aria-labelledby="ai-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">AI Layer</div>
+        <h2 id="ai-title">I Used AI as Workflow Infrastructure, Not as Visual Hype</h2>
+
+        <p>This project is AI-native in two ways: Gemini powers the core product feature (image upscaling and
+          reframing), and Google AI Studio accelerated the entire build from concept to working product.</p>
+
+        <div class="tool-tag-row">
+          <span class="tool-tag">Google AI Studio</span>
+          <span class="tool-tag">Gemini Image Model</span>
+          <span class="tool-tag">Gemini API</span>
+          <span class="tool-tag">API Key Management</span>
+        </div>
+
+        <div class="cards-grid--2 cards-grid">
+          <div class="tool-card">
+            <div class="tool-card__name">Gemini Image Generation API</div>
+            <div class="tool-card__task">Powered the core upscaling and reframing capability&mdash;taking low-quality
+              source images and generating enhanced outputs at user-specified resolution and aspect ratio.</div>
+            <div class="tool-card__outcome">Made production-quality image enhancement accessible inside a lightweight
+              product surface without a custom ML pipeline.</div>
+            <div class="tool-card__split">AI: image enhancement + aspect reframing &middot; Human: product framing, UX
+              strategy, parameter design, quality validation</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card__name">Google AI Studio</div>
+            <div class="tool-card__task">Rapid product-building environment for prototyping the UI, testing model
+              interactions, and iterating on the generation pipeline.</div>
+            <div class="tool-card__outcome">Shortened the distance from product idea to functional shipped
+              tool&mdash;enabling a solo build sprint without a full engineering pipeline.</div>
+            <div class="tool-card__split">AI: implementation acceleration &middot; Human: product definition, scope
+              decisions, interaction design, commercial framing</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA ─────────────────────────────────────────────── -->
+    <section class="section section--dark" id="s-cta" aria-labelledby="cta-title">
+      <div class="container" style="text-align:center; padding: var(--s-10) var(--s-3);">
+        <h2 id="cta-title" style="margin-bottom: var(--s-3);">If I Can Turn a Workflow Bottleneck Into a Shipped AI
+          Micro-Service Solo, Imagine What I Can Build for Your Team</h2>
+        <p style="max-width: 540px; margin: 0 auto var(--s-5); color: rgba(255,255,255,0.6);">I design and ship focused
+          AI tools end-to-end&mdash;from opportunity framing to live deployment.</p>
+        <div style="display: flex; gap: var(--s-2); justify-content: center; flex-wrap: wrap;">
+          <a href="mailto:mailtotheroman@gmail.com" class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            Start a conversation
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p class="footer__text">&copy; 2026 Roman Kryzhanovskyi &middot; AI-First Design Engineer</p>
+    </div>
+  </footer>
+
+  <!-- ── GSAP SCROLL ANIMATIONS ── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Fade-in sections
+      gsap.utils.toArray('.section').forEach(function (section) {
+        gsap.from(section.querySelectorAll('h2, p, .card, .insight-block, .callout--decision, .callout--why, .deliverables-list, .diagram-wrap, .cs-figure, .tool-card, .lesson-card, .result-card, .scope-card, .resp-card'), {
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+          y: 30, opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out'
+        });
+      });
+
+      // Metrics strip counter
+      gsap.utils.toArray('.metric-value').forEach(function (el) {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          scale: 0.8, opacity: 0, duration: 0.5, ease: 'back.out(1.4)'
+        });
+      });
+
+      // Process step cards stagger
+      gsap.from('.process-step__card', {
+        scrollTrigger: { trigger: '.process-steps', start: 'top 75%', once: true },
+        y: 40, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out'
+      });
+
+      // Dot-nav active state on scroll
+      var dots = document.querySelectorAll('.nav-dot');
+      dots.forEach(function (dot) {
+        var sectionId = dot.getAttribute('data-section');
+        var targetSection = document.getElementById(sectionId);
+        if (!targetSection) return;
+        ScrollTrigger.create({
+          trigger: targetSection,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: function () { dots.forEach(function (d) { d.classList.remove('active'); }); dot.classList.add('active'); },
+          onEnterBack: function () { dots.forEach(function (d) { d.classList.remove('active'); }); dot.classList.add('active'); }
+        });
+      });
+
+      // Hero title hover: "Upscaler" zooms up, "Nano" shrinks down
+      var zoomWord = document.querySelector('.hero__title-zoom');
+      var nanoWord = document.querySelector('.hero__title-nano');
+      if (zoomWord && nanoWord) {
+        zoomWord.addEventListener('mouseenter', function () {
+          gsap.to(zoomWord, { scale: 1.35, color: '#FF6B00', duration: 0.4, ease: 'back.out(1.7)' });
+          gsap.to(nanoWord, { scale: 0.5, opacity: 0.4, duration: 0.4, ease: 'power2.out' });
+        });
+        zoomWord.addEventListener('mouseleave', function () {
+          gsap.to(zoomWord, { scale: 1, color: '', duration: 0.3, ease: 'power2.out' });
+          gsap.to(nanoWord, { scale: 1, opacity: 1, duration: 0.3, ease: 'power2.out' });
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

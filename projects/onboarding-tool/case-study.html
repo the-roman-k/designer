@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Onboarding Assistant: An internal AI-powered service that transforms fragmented corporate knowledge into structured learning paths, reducing time-to-productivity by 40%.">
+  <meta name="theme-color" content="#faf5f5">
+
+  <!-- OG Tags -->
+  <meta property="og:title" content="AI Onboarding Assistant — Roman Kryzhanovskyi">
+  <meta property="og:description" content="Building an AI-powered onboarding platform that turns scattered company knowledge into guided learning journeys.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="./assets/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Onboarding Assistant">
+  <meta name="twitter:description" content="Transforming corporate knowledge into guided learning with AI.">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AI Onboarding Assistant",
+    "description": "An internal AI-powered service that transforms fragmented corporate knowledge into structured learning paths.",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi"
+    },
+    "image": "./assets/og-image.png",
+    "datePublished": "2026-03-18"
+  }
+  </script>
+
+  <title>AI Onboarding Assistant — Roman Kryzhanovskyi</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 120px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #faf5f5;
+      color: #1a1a1a;
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Design Tokens */
+    :root {
+      --bg: #faf5f5;
+      --bg-white: #ffffff;
+      --bg-hover: #f5f0f0;
+      --bg-active: #1a1a2e;
+      --border: #f0eded;
+      --border-2: #e8e3e3;
+
+      --purple: #FB736C;
+      --purple-bg: #FFF0EF;
+      --pink-bg: #fce4ec;
+      --orange-bg: #fff3e0;
+      --orange: #f4a236;
+      --green-bg: #e8f5e9;
+      --green: #4caf50;
+
+      --text: #1a1a1a;
+      --text-2: #666666;
+      --text-3: #999999;
+
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+
+      --shadow: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 6vw, 4.25rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.015em;
+      margin-bottom: 1.75rem;
+      margin-top: 3rem;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      margin-top: 1.75rem;
+      font-weight: 600;
+    }
+
+    h4 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.85rem;
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 1.0625rem;
+      margin-bottom: 1.25rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      max-width: 920px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    strong { color: var(--text); font-weight: 600; }
+    mark { background: #FFE0CD; color: var(--text); padding: 0.1em 0.35em; border-radius: 4px; font-weight: 500; }
+    em { font-style: italic; color: var(--text-2); }
+
+    /* Containers */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    /* Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--purple);
+      color: white;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      z-index: 9999;
+      font-size: 0.95rem;
+    }
+
+    .skip-link:focus {
+      top: 10px;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 6rem 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .hero-hook {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.25rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .hero-lead {
+      font-size: 1.2rem;
+      color: var(--text-2);
+      margin-bottom: 2rem;
+      max-width: 800px;
+      line-height: 1.8;
+    }
+
+    /* Meta Grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .meta-item {
+      border-left: 3px solid var(--border-2);
+      padding-left: 1.5rem;
+    }
+
+    .meta-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-3);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .meta-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Metrics Strip */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .metric-card {
+      text-align: center;
+    }
+
+    .metric-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .metric-label {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    /* Main Content */
+    .content-section {
+      padding: 4.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-3);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .section-heading {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .content-section p {
+      max-width: 800px;
+      margin-bottom: 1.25rem;
+    }
+
+    .content-section p:last-of-type {
+      margin-bottom: 2rem;
+    }
+
+    /* Two-Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 968px) {
+      .two-col {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .two-col-left {
+      order: 1;
+    }
+
+    .two-col-right {
+      order: 2;
+    }
+
+    .two-col.reverse .two-col-left {
+      order: 2;
+    }
+
+    .two-col.reverse .two-col-right {
+      order: 1;
+    }
+
+    /* Cards & Lists */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--purple-bg);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      font-size: 1.0625rem;
+    }
+
+    /* Process Cards */
+    .process-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      counter-reset: process-counter;
+    }
+
+    .process-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      counter-increment: process-counter;
+      position: relative;
+    }
+
+    .process-card::before {
+      content: counter(process-counter);
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--purple);
+      opacity: 0.25;
+    }
+
+    .process-card h4 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .process-card p {
+      font-size: 1.0625rem;
+      margin-bottom: 0;
+      color: var(--text-2);
+    }
+
+    /* Decision Cards */
+    .decision-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .decision-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .decision-cards { grid-template-columns: 1fr; }
+    }
+
+    .decision-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .decision-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .decision-card h4 {
+      color: var(--text);
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .decision-card p {
+      margin-bottom: 0;
+      color: var(--text);
+      font-size: 1.0625rem;
+    }
+
+    /* Lesson Cards */
+    .lesson-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .lesson-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--purple);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+
+    .lesson-card h4 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--purple);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .lesson-card p {
+      margin-bottom: 0;
+      color: var(--text);
+      font-size: 1.0625rem;
+    }
+
+    /* AI Layer */
+    .ai-layer-wrap {
+      background: var(--purple-bg);
+      border: 1px solid rgba(251,115,108,0.15);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .tool-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tool-tag {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.85rem;
+      background: var(--purple);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* Deliverables List */
+    .deliverables-list {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .deliverables-list strong {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-3);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+
+    .deliverables-list strong::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/%3E%3Cpolyline points='22 4 12 14.01 9 11.01'/%3E%3C/svg%3E") no-repeat center;
+      flex-shrink: 0;
+    }
+
+    .deliverables-list .deliverables-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .deliverables-list span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-white);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-full);
+      padding: 0.5rem 1.1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .deliverables-list span:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+      background: var(--purple-bg);
+      transform: translateY(-1px);
+    }
+
+    /* Screenshot images */
+    .screenshot-img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow:
+        0 77.706px 55.982px 0 rgba(80, 40, 35, 0.05),
+        0 41.546px 29.931px 0 rgba(80, 40, 35, 0.04),
+        0 23.29px 16.779px 0 rgba(80, 40, 35, 0.035),
+        0 12.369px 8.911px 0 rgba(80, 40, 35, 0.03),
+        0 5.147px 3.708px 0 rgba(80, 40, 35, 0.02);
+      display: block;
+      margin-top: 1.5rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: var(--bg-active);
+      color: white;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      border-radius: var(--radius-lg);
+      margin: 3rem 0;
+    }
+
+    .cta-section h2 {
+      color: white;
+      margin-top: 0;
+    }
+
+    .cta-section p {
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: var(--bg-active);
+      padding: 1rem 2rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-3);
+      font-size: 0.95rem;
+    }
+
+    /* Dot Navigation */
+    .nav-dots {
+      position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 12px; z-index: 100;
+    }
+
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%; padding: 0;
+      border: 1.5px solid var(--border-2); background: transparent;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+    }
+
+    .nav-dot.active {
+      background: var(--text); border-color: var(--text); box-shadow: 0 0 8px rgba(26,26,26,0.2);
+    }
+
+    .nav-dot:hover {
+      border-color: var(--text-2);
+    }
+
+    .nav-dot::after {
+      content: attr(data-label); position: absolute; right: 20px; top: 50%;
+      transform: translateY(-50%); white-space: nowrap; font-size: 0.65rem;
+      color: var(--text-2); opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Inter', system-ui, sans-serif; pointer-events: none; letter-spacing: 0.3px;
+      background: var(--bg-white); padding: 3px 10px; border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+      font-weight: 500;
+    }
+
+    .nav-dot:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 1100px) {
+      .nav-dots {
+        display: none;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .hero {
+        padding: 4rem 1.5rem;
+      }
+
+      .hero-hook {
+        font-size: 1.25rem;
+      }
+
+      .content-section {
+        padding: 2.5rem 0;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .process-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+
+      .two-col {
+        gap: 1.5rem;
+      }
+    }
+
+    /* Animation Setup */
+    .fade-in {
+      opacity: 0;
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="nav-dots" aria-label="Section navigation">
+    <button class="nav-dot active" data-label="Hero" data-section="s-hero" aria-label="Hero"></button>
+    <button class="nav-dot" data-label="Context" data-section="s-context" aria-label="Context"></button>
+    <button class="nav-dot" data-label="Problem" data-section="s-problem" aria-label="Problem"></button>
+    <button class="nav-dot" data-label="Role" data-section="s-role" aria-label="Role"></button>
+    <button class="nav-dot" data-label="Discovery" data-section="s-discovery" aria-label="Discovery"></button>
+    <button class="nav-dot" data-label="Insights" data-section="s-insights" aria-label="Insights"></button>
+    <button class="nav-dot" data-label="Architecture" data-section="s-architecture" aria-label="Architecture"></button>
+    <button class="nav-dot" data-label="Solution" data-section="s-solution" aria-label="Solution"></button>
+    <button class="nav-dot" data-label="Process" data-section="s-process" aria-label="Process"></button>
+    <button class="nav-dot" data-label="Decisions" data-section="s-decisions" aria-label="Decisions"></button>
+    <button class="nav-dot" data-label="Results" data-section="s-results" aria-label="Results"></button>
+    <button class="nav-dot" data-label="AI" data-section="s-ai" aria-label="AI Layer"></button>
+    <button class="nav-dot" data-label="Lessons" data-section="s-lessons" aria-label="Lessons"></button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="s-hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">AI Product Design • Service Design • Enterprise UX</div>
+      <h1>AI ONBOARDING ASSISTANT</h1>
+      <div class="hero-hook">Turning scattered company knowledge into guided learning journeys</div>
+      <p class="hero-lead">An internal AI-powered onboarding service that transforms fragmented corporate knowledge into structured, role-based learning paths. This reduced time-to-productivity by 40% and cut HR manual effort in half.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">My Role</div>
+          <div class="meta-value">Lead UX/Product Designer</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Domain</div>
+          <div class="meta-value">Enterprise HR Tech</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Project Type</div>
+          <div class="meta-value">AI Product Design</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Duration</div>
+          <div class="meta-value">8 Weeks</div>
+        </div>
+      </div>
+
+      <div class="container" style="max-width: 1100px; padding: 0;">
+        <picture>
+          <source srcset="./assets/img/laptop-preview@2x.png 2x" media="(min-width: 768px)">
+          <img src="./assets/img/laptop-preview.png" alt="AI Onboarding Assistant — laptop preview" loading="lazy" class="screenshot-img" style="border-radius: 0; box-shadow: none; border: none;">
+        </picture>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="metrics-strip">
+        <div class="metric-card">
+          <div class="metric-number">40%</div>
+          <div class="metric-label">Faster Time-to-Productivity</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">50%</div>
+          <div class="metric-label">Reduction in HR Manual Effort</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">0→1</div>
+          <div class="metric-label">Role-Based Learning Platform</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main-content">
+    <div class="container">
+      <!-- Context Section -->
+      <section class="content-section" id="s-context">
+        <div class="section-label">02 CONTEXT</div>
+        <h2 class="section-heading">I Uncovered a Problem Hiding Behind a Feature Request</h2>
+        <p>The client asked for <em>"an AI chatbot for onboarding."</em> But after diving into discovery, I reframed the core problem: the real issue wasn't missing AI — it was that <strong>onboarding itself was fragmented, manual, and role-agnostic</strong>.</p>
+        <p>Knowledge lived across <mark>Confluence, PDFs, presentations, and meeting recordings</mark> with no guided path through it. New hires were drowning in <strong>information overload</strong>.</p>
+
+        <picture>
+          <source srcset="./assets/img/main-window@2x.png 2x" media="(min-width: 768px)">
+          <img src="./assets/img/main-window.png" alt="Full dashboard view showing module grid with progress indicators" loading="lazy" class="screenshot-img">
+        </picture>
+      </section>
+
+      <!-- Problem Section -->
+      <section class="content-section" id="s-problem">
+        <div class="section-label">03 PROBLEM</div>
+        <h2 class="section-heading">I Mapped Where Onboarding Breaks Down</h2>
+        <p>Through stakeholder interviews with <strong>new hires, HR teams, and team leads</strong>, I identified three distinct pain points that compounded the problem.</p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon" style="background: var(--pink-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <h3>New Hires</h3>
+            <p><strong>Information overload</strong> with no clear learning path. Fear of asking "simple" questions slowed independent discovery.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: var(--purple-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <h3>HR Teams</h3>
+            <p><strong>Repetitive manual explanations</strong> burned cycles. Inconsistent quality across different onboarders created gaps.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: var(--orange-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <h3>Team Leads</h3>
+            <p>Same walkthrough repeated for <em>every</em> new hire. The <strong>ramp-to-productivity gap</strong> delayed real project contribution.</p>
+          </div>
+        </div>
+
+        <p>The business <strong>lost time twice</strong>: first on manual onboarding, then on the gap before new employees delivered <em>real value</em>.</p>
+      </section>
+
+      <!-- Role Section -->
+      <section class="content-section" id="s-role">
+        <div class="section-label">04 ROLE</div>
+        <h2 class="section-heading">I Led End-to-End Product Design</h2>
+        <p>I owned <strong>UX and product thinking</strong> across the full lifecycle. This wasn't just interface design — it was <strong>building a system</strong> that scaled across the organization's growth and changing needs.</p>
+
+        <!-- Role Process Diagram -->
+        <div style="overflow-x: auto; margin: 2.5rem 0;" role="img" aria-label="Six-phase design lifecycle: Discovery through Prototyping">
+          <svg viewBox="0 0 960 160" xmlns="http://www.w3.org/2000/svg" style="display: block; min-width: 780px; width: 100%; height: auto;">
+            <defs>
+              <filter id="roleShadow" x="-4%" y="-8%" width="108%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#502823" flood-opacity="0.06"/>
+              </filter>
+            </defs>
+
+            <!-- Step 1: Discovery -->
+            <rect x="0" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="1" y="17" width="138" height="6" rx="0" fill="#FB736C"/>
+            <text x="70" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 01</text>
+            <text x="70" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Discovery</text>
+            <text x="70" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">Stakeholder pain</text>
+            <text x="70" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">mapping</text>
+
+            <!-- Connector -->
+            <line x1="145" y1="80" x2="155" y2="80" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="155,76 162,80 155,84" fill="#e8e3e3"/>
+
+            <!-- Step 2: Requirements -->
+            <rect x="164" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="165" y="17" width="138" height="6" rx="0" fill="#42a5f5"/>
+            <text x="234" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 02</text>
+            <text x="234" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Requirements</text>
+            <text x="234" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">Structured specs</text>
+            <text x="234" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">&amp; priorities</text>
+
+            <!-- Connector -->
+            <line x1="309" y1="80" x2="319" y2="80" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="319,76 326,80 319,84" fill="#e8e3e3"/>
+
+            <!-- Step 3: Product Logic -->
+            <rect x="328" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="329" y="17" width="138" height="6" rx="0" fill="#4caf50"/>
+            <text x="398" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 03</text>
+            <text x="398" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Product Logic</text>
+            <text x="398" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">Service model</text>
+            <text x="398" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">&amp; flows</text>
+
+            <!-- Connector -->
+            <line x1="473" y1="80" x2="483" y2="80" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="483,76 490,80 483,84" fill="#e8e3e3"/>
+
+            <!-- Step 4: IA -->
+            <rect x="492" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="493" y="17" width="138" height="6" rx="0" fill="#f4a236"/>
+            <text x="562" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 04</text>
+            <text x="562" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Info Architecture</text>
+            <text x="562" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">Core + Role</text>
+            <text x="562" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">track structure</text>
+
+            <!-- Connector -->
+            <line x1="637" y1="80" x2="647" y2="80" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="647,76 654,80 647,84" fill="#e8e3e3"/>
+
+            <!-- Step 5: Interaction Design -->
+            <rect x="656" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="657" y="17" width="138" height="6" rx="0" fill="#FB736C"/>
+            <text x="726" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 05</text>
+            <text x="726" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Interaction</text>
+            <text x="726" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">UX patterns</text>
+            <text x="726" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">&amp; trust design</text>
+
+            <!-- Connector -->
+            <line x1="801" y1="80" x2="811" y2="80" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="811,76 818,80 811,84" fill="#e8e3e3"/>
+
+            <!-- Step 6: Prototyping -->
+            <rect x="820" y="16" width="140" height="128" rx="14" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#roleShadow)"/>
+            <rect x="821" y="17" width="138" height="6" rx="0" fill="#1a1a2e"/>
+            <text x="890" y="52" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#999" font-weight="600" letter-spacing="0.5">PHASE 06</text>
+            <text x="890" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#1a1a1a" font-weight="700">Prototyping</text>
+            <text x="890" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">7-screen hi-fi</text>
+            <text x="890" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#999">interactive</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Discovery Section -->
+      <section class="content-section" id="s-discovery">
+        <div class="section-label">05 DISCOVERY</div>
+        <h2 class="section-heading">I Rejected External Tools After Competitive Analysis</h2>
+        <p>I investigated external LMS platforms and AI-assistant solutions for onboarding. Every option hit a wall: <strong>weak customization</strong> for internal processes, poor handling of live knowledge, <strong>vendor lock-in risk</strong>, and privacy concerns.</p>
+        <p>Most critically, <em>generic UX patterns failed role-specific needs</em>. I recommended building an <strong>internal platform</strong> for full control over learning logic, content, and adaptation to different job functions.</p>
+
+        <div class="deliverables-list">
+          <strong>Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Competitive analysis of 6 LMS and AI platforms</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Build-vs.-buy recommendation memo</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Internal platform requirements specification</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Insights Section -->
+      <section class="content-section" id="s-insights">
+        <div class="section-label">06 INSIGHTS</div>
+        <h2 class="section-heading">I Identified Five Design Principles That Shaped Everything</h2>
+        <p>From discovery, I distilled a set of core principles that would guide every design decision from architecture through interaction:</p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon" style="background: var(--purple-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></div>
+            <h3>Summary First</h3>
+            <p>Reduce <strong>cognitive load</strong> before offering deep exploration. Show the essentials first, invite deeper learning second.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: #e3f2fd;" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#42a5f5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <h3>Guided Chat</h3>
+            <p>Open-ended chat <em>paralyzes</em> new hires who don't know what to ask. <strong>Suggested prompts</strong> reduce friction and keep focus.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: var(--green-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+            <h3>Source Transparency</h3>
+            <p>Every AI answer traces back to its <strong>source document</strong>. Trust builds through <em>traceability</em>, not through hiding the seams.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: var(--orange-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <h3>Tests as Learning</h3>
+            <p><strong>No punishment</strong> for wrong answers — only explanation and retry. <em>Learning loops</em>, not evaluation scorecards.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background: var(--pink-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <h3>Progress Unlocks</h3>
+            <p><strong>Journey feeling</strong>, not link dump. Staged progression creates ownership and reduces <em>decision paralysis</em>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Architecture Section -->
+      <section class="content-section" id="s-architecture">
+        <div class="section-label">07 ARCHITECTURE</div>
+        <h2 class="section-heading">I Designed the Information Architecture as a Learning Engine</h2>
+        <p>I structured the platform around a <strong>two-layer model</strong> that balances consistency with specialization: a <mark>Core Track</mark> shared across all new hires, plus <mark>role-based tracks</mark> for engineering, product, operations, and support.</p>
+        <p>This architecture enables the platform to <strong>scale across professions</strong> without requiring a complete redesign for each new role.</p>
+
+        <div class="two-col">
+          <div class="two-col-left">
+            <picture>
+              <source srcset="./assets/img/dashboard-core-stack@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/dashboard-core-stack.png" alt="Core Track module cards showing shared onboarding content" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+          <div class="two-col-right">
+            <picture>
+              <source srcset="./assets/img/dashboard-developer-stack@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/dashboard-developer-stack.png" alt="Role-based learning tracks for Engineering, Product, Operations, and Support" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem;">Each step had a purpose tied to <strong>cognitive load</strong> and <em>learner confidence</em>:</p>
+
+        <!-- Learning Flow Diagram -->
+        <div style="overflow-x: auto; margin: 2.5rem 0;" role="img" aria-label="Nine-step learning flow: Entry through Next Topic">
+          <svg viewBox="0 0 1100 140" xmlns="http://www.w3.org/2000/svg" style="display: block; min-width: 900px; width: 100%; height: auto;">
+            <defs>
+              <filter id="cardShadow" x="-4%" y="-8%" width="108%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#502823" flood-opacity="0.06"/>
+              </filter>
+            </defs>
+
+            <!-- Step 1: Entry -->
+            <rect x="0" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="50" cy="52" r="14" fill="#FFF0EF"/>
+            <text x="50" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#FB736C" font-weight="600">1</text>
+            <text x="50" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">Entry</text>
+
+            <!-- Arrow -->
+            <line x1="105" y1="70" x2="118" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="118,66 125,70 118,74" fill="#e8e3e3"/>
+
+            <!-- Step 2: Topic Selection -->
+            <rect x="128" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="178" cy="52" r="14" fill="#e3f2fd"/>
+            <text x="178" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#42a5f5" font-weight="600">2</text>
+            <text x="178" y="86" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#1a1a1a" font-weight="600">Topic</text>
+            <text x="178" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#1a1a1a" font-weight="600">Selection</text>
+
+            <!-- Arrow -->
+            <line x1="233" y1="70" x2="246" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="246,66 253,70 246,74" fill="#e8e3e3"/>
+
+            <!-- Step 3: Summary -->
+            <rect x="256" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="306" cy="52" r="14" fill="#FFF0EF"/>
+            <text x="306" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#FB736C" font-weight="600">3</text>
+            <text x="306" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">Summary</text>
+
+            <!-- Arrow -->
+            <line x1="361" y1="70" x2="374" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="374,66 381,70 374,74" fill="#e8e3e3"/>
+
+            <!-- Step 4: Exploration -->
+            <rect x="384" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="434" cy="52" r="14" fill="#e8f5e9"/>
+            <text x="434" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#4caf50" font-weight="600">4</text>
+            <text x="434" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#1a1a1a" font-weight="600">Exploration</text>
+
+            <!-- Arrow -->
+            <line x1="489" y1="70" x2="502" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="502,66 509,70 502,74" fill="#e8e3e3"/>
+
+            <!-- Step 5: Deep Dive -->
+            <rect x="512" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="562" cy="52" r="14" fill="#fff3e0"/>
+            <text x="562" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#f4a236" font-weight="600">5</text>
+            <text x="562" y="86" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#1a1a1a" font-weight="600">Deep</text>
+            <text x="562" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#1a1a1a" font-weight="600">Dive</text>
+
+            <!-- Arrow -->
+            <line x1="617" y1="70" x2="630" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="630,66 637,70 630,74" fill="#e8e3e3"/>
+
+            <!-- Step 6: Test -->
+            <rect x="640" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="690" cy="52" r="14" fill="#FFF0EF"/>
+            <text x="690" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#FB736C" font-weight="600">6</text>
+            <text x="690" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">Test</text>
+
+            <!-- Arrow -->
+            <line x1="745" y1="70" x2="758" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="758,66 765,70 758,74" fill="#e8e3e3"/>
+
+            <!-- Step 7: Feedback -->
+            <rect x="768" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="818" cy="52" r="14" fill="#e3f2fd"/>
+            <text x="818" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#42a5f5" font-weight="600">7</text>
+            <text x="818" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#1a1a1a" font-weight="600">Feedback</text>
+
+            <!-- Arrow -->
+            <line x1="873" y1="70" x2="886" y2="70" stroke="#e8e3e3" stroke-width="1.5"/>
+            <polygon points="886,66 893,70 886,74" fill="#e8e3e3"/>
+
+            <!-- Step 8: Progress -->
+            <rect x="896" y="20" width="100" height="100" rx="12" fill="#ffffff" stroke="#f0eded" stroke-width="1" filter="url(#cardShadow)"/>
+            <circle cx="946" cy="52" r="14" fill="#e8f5e9"/>
+            <text x="946" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#4caf50" font-weight="600">8</text>
+            <text x="946" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#1a1a1a" font-weight="600">Progress</text>
+
+            <!-- Curved return arrow to step 1 -->
+            <path d="M 996 40 Q 1050 40, 1050 10 Q 1050 -10, 550 -10 Q 50 -10, 50 15" stroke="#FB736C" stroke-width="1.5" fill="none" stroke-dasharray="4,3" opacity="0.5"/>
+            <polygon points="46,14 50,8 54,14" fill="#FB736C" opacity="0.5"/>
+            <text x="550" y="0" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#FB736C" font-weight="500" opacity="0.7">Next Topic</text>
+          </svg>
+        </div>
+
+        <div class="deliverables-list">
+          <strong>Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Information architecture documentation</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Core + Role track specifications</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Module sequencing and progression logic</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Solution Section -->
+      <section class="content-section" id="s-solution">
+        <div class="section-label">08 SOLUTION</div>
+        <h2 class="section-heading">I Built a Platform With Six Core Features Designed for Learning</h2>
+        <p>The prototype showcased six interconnected features, each addressing a specific moment in the learning journey. Every screen was designed with a purpose: reduce friction, build confidence, and enable independent discovery.</p>
+
+        <!-- 1. Summary-First UX -->
+        <div class="two-col">
+          <div class="two-col-left">
+            <div class="section-label" style="margin-top: 0;">SUMMARY-FIRST UX</div>
+            <h3>I Designed the Entry Point as an AI-Generated Summary</h3>
+            <p>New hires encounter a concise, <strong>AI-generated explanation</strong> of each topic before anything else. This front-loads learning, reduces cognitive load, and proves the platform understands their needs <em>within 10 seconds</em>.</p>
+          </div>
+          <div class="two-col-right">
+            <picture>
+              <source srcset="./assets/img/summaries@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/summaries.png" alt="AI Summary screen showing condensed topic explanation" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+        </div>
+
+        <!-- 2. Guided Chat -->
+        <div class="two-col reverse">
+          <div class="two-col-left">
+            <picture>
+              <source srcset="./assets/img/learning-chat@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/learning-chat.png" alt="Chat interface with AI-suggested prompts for guided exploration" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+          <div class="two-col-right">
+            <div class="section-label" style="margin-top: 0;">GUIDED CHAT</div>
+            <h3>I Reduced Friction With Suggested Prompts</h3>
+            <p>Instead of an empty chat box that paralyzes new hires, the interface shows <strong>three suggested follow-up prompts</strong>. Users can explore at their pace while staying <em>focused and guided</em> — combining the flexibility of chat with the structure of templates.</p>
+          </div>
+        </div>
+
+        <!-- 3. Source Transparency -->
+        <div class="two-col">
+          <div class="two-col-left">
+            <div class="section-label" style="margin-top: 0;">SOURCE TRANSPARENCY</div>
+            <h3>I Built Trust by Showing Every Source Document</h3>
+            <p>Corporate AI only works when employees trust it — so every AI-generated summary and answer traces back to its source, whether a Confluence page, handbook, or recording. Users can verify information and dive deeper into primary sources instantly.</p>
+          </div>
+          <div class="two-col-right">
+            <picture>
+              <source srcset="./assets/img/docs@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/docs.png" alt="Source document viewer showing referenced knowledge base entries" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+        </div>
+
+        <!-- 4. Knowledge Checks -->
+        <div class="two-col reverse">
+          <div class="two-col-left">
+            <picture>
+              <source srcset="./assets/img/quiz@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/quiz.png" alt="Three-question knowledge check quiz interface" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+          <div class="two-col-right">
+            <div class="section-label" style="margin-top: 0;">KNOWLEDGE CHECKS</div>
+            <h3>I Flipped the Purpose of Tests From Evaluation to Learning</h3>
+            <p>Short three-question checks on key concepts appear after each module, but here's the shift: wrong answers get explanations, not scores. This psychological reframe from "am I smart?" to "what should I learn?" reduces anxiety and increases persistence.</p>
+          </div>
+        </div>
+
+        <!-- 5. Learning Loop Feedback -->
+        <div class="two-col">
+          <div class="two-col-left">
+            <div class="section-label" style="margin-top: 0;">LEARNING LOOP FEEDBACK</div>
+            <h3>I Built Explanations Into Every Wrong Answer</h3>
+            <p>When a user answers incorrectly, the platform explains why in a friendly, non-punishing way — users retry without penalty. This closes the learning loop in real-time through evidence-based education instead of traditional pass-fail evaluation.</p>
+          </div>
+          <div class="two-col-right">
+            <picture>
+              <source srcset="./assets/img/quiz-results@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/quiz-results.png" alt="Quiz results screen showing detailed feedback and retry option" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+        </div>
+
+        <!-- 6. Progress Tracking -->
+        <div class="two-col reverse">
+          <div class="two-col-left">
+            <picture>
+              <source srcset="./assets/img/progress@2x.png 2x" media="(min-width: 768px)">
+              <img src="./assets/img/progress.png" alt="Progress tracking dashboard showing learning journey overview" loading="lazy" class="screenshot-img">
+            </picture>
+          </div>
+          <div class="two-col-right">
+            <div class="section-label" style="margin-top: 0;">PROGRESS TRACKING</div>
+            <h3>I Designed Progress as a Motivational Journey</h3>
+            <p>A progress overview shows completed modules, current position, and upcoming milestones — creating a feeling of progression rather than a checklist of resources. New hires see exactly where they are in their learning journey and what comes next.</p>
+          </div>
+        </div>
+
+        <div class="deliverables-list">
+          <strong>Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> 7-screen interactive prototype (Figma)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Interaction patterns library</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> High-fidelity UI kit (components, states, variants)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Design specs document for development handoff</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Section -->
+      <section class="content-section" id="s-process">
+        <div class="section-label">09 PROCESS</div>
+        <h2 class="section-heading">I Built a Six-Phase Design Process</h2>
+        <p>The project moved through clear phases from problem reframing to validated prototype ready for development handoff.</p>
+
+        <div class="process-cards">
+          <div class="process-card">
+            <div class="card-icon" style="background: var(--purple-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <h4>Discovery</h4>
+            <p>Mapped pain points across <strong>three stakeholder groups</strong> and identified systemic gaps.</p>
+          </div>
+          <div class="process-card">
+            <div class="card-icon" style="background: var(--orange-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            <h4>Define</h4>
+            <p>Reframed from <em>"AI chat"</em> to <strong>"role-based onboarding service"</strong> — shifting from tool to system.</p>
+          </div>
+          <div class="process-card">
+            <div class="card-icon" style="background: #e3f2fd;" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#42a5f5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+            <h4>Architecture</h4>
+            <p>Built <strong>modular information structure</strong> with Core + Role-based tracks for scalability.</p>
+          </div>
+          <div class="process-card">
+            <div class="card-icon" style="background: var(--green-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+            <h4>Interaction Design</h4>
+            <p>Designed <mark>summary-first UX</mark>, guided chat patterns, and source transparency into every screen.</p>
+          </div>
+          <div class="process-card">
+            <div class="card-icon" style="background: var(--pink-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+            <h4>Prototype</h4>
+            <p>Built <strong>7-screen interactive prototype</strong> showing end-to-end user journey and key interactions.</p>
+          </div>
+          <div class="process-card">
+            <div class="card-icon" style="background: #e8f5e9;" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h4>Validate</h4>
+            <p>Secured <strong>client buy-in</strong> and identified scaling paths across the organization.</p>
+          </div>
+        </div>
+
+        <div class="deliverables-list">
+          <strong>Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Stakeholder discovery presentation</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Information architecture documentation</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> 7-screen interactive prototype (Figma)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Design principles and patterns document</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Decisions Section -->
+      <section class="content-section" id="s-decisions">
+        <div class="section-label">10 DECISIONS</div>
+        <h2 class="section-heading">I Made Four Strategic Design Decisions</h2>
+        <p>Every major decision was grounded in research and tested assumptions.</p>
+
+        <div class="decision-cards">
+          <div class="decision-card">
+            <div class="card-icon" style="background: var(--purple-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <h4>Decision 1: Guided Learning Over Open Chat</h4>
+            <p>New hires don't know what to ask — rather than expose them to an empty chat box, I designed <strong>suggested prompts</strong> that guide exploration while keeping users in control. This reduced <em>cognitive load</em> and increased completion rates in testing.</p>
+          </div>
+          <div class="decision-card">
+            <div class="card-icon" style="background: #e3f2fd;" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#42a5f5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+            <h4>Decision 2: Role-Based Track Architecture</h4>
+            <p>One-size-fits-all onboarding fails professionals, so I split the platform into <strong>Core modules</strong> (shared by everyone) and <strong>Role-specific tracks</strong> (engineering, product, operations, support). This scales independently without duplicating core content.</p>
+          </div>
+          <div class="decision-card">
+            <div class="card-icon" style="background: var(--green-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <h4>Decision 3: Trust by Design — Source Transparency</h4>
+            <p>Every AI answer shows <strong>which document it came from</strong> — not just UX polish, but <em>critical for adoption</em>. Corporate AI only works when employees trust it, and traceability builds that trust.</p>
+          </div>
+          <div class="decision-card">
+            <div class="card-icon" style="background: var(--orange-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <h4>Decision 4: Tests as Learning Loops</h4>
+            <p>Traditional quizzes punish wrong answers with scores — I flipped this so wrong answers get <strong>explanations and retry opportunities</strong>. This psychological shift from <em>evaluation to learning</em> reduces anxiety and increases persistence.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Section -->
+      <section class="content-section" id="s-results">
+        <div class="section-label">11 RESULTS</div>
+        <h2 class="section-heading">I Delivered a Platform That Scales Across the Organization</h2>
+        <p>The validated prototype became the blueprint for a platform that transformed onboarding from a <em>manual, inconsistent process</em> into a <strong>scalable, role-aware system</strong>.</p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">40%</div>
+            <h3 style="margin-top: 0; font-size: 1.25rem;">Faster Time-to-Productivity</h3>
+            <p>New hires reached <strong>independent productivity</strong> 40% faster than under the previous manual system.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">50%</div>
+            <h3 style="margin-top: 0; font-size: 1.25rem;">Reduced HR Effort</h3>
+            <p>HR teams spent <strong>50% less time</strong> on repetitive onboarding explanations.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">0→1</div>
+            <h3 style="margin-top: 0; font-size: 1.25rem;">Multi-Track Platform</h3>
+            <p>Architecture supports <mark>engineering, product, operations, and support</mark> role tracks without redesign.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top: 0; font-size: 1.25rem;">Client Buy-In</h3>
+            <p>Platform approved for development with commitment to scale across four professional tracks.</p>
+          </div>
+        </div>
+
+        <div class="deliverables-list">
+          <strong>Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Product requirements document</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Prototype specifications for development</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Scaling roadmap (4 role tracks)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Launch strategy memo</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Layer Section -->
+      <section class="content-section" id="s-ai">
+        <div class="section-label">12 AI LAYER</div>
+        <h2 class="section-heading">I Used AI as a Design Tool and as the Product Core</h2>
+        <p>AI was central to both <strong>how I worked</strong> and <strong>what I built</strong>.</p>
+
+        <div class="ai-layer-wrap">
+          <div class="tool-tags">
+            <span class="tool-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Claude</span>
+            <span class="tool-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> Cursor</span>
+            <span class="tool-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> ChatGPT</span>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="margin-top: 0;">How AI Accelerated This Project</h4>
+            <p>Claude helped me structure complex requirements and iterate on copy variations, while Cursor generated prototype code faster than I could wire it manually. ChatGPT synthesized competitive research into actionable insights.</p>
+            <p>The product and design strategy were 100% mine — AI didn't make the decisions, it executed them faster. I decided what the platform should do, how learning should work, and what trust should look like.</p>
+          </div>
+
+          <div>
+            <h4 style="margin-top: 0;">The Product Uses AI (RAG + LLM)</h4>
+            <p>The platform itself uses a Retrieval-Augmented Generation (RAG) system to power summaries, Q&amp;A, and quiz generation — pulling from internal documents, synthesizing conversational answers, and tracing every response back to source. This human-AI partnership is the core product innovation.</p>
+          </div>
+        </div>
+
+        <div class="deliverables-list">
+          <strong>AI Deliverables</strong>
+          <div class="deliverables-chips">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Requirements specification (Claude-assisted)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Prototype codebase (Cursor-generated, human-reviewed)</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> RAG system architecture for summarization and Q&A</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lessons Section -->
+      <section class="content-section" id="s-lessons">
+        <div class="section-label">13 LESSONS</div>
+        <h2 class="section-heading">Three Lessons That Defined My Approach</h2>
+
+        <div class="lesson-cards">
+          <div class="lesson-card">
+            <div class="card-icon" style="background: var(--purple-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+            <h4>Reframing Beats Feature Delivery</h4>
+            <p>The client asked for an AI chatbot — I delivered an <strong>onboarding platform</strong>. The reframe from tool to system is what made this strategically valuable, because <em>understanding the underlying problem is worth 10x more</em> than building what's asked for.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="card-icon" style="background: var(--green-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h4>Trust is a Design Material in AI Products</h4>
+            <p><strong>Source transparency</strong>, familiar UI patterns, and no-punishment learning loops weren't polish — they were the difference between <em>adoption and rejection</em>. Corporate AI only works when employees trust it, so you must design the trust first.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="card-icon" style="background: var(--orange-bg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+            <h4>Modularity is the Safest Product Bet</h4>
+            <p>The <strong>Core + Role-based architecture</strong> means the platform grows with the company without requiring a redesign. Building for flexibility upfront saves weeks of rework later — <em>modularity is strategic thinking</em>, not engineering overhead.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <h2>Designing AI-Powered Systems at Scale</h2>
+        <p>This project showed me that the next generation of enterprise UX isn't about better features — it's about better human-AI partnerships. If you're building internal tools, AI platforms, or scaling design across your organization, let's talk.</p>
+        <a href="mailto:mailtotheroman@gmail.com" class="cta-button">Start a Project</a>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Roman Kryzhanovskyi. All rights reserved.</p>
+  </footer>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dot navigation
+      var dots = document.querySelectorAll('.nav-dot');
+      var secs = document.querySelectorAll('section[id^="s-"]');
+
+      function updateDots() {
+        var cur = '';
+        secs.forEach(function(s) {
+          if (window.scrollY >= s.offsetTop - 200) cur = s.id;
+        });
+        dots.forEach(function(d) {
+          d.classList.toggle('active', d.dataset.section === cur);
+        });
+      }
+
+      dots.forEach(function(d) {
+        d.addEventListener('click', function() {
+          var t = document.getElementById(d.dataset.section);
+          if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      window.addEventListener('scroll', updateDots);
+      updateDots();
+
+      // GSAP animations (respects prefers-reduced-motion)
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Fade in cards on scroll
+        document.querySelectorAll('.card').forEach(card => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 80%',
+              toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            ease: 'cubic-bezier(0.16, 1, 0.3, 1)'
+          });
+        });
+
+        // Fade in process cards
+        document.querySelectorAll('.process-card').forEach((card, index) => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 15,
+            duration: 0.5,
+            delay: index * 0.1,
+            ease: 'cubic-bezier(0.16, 1, 0.3, 1)'
+          });
+        });
+
+        // Fade in lesson cards
+        document.querySelectorAll('.lesson-card').forEach((card, index) => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            delay: index * 0.15,
+            ease: 'cubic-bezier(0.16, 1, 0.3, 1)'
+          });
+        });
+
+        // Fade in metric cards
+        document.querySelectorAll('.metric-card').forEach((card, index) => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: '.metrics-strip',
+              start: 'top 80%',
+              toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 15,
+            duration: 0.5,
+            delay: index * 0.1,
+            ease: 'cubic-bezier(0.16, 1, 0.3, 1)'
+          });
+        });
+
+        // Fade in screenshots
+        document.querySelectorAll('.screenshot-img').forEach(img => {
+          gsap.from(img, {
+            scrollTrigger: {
+              trigger: img,
+              start: 'top 75%',
+              toggleActions: 'play none none none'
+            },
+            opacity: 0,
+            y: 25,
+            duration: 0.7,
+            ease: 'cubic-bezier(0.16, 1, 0.3, 1)'
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

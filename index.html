@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Roman Kryzhanovskyi — AI-First Design Engineer. I build custom AI tools, automated design workflows, and systems that let one person do the work of a team.">
+  <meta name="theme-color" content="#0A0A0A">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Roman Kryzhanovskyi — Design Engineer">
+  <meta property="og:description"
+    content="Design × AI × Engineering. I build custom AI tools, design systems, and automated workflows.">
+  <meta property="og:type" content="website">
+
+  <title>Roman Kryzhanovskyi — Design Engineer</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-new.css">
+
+  <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
+
+
+
+  <!-- Vapour text effect -->
+  <script src="vapour.js" defer></script>
+
+  <!-- Page script -->
+  <script src="script.js" defer></script>
+
+  <!-- Catch Me! Easter Egg -->
+  <style>
+    .catch-me {
+      position: fixed;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      pointer-events: auto;
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: transform;
+    }
+
+    .catch-me__dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #CCFF00;
+      box-shadow: 0 0 16px rgba(204, 255, 0, 0.35);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.25s ease;
+      flex-shrink: 0;
+      animation: catch-me-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes catch-me-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 16px rgba(204, 255, 0, 0.35);
+      }
+
+      50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 24px rgba(204, 255, 0, 0.5);
+      }
+    }
+
+    .catch-me__label {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #CCFF00;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      transition: opacity 0.25s ease;
+    }
+
+    .catch-me:hover .catch-me__dot {
+      transform: scale(1.5);
+      box-shadow: 0 0 28px rgba(204, 255, 0, 0.55);
+    }
+
+    .catch-me:hover .catch-me__label {
+      opacity: 0.8;
+    }
+
+    /* Overlay */
+    .catch-me-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: #0A0A0A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      opacity: 0;
+      visibility: hidden;
+      transition: none;
+    }
+
+    .catch-me-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .catch-me-overlay__text {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(24px, 4vw, 48px);
+      font-weight: 400;
+      font-style: normal;
+      color: #FFFFFF;
+      text-align: center;
+      max-width: 720px;
+      line-height: 1.35;
+      margin: 0 0 24px;
+    }
+
+    .catch-me-overlay__accent {
+      color: #CCFF00;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+    }
+
+    .catch-me-overlay__close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .catch-me-overlay__close:hover {
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .catch-me-overlay__close:focus-visible {
+      outline: 2px solid #CCFF00;
+      outline-offset: 2px;
+    }
+
+    .catch-me-overlay__back {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      transition: color 0.2s ease;
+    }
+
+    .catch-me-overlay__back:hover {
+      color: #FFFFFF;
+    }
+
+    .catch-me-overlay__back:focus-visible {
+      outline: 2px solid #CCFF00;
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .catch-me {
+        display: none !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .catch-me__dot {
+        transition: none;
+        animation: none;
+      }
+
+      .catch-me__label {
+        transition: none;
+      }
+
+      .catch-me-overlay__close {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="desktop">
+
+    <!-- Mobile Header & Hamburger -->
+    <div class="mobile-header">
+      <span class="mobile-logo">Roman Kryzhanovskyi</span>
+      <button class="hamburger-btn" aria-label="Toggle Sidebar" id="mobile-menu-btn">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <!-- Active Question -->
+        <div class="question question-active" data-target="view-hero">
+          <p>Hi, I am Roman Kryzhanovskyi!</p>
+        </div>
+
+        <!-- Inactive Questions -->
+        <div class="question" data-target="view-capabilities">
+          <p>Experience &amp; expertise</p>
+        </div>
+
+        <div class="question" data-target="view-shift">
+          <p>My Grand Shift</p>
+        </div>
+
+        <div class="question" data-target="view-work">
+          <p>What I build</p>
+        </div>
+
+        <div class="question" data-target="view-audiences">
+          <p>Who I work with?</p>
+        </div>
+
+        <div class="question" data-target="view-how-i-build">
+          <p>How I Build</p>
+        </div>
+
+        <div class="question" data-target="view-stack">
+          <p>My tech stack</p>
+        </div>
+
+        <div class="question" data-target="view-projects">
+          <p>Featured projects</p>
+        </div>
+
+        <div class="question" data-target="view-foundation">
+          <p>My foundation before AI</p>
+        </div>
+
+        <div class="question" data-target="view-recommendations">
+          <p>What people say</p>
+        </div>
+
+        <div class="question" data-target="view-contact">
+          <p>Contact</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="content-wrapper">
+
+        <!-- VIEW: HERO -->
+        <div id="view-hero" class="tab-content active">
+          <section class="hero section" id="hero" aria-labelledby="hero-heading">
+            <div class="container">
+
+
+              <h1 class="hero-headline reveal" id="hero-heading">
+                AI Workflows Specialist<br>
+                in <em class="hero-flip-word" data-hero-rk-flip
+                  data-words="UX Design|Product Design|Web Apps|Mobile Apps|User Interfaces|Media Creation|Desktop Apps|Agentic Pipelines">UX
+                  Design</em>
+              </h1>
+
+              <p class="hero-sub reveal">
+                I build custom AI tools, automated design workflows, and systems
+                that let one person do the work of a team.
+              </p>
+
+
+            </div>
+          </section>
+
+          <div class="chat">
+            <div class="text-field">
+              <input type="text" class="chat-input" placeholder="Ask your question about Roman and his experience..." />
+            </div>
+          </div>
+
+        </div>
+
+        <!-- VIEW: SHIFT -->
+        <div id="view-shift" class="tab-content">
+          <section class="shift section" id="shift" aria-labelledby="shift-heading">
+            <div class="container">
+              <div class="shift-header reveal">
+                <span class="section-eyebrow">The Shift</span>
+                <h2 id="shift-heading">From Designer to <em>Design&nbsp;Engineer</em></h2>
+                <p>In 2023, I stopped using design tools. I started <em>building</em> them.</p>
+              </div>
+
+              <div class="shift-split reveal">
+                <!-- Before -->
+                <div class="shift-col shift-col--before">
+                  <span class="shift-label">Before</span>
+                  <span class="shift-period">2014 – 2023</span>
+                  <ul class="shift-items">
+                    <li class="shift-item">UX Designer</li>
+                    <li class="shift-item">Delivered designs</li>
+                    <li class="shift-item">Used tools</li>
+                    <li class="shift-item">One domain</li>
+                    <li class="shift-item">Weeks per project</li>
+                    <li class="shift-item">Design deliverables</li>
+                  </ul>
+                </div>
+
+                <!-- After -->
+                <div class="shift-col shift-col--after">
+                  <span class="shift-label">After</span>
+                  <span class="shift-period">2024 – Now</span>
+                  <ul class="shift-items">
+                    <li class="shift-item">Design Engineer</li>
+                    <li class="shift-item">Builds design systems</li>
+                    <li class="shift-item">Builds tools</li>
+                    <li class="shift-item">Any domain</li>
+                    <li class="shift-item">Days per project</li>
+                    <li class="shift-item">Deployed experiences</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: WORK -->
+        <div id="view-work" class="tab-content">
+          <section class="section" id="work" aria-labelledby="work-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal">What I Build</span>
+              <h2 id="work-heading" class="reveal" style="margin-bottom: var(--space-3xl);">
+                If there's a problem, I'll design the system to <em>solve&nbsp;it.</em>
+              </h2>
+
+              <div class="work-grid reveal-stagger">
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x2699;</span>
+                  <h4>AI Tools &amp; Automation</h4>
+                  <p>Voice apps, generators, custom pipelines — tools that accelerate creative workflows.</p>
+                </div>
+
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x25A0;</span>
+                  <h4>Design Infrastructure</h4>
+                  <p>MCP servers, design systems, internal tools that multiply team output.</p>
+                </div>
+
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x2692;</span>
+                  <h4>Custom Software</h4>
+                  <p>IoT, fintech, mobile, media — purpose-built applications for complex domains.</p>
+                </div>
+
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x25CB;</span>
+                  <h4>UX &amp; Product Design</h4>
+                  <p>Enterprise, mobile, healthcare — end-to-end product thinking shipped to production.</p>
+                </div>
+
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x25B2;</span>
+                  <h4>Creative Technology</h4>
+                  <p>AI video, music production — design methodology applied beyond the screen.</p>
+                </div>
+
+                <div class="work-card">
+                  <span class="work-card-icon" aria-hidden="true">&#x21BB;</span>
+                  <h4>Workflow &amp; Process Design</h4>
+                  <p>Custom pipelines, AI-driven ops, automation systems that remove bottlenecks.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: HOW I BUILD -->
+        <div id="view-how-i-build" class="tab-content">
+          <section class="hib-section" id="hib-section" aria-labelledby="hib-heading">
+            <h2 id="hib-heading"
+              style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+              How I Build</h2>
+            <div class="hib-scene" id="hib-scene">
+              <div class="hib-wrapper" id="hib-wrapper"></div>
+              <div class="hib-steps-container" id="hib-steps">
+                <p class="hib-step"><span class="hib-step-num">01</span>I break the big task into smaller,
+                  <em>solvable&nbsp;problems</em></p>
+                <p class="hib-step"><span class="hib-step-num">02</span>I study each problem until I
+                  <em>truly&nbsp;understand</em> it</p>
+                <p class="hib-step"><span class="hib-step-num">03</span>I architect the <em>right&nbsp;solution</em>
+                  &mdash; not the obvious one</p>
+                <p class="hib-step"><span class="hib-step-num">04</span>I build and validate &mdash;
+                  <em>one&nbsp;component</em> at a time</p>
+                <p class="hib-step"><span class="hib-step-num">05</span>I connect the pieces into
+                  <em>one&nbsp;working&nbsp;system</em></p>
+                <p class="hib-step"><span class="hib-step-num">06</span>I <em>ship&nbsp;it</em></p>
+              </div>
+              <div class="hib-scroll-hint" id="hib-hint">&darr; scroll</div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: PROJECTS -->
+        <div id="view-projects" class="tab-content">
+          <section class="section" id="projects" aria-labelledby="projects-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal">Featured Projects</span>
+              <h2 id="projects-heading" class="reveal" style="margin-bottom: var(--space-lg);">
+                Not experiments. <em>Shipped&nbsp;products.</em>
+              </h2>
+              <p class="reveal"
+                style="color: var(--color-text-secondary); font-size: var(--text-body-01); margin-bottom: var(--space-3xl); max-width: 52ch;">
+                Each built with a process most teams skip.
+              </p>
+
+              <div class="projects-grid">
+                <!-- Project 1 -->
+                <article class="project-card reveal">
+                  <a href="projects/voice-ai-assistant/case-study.html" class="project-thumb">
+                    <img src="projects/voice-ai-assistant/assets/img/thumbnail.png" alt="Voice AI Assistant"
+                      loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">AI-Powered</span>
+                    <h3>Voice AI Assistant</h3>
+                    <p>Dictate, translate, transform — all at once. Hands-free workflow for knowledge workers.</p>
+                    <a href="projects/voice-ai-assistant/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 2 -->
+                <article class="project-card reveal">
+                  <a href="projects/video-scenario-tool/case-study.html" class="project-thumb">
+                    <img src="projects/video-scenario-tool/assets/img/thumbnail.png" alt="Video Scenarios Tool"
+                      loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">AI-Powered</span>
+                    <h3>Video Scenarios Tool</h3>
+                    <p>From idea to full storyboard and generation prompts in minutes. Not days.</p>
+                    <a href="projects/video-scenario-tool/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 3 -->
+                <article class="project-card reveal">
+                  <a href="projects/ai-video-production/case-study.html" class="project-thumb">
+                    <img src="projects/ai-video-production/assets/thumbnail.png" alt="AI Video Production"
+                      loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">AI-Powered</span>
+                    <h3>AI Video Production</h3>
+                    <p>A music video built like a product: research, storyboard, seven tools, shipped.</p>
+                    <a href="projects/ai-video-production/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 4 -->
+                <article class="project-card reveal">
+                  <a href="projects/miro-mcp/case-study.html" class="project-thumb">
+                    <img src="projects/miro-mcp/assets/img/thumbnail.png" alt="Miro MCP Server" loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">AI-Powered</span>
+                    <h3>Miro MCP Server</h3>
+                    <p>Custom MCP integration for Miro. Direct AI-to-design-tool communication.</p>
+                    <a href="projects/miro-mcp/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 5 -->
+                <article class="project-card reveal">
+                  <a href="projects/image-to-ascii/case-study.html" class="project-thumb">
+                    <img src="projects/image-to-ascii/assets/img/thumbnail.png" alt="Image to ASCII" loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">Creative Tech</span>
+                    <h3>Image to ASCII</h3>
+                    <p>Instant algorithmic conversion from image to high-fidelity ASCII art.</p>
+                    <a href="projects/image-to-ascii/case-study.html" class="project-link">
+                      View Project <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 6 -->
+                <article class="project-card reveal">
+                  <a href="projects/image-to-json/case-study.html" class="project-thumb">
+                    <img src="projects/image-to-json/assets/img/thumbnail.png" alt="Image to JSON" loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">Workflow</span>
+                    <h3>Image to JSON</h3>
+                    <p>Extract structured JSON data directly from UI screenshots using vision models.</p>
+                    <a href="projects/image-to-json/case-study.html" class="project-link">
+                      View Project <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 7 -->
+                <article class="project-card reveal">
+                  <a href="projects/infographics-decision-tree/case-study.html" class="project-thumb">
+                    <img src="projects/infographics-decision-tree/assets/img/thumbnail.png"
+                      alt="Infographics Decision Tree" loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">Workflow</span>
+                    <h3>Infographics Decision Tree</h3>
+                    <p>Interactive logic for routing and rendering complex infographic data.</p>
+                    <a href="projects/infographics-decision-tree/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+
+                <!-- Project 8 -->
+                <article class="project-card reveal">
+                  <a href="projects/upscaler/case-study.html" class="project-thumb">
+                    <img src="projects/upscaler/assets/img/thumbnail.png" alt="AI Image Upscaler" loading="lazy">
+                  </a>
+                  <div class="project-info">
+                    <span class="project-tag">AI-Powered</span>
+                    <h3>AI Image Upscaler</h3>
+                    <p>Enhance fidelity and clarity of low-res images automatically via neural networks.</p>
+                    <a href="projects/upscaler/case-study.html" class="project-link">
+                      View Case Study <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+              <p class="projects-coming-soon">More projects <em>coming soon...</em></p>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: CAPABILITIES -->
+        <div id="view-capabilities" class="tab-content">
+          <section class="section" id="capabilities" aria-labelledby="capabilities-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal">Experience &amp; Expertise</span>
+              <h2 id="capabilities-heading" class="reveal" style="margin-bottom: var(--space-3xl);">
+                Numbers that back up the <em>work.</em>
+              </h2>
+
+              <div class="capabilities-grid reveal-stagger">
+                <div class="cap-card">
+                  <span class="cap-value cap-value--text">Fortune 500</span>
+                  <span class="cap-label">Clients</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="100" data-suffix="%">0</span>
+                  <span class="cap-label">Project Completion Rate</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="10" data-suffix="+">0</span>
+                  <span class="cap-label">Years of Experience</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="30" data-suffix="+">0</span>
+                  <span class="cap-label">Teams Collaboration</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="10" data-suffix="+">0</span>
+                  <span class="cap-label">Designers Led</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="9" data-suffix="+">0</span>
+                  <span class="cap-label">AI Tools Built</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="3">0</span>
+                  <span class="cap-label">Custom MCP Servers</span>
+                </div>
+                <div class="cap-card">
+                  <span class="cap-value" data-count="15" data-suffix="+">0</span>
+                  <span class="cap-label">Domains Solved</span>
+                </div>
+              </div>
+
+              <div class="cap-tags reveal">
+                <!-- Core Design -->
+                <span class="cap-tag">UX Design</span>
+                <span class="cap-tag">Product Design</span>
+                <span class="cap-tag">User Interface Design</span>
+                <span class="cap-tag">Service Design</span>
+                <span class="cap-tag">Design Thinking</span>
+                <span class="cap-tag">Concept Creation</span>
+                <span class="cap-tag">Branding</span>
+                <span class="cap-tag">Prototyping</span>
+                <span class="cap-tag">Wireframing</span>
+                <span class="cap-tag">Sketches</span>
+                <span class="cap-tag">Interface Animation</span>
+                <span class="cap-tag">Moodboards</span>
+
+                <!-- Design Systems & UI -->
+                <span class="cap-tag">Design Systems</span>
+                <span class="cap-tag">Design System Creation</span>
+                <span class="cap-tag">Design System Maintaining</span>
+                <span class="cap-tag">Design System Guidelines</span>
+                <span class="cap-tag">UI Kits</span>
+                <span class="cap-tag">UI Refactoring</span>
+                <span class="cap-tag">UI Audit</span>
+                <span class="cap-tag">Typography</span>
+                <span class="cap-tag">Color Scheme Development</span>
+                <span class="cap-tag">Grids</span>
+                <span class="cap-tag">Layout</span>
+                <span class="cap-tag">Responsiveness</span>
+                <span class="cap-tag">Adaptiveness</span>
+                <span class="cap-tag">Guidelines for Developers</span>
+
+                <!-- Research & Discovery -->
+                <span class="cap-tag">User Research</span>
+                <span class="cap-tag">Discovery</span>
+                <span class="cap-tag">Discovery Framework</span>
+                <span class="cap-tag">Remote Discovery</span>
+                <span class="cap-tag">User Interview</span>
+                <span class="cap-tag">User Observation</span>
+                <span class="cap-tag">User Personas</span>
+                <span class="cap-tag">User Stories</span>
+                <span class="cap-tag">User Testing</span>
+                <span class="cap-tag">Usability Validation</span>
+                <span class="cap-tag">Surveys</span>
+                <span class="cap-tag">Competitive Research</span>
+                <span class="cap-tag">Empathy Mapping</span>
+                <span class="cap-tag">Customer Journey Map</span>
+                <span class="cap-tag">Affinity Mapping</span>
+                <span class="cap-tag">Rich Picture Mapping</span>
+                <span class="cap-tag">Card Sorting</span>
+                <span class="cap-tag">Task Analysis</span>
+                <span class="cap-tag">Jobs to be Done</span>
+                <span class="cap-tag">Problem Solving</span>
+                <span class="cap-tag">Problem Framing</span>
+
+                <!-- Evaluation & Testing -->
+                <span class="cap-tag">Expert Review</span>
+                <span class="cap-tag">Heuristic Evaluation</span>
+                <span class="cap-tag">Guerilla Testing</span>
+                <span class="cap-tag">Net Promoter Score</span>
+                <span class="cap-tag">Success Metrics</span>
+
+                <!-- Accessibility -->
+                <span class="cap-tag">Accessibility AA</span>
+                <span class="cap-tag">Accessibility AAA</span>
+                <span class="cap-tag">Accessibility Annotations</span>
+
+                <!-- Strategy & Process -->
+                <span class="cap-tag">Product Strategy</span>
+                <span class="cap-tag">Roadmap</span>
+                <span class="cap-tag">Prioritisation</span>
+                <span class="cap-tag">Estimation</span>
+                <span class="cap-tag">Design Sprint</span>
+                <span class="cap-tag">Service Blueprint</span>
+                <span class="cap-tag">Stakeholders Map</span>
+                <span class="cap-tag">Stakeholders Diagram</span>
+                <span class="cap-tag">Business Model Canvas</span>
+                <span class="cap-tag">Business Goals Discovery</span>
+                <span class="cap-tag">Business Processes Mapping</span>
+                <span class="cap-tag">SWOT Analysis</span>
+                <span class="cap-tag">RACI Matrix</span>
+                <span class="cap-tag">How Might We</span>
+                <span class="cap-tag">Storyboarding</span>
+                <span class="cap-tag">Mindmapping</span>
+                <span class="cap-tag">Information Architecture</span>
+
+                <!-- Workshops & Collaboration -->
+                <span class="cap-tag">Workshops</span>
+                <span class="cap-tag">Lightning Workshops</span>
+                <span class="cap-tag">Retro Workshops</span>
+                <span class="cap-tag">Brainstorming</span>
+                <span class="cap-tag">Brainwriting</span>
+                <span class="cap-tag">Ideation</span>
+                <span class="cap-tag">Ideas Crash-testing</span>
+                <span class="cap-tag">Feedback</span>
+                <span class="cap-tag">Retrospective</span>
+                <span class="cap-tag">Knowledge Sharing</span>
+
+                <!-- Collaboration -->
+                <span class="cap-tag">Collaboration with Front-end</span>
+                <span class="cap-tag">Collaboration with Back-end</span>
+                <span class="cap-tag">Collaboration with BA</span>
+                <span class="cap-tag">Collaboration with QA</span>
+                <span class="cap-tag">Distributed Remote Teams</span>
+                <span class="cap-tag">Mentoring</span>
+
+                <!-- Platforms -->
+                <span class="cap-tag">Web Applications</span>
+                <span class="cap-tag">Mobile Apps</span>
+                <span class="cap-tag">Desktop Software</span>
+                <span class="cap-tag">Enterprise Products</span>
+
+                <!-- AI & Agentic Workflows -->
+                <span class="cap-tag">AI Integration</span>
+                <span class="cap-tag">AI Design Processes &amp; Automation</span>
+                <span class="cap-tag">AI Media</span>
+                <span class="cap-tag">Agentic Workflows</span>
+                <span class="cap-tag">AI Pipelines</span>
+                <span class="cap-tag">MCP Servers</span>
+                <span class="cap-tag">MCP Protocol</span>
+                <span class="cap-tag">Prompt Engineering</span>
+                <span class="cap-tag">LLM Integration</span>
+                <span class="cap-tag">Multi-Agent Systems</span>
+                <span class="cap-tag">RAG Systems</span>
+                <span class="cap-tag">AI Code Generation</span>
+                <span class="cap-tag">AI Image Generation</span>
+                <span class="cap-tag">AI Video Production</span>
+                <span class="cap-tag">ComfyUI Workflows</span>
+                <span class="cap-tag">AI Prototyping</span>
+                <span class="cap-tag">AI-Assisted UX Research</span>
+                <span class="cap-tag">n8n Automation</span>
+
+                <!-- Tools -->
+                <span class="cap-tag">Figma</span>
+                <span class="cap-tag">Miro</span>
+                <span class="cap-tag">Maze</span>
+                <span class="cap-tag">Sketch</span>
+                <span class="cap-tag">Principle</span>
+                <span class="cap-tag">Adobe Creative Cloud</span>
+                <span class="cap-tag">Claude</span>
+                <span class="cap-tag">ChatGPT</span>
+                <span class="cap-tag">Cursor</span>
+                <span class="cap-tag">Windsurf</span>
+                <span class="cap-tag">VS Code</span>
+                <span class="cap-tag">HTML / CSS</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: STACK -->
+        <div id="view-stack" class="tab-content">
+          <section class="section" id="stack" aria-labelledby="stack-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal">The Stack</span>
+              <h2 id="stack-heading" class="reveal" style="margin-bottom: var(--space-md);">
+                Building blocks of my <em>production&nbsp;pipeline.</em>
+              </h2>
+              <p class="reveal"
+                style="color: var(--color-text-secondary); font-size: var(--text-body-01); margin-bottom: var(--space-3xl); max-width: 52ch;">
+                These aren't tools I've tried. These are what I ship with every day.
+              </p>
+
+              <div class="stack-groups reveal-stagger">
+                <div class="stack-group">
+                  <h3 class="stack-group-title">AI &amp; LLMs</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="Primary AI partner for code and reasoning"><img
+                        class="stack-item-icon" src="img/tools/claude@2x.png" alt="" width="20"
+                        height="20">Claude</span>
+                    <span class="stack-item" data-tooltip="Multimodal AI for research and generation"><img
+                        class="stack-item-icon" src="img/tools/gpt.png" srcset="img/tools/gpt@2x.png 2x" alt=""
+                        width="20" height="20">ChatGPT</span>
+                    <span class="stack-item" data-tooltip="Google's multimodal AI model"><img class="stack-item-icon"
+                        src="img/tools/gemini@2x.png" alt="" width="20" height="20">Gemini</span>
+                    <span class="stack-item" data-tooltip="xAI's reasoning model"><img class="stack-item-icon"
+                        src="img/tools/grok@2x.png" alt="" width="20" height="20">Grok</span>
+                    <span class="stack-item" data-tooltip="AI-powered search and research"><img class="stack-item-icon"
+                        src="img/tools/perplexity@2x.png" alt="" width="20" height="20">Perplexity</span>
+                    <span class="stack-item" data-tooltip="Google's AI notebook for deep research"><img
+                        class="stack-item-icon" src="img/tools/notebooklm@2x.png" alt="" width="20"
+                        height="20">NotebookLM</span>
+                    <span class="stack-item" data-tooltip="Open-source model hub and inference"><img
+                        class="stack-item-icon" src="img/tools/huggingface@2x.png" alt="" width="20"
+                        height="20">HuggingFace</span>
+                    <span class="stack-item" data-tooltip="Image generation and visual exploration">Midjourney</span>
+                    <span class="stack-item" data-tooltip="Voice synthesis and cloning">ElevenLabs</span>
+                    <span class="stack-item" data-tooltip="Open-weight reasoning and deployment flexibility"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/mistralai/FFFFFF"
+                        onerror="this.remove()" alt="" width="20" height="20">Mistral AI</span>
+                    <span class="stack-item" data-tooltip="High cost/performance for production workflows"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/deepseek/FFFFFF"
+                        onerror="this.remove()" alt="" width="20" height="20">DeepSeek</span>
+                    <span class="stack-item" data-tooltip="Route requests across multiple models"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/openrouter/FFFFFF"
+                        onerror="this.remove()" alt="" width="20" height="20">OpenRouter</span>
+                    <span class="stack-item" data-tooltip="LLM benchmarking">LMArena</span>
+                    <span class="stack-item" data-tooltip="Alibaba's open-weight models">Qwen</span>
+                    <span class="stack-item" data-tooltip="Gemini API prototyping platform"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/google/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Google AI Studio</span>
+                    <span class="stack-item" data-tooltip="Meta's LLM ecosystem"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/meta/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Meta AI</span>
+                    <span class="stack-item" data-tooltip="Fast LLM inference API">Kie.ai</span>
+                  </div>
+                </div>
+
+                <div class="stack-group">
+                  <h3 class="stack-group-title">AI Media &amp; Pipelines</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="Fast image generation pipeline"><img class="stack-item-icon"
+                        src="img/tools/flux@2x.png" alt="" width="20" height="20">Flux</span>
+                    <span class="stack-item" data-tooltip="Node-based AI image generation"><img class="stack-item-icon"
+                        src="img/tools/comfyui@2x.png" alt="" width="20" height="20">ComfyUI</span>
+                    <span class="stack-item" data-tooltip="Serverless AI inference"><img class="stack-item-icon"
+                        src="img/tools/fal-ai@2x.png" alt="" width="20" height="20">fal.ai</span>
+                    <span class="stack-item" data-tooltip="AI-powered app builder"><img class="stack-item-icon"
+                        src="img/tools/lovable@2x.png" alt="" width="20" height="20">Lovable</span>
+                    <span class="stack-item" data-tooltip="AI creative platform"><img class="stack-item-icon"
+                        src="img/tools/antigravity@2x.png" alt="" width="20" height="20">Antigravity</span>
+                    <span class="stack-item" data-tooltip="AI video generation">RunwayML</span>
+                    <span class="stack-item" data-tooltip="AI video generation">Kling</span>
+                    <span class="stack-item" data-tooltip="Dream Machine for cinematic video"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/luma/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Luma AI</span>
+                    <span class="stack-item" data-tooltip="Realtime visual exploration"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/krea/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Krea AI</span>
+                    <span class="stack-item" data-tooltip="Production-friendly image generation"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/leonardo/FFFFFF"
+                        onerror="this.remove()" alt="" width="20" height="20">Leonardo AI</span>
+                    <span class="stack-item" data-tooltip="Reliable, consistent results">Google Veo</span>
+                    <span class="stack-item" data-tooltip="Turning stories into video">Sora</span>
+                    <span class="stack-item" data-tooltip="Commercially-safe outputs"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/adobefirefly/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Adobe Firefly</span>
+                    <span class="stack-item" data-tooltip="ComfyUI workflows & assets">RunningHub</span>
+                  </div>
+                </div>
+
+                <div class="stack-group">
+                  <h3 class="stack-group-title">Design &amp; Research</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="Primary design tool — extended via MCP"><img
+                        class="stack-item-icon" src="img/tools/figma.png" srcset="img/tools/figma@2x.png 2x" alt=""
+                        width="20" height="20">Figma</span>
+                    <span class="stack-item" data-tooltip="Collaborative whiteboarding — extended via MCP"><img
+                        class="stack-item-icon" src="img/tools/miro.png" srcset="img/tools/miro@2x.png 2x" alt=""
+                        width="20" height="20">Miro</span>
+                    <span class="stack-item" data-tooltip="Usability testing and analytics"><img class="stack-item-icon"
+                        src="img/tools/maze.png" srcset="img/tools/maze@2x.png 2x" alt="" width="20"
+                        height="20">Maze</span>
+                    <span class="stack-item" data-tooltip="Component documentation platform"><img
+                        class="stack-item-icon" src="img/tools/storybook.png" srcset="img/tools/storybook@2x.png 2x"
+                        alt="" width="20" height="20">Storybook</span>
+                    <span class="stack-item" data-tooltip="Design system documentation"><img class="stack-item-icon"
+                        src="img/tools/zeroheight.png" srcset="img/tools/zeroheight@2x.png 2x" alt="" width="20"
+                        height="20">zeroheight</span>
+                    <span class="stack-item" data-tooltip="Visual mind mapping"><img class="stack-item-icon"
+                        src="img/tools/mindnode.png" srcset="img/tools/mindnode@2x.png 2x" alt="" width="20"
+                        height="20">MindNode</span>
+                    <span class="stack-item" data-tooltip="Design-to-code publishing">Framer</span>
+                    <span class="stack-item" data-tooltip="IA, sitemap and website system generation"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/relume/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Relume</span>
+                    <span class="stack-item" data-tooltip="Sketch-to-UI and quick product drafts"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/uizard/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Uizard</span>
+                    <span class="stack-item" data-tooltip="Fast interface generation"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/galileo/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Galileo AI</span>
+                    <span class="stack-item" data-tooltip="AI support for flows and UX artifacts"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/pilot/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">UX Pilot</span>
+                    <span class="stack-item" data-tooltip="Open-source product design alternative"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/penpot/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Penpot</span>
+                  </div>
+                </div>
+
+                <div class="stack-group">
+                  <h3 class="stack-group-title">Creative Suite</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="Photo editing and compositing"><img class="stack-item-icon"
+                        src="img/tools/photoshop.png" srcset="img/tools/photoshop@2x.png 2x" alt="" width="20"
+                        height="20">Photoshop</span>
+                    <span class="stack-item" data-tooltip="Vector graphics and illustration"><img
+                        class="stack-item-icon" src="img/tools/illustrator.png" srcset="img/tools/illustrator@2x.png 2x"
+                        alt="" width="20" height="20">Illustrator</span>
+                    <span class="stack-item" data-tooltip="Professional video editing"><img class="stack-item-icon"
+                        src="img/tools/premiere.png" srcset="img/tools/premiere@2x.png 2x" alt="" width="20"
+                        height="20">Premiere Pro</span>
+                    <span class="stack-item" data-tooltip="Motion graphics and visual effects"><img
+                        class="stack-item-icon" src="img/tools/after-effects.png"
+                        srcset="img/tools/after-effects@2x.png 2x" alt="" width="20" height="20">After Effects</span>
+                    <span class="stack-item" data-tooltip="Photo processing and colour grading"><img
+                        class="stack-item-icon" src="img/tools/lightroom.png" srcset="img/tools/lightroom@2x.png 2x"
+                        alt="" width="20" height="20">Lightroom</span>
+                    <span class="stack-item" data-tooltip="Color grading and finishing">DaVinci Resolve</span>
+                    <span class="stack-item" data-tooltip="AI-first creative suite for fast production"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/canva/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Canva Magic Studio</span>
+                    <span class="stack-item" data-tooltip="Browser-based image editing"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/photopea/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Photopea</span>
+                    <span class="stack-item" data-tooltip="Online video editing and AI utilities"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/veed/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">VEED</span>
+                  </div>
+                </div>
+
+                <div class="stack-group">
+                  <h3 class="stack-group-title">Development</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="AI-native code editor"><img class="stack-item-icon"
+                        src="img/tools/cursor.png" srcset="img/tools/cursor@2x.png 2x" alt="" width="20"
+                        height="20">Cursor</span>
+                    <span class="stack-item" data-tooltip="Primary IDE with extensions"><img class="stack-item-icon"
+                        src="img/tools/vs-code.png" srcset="img/tools/vs-code@2x.png 2x" alt="" width="20"
+                        height="20">VS
+                      Code</span>
+                    <span class="stack-item" data-tooltip="Scripting and automation">Python</span>
+                    <span class="stack-item" data-tooltip="Server-side and tooling">Node.js</span>
+                    <span class="stack-item" data-tooltip="AI ↔ tool communication protocol">MCP Protocol</span>
+                    <span class="stack-item" data-tooltip="UI generation into code and components"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/vercel/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">v0</span>
+                    <span class="stack-item" data-tooltip="Fast fullstack prototyping"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/stackblitz/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Bolt.new</span>
+                    <span class="stack-item" data-tooltip="Open-source backend for MVPs"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/supabase/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Supabase</span>
+                    <span class="stack-item" data-tooltip="Cloud API for running AI models"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/replicate/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Replicate</span>
+                    <span class="stack-item" data-tooltip="Cloud compute for AI"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/runpod/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Runpod</span>
+                    <span class="stack-item" data-tooltip="In-app collaboration APIs"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/weavy/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Weavy</span>
+                    <span class="stack-item" data-tooltip="Web hosting & automation"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/netlify/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Netlify</span>
+                    <span class="stack-item" data-tooltip="Code generation models">Codex</span>
+                    <span class="stack-item" data-tooltip="Code hosting & collaboration"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/github/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">GitHub</span>
+                  </div>
+                </div>
+
+                <div class="stack-group">
+                  <h3 class="stack-group-title">Productivity &amp; Ops</h3>
+                  <div class="stack-items">
+                    <span class="stack-item" data-tooltip="Notes, docs, and knowledge base"><img class="stack-item-icon"
+                        src="img/tools/notion.png" srcset="img/tools/notion@2x.png 2x" alt="" width="20"
+                        height="20">Notion</span>
+                    <span class="stack-item" data-tooltip="Team communication"><img class="stack-item-icon"
+                        src="img/tools/slack.png" srcset="img/tools/slack@2x.png 2x" alt="" width="20"
+                        height="20">Slack</span>
+                    <span class="stack-item" data-tooltip="Enterprise communication"><img class="stack-item-icon"
+                        src="img/tools/teams.png" srcset="img/tools/teams@2x.png 2x" alt="" width="20"
+                        height="20">Teams</span>
+                    <span class="stack-item" data-tooltip="Project tracking and sprints"><img class="stack-item-icon"
+                        src="img/tools/jira.png" srcset="img/tools/jira@2x.png 2x" alt="" width="20"
+                        height="20">Jira</span>
+                    <span class="stack-item" data-tooltip="Visual workflow automation">n8n</span>
+                    <span class="stack-item" data-tooltip="Integration automation">Zapier</span>
+                    <span class="stack-item" data-tooltip="Product management with strong UX velocity"><img
+                        class="stack-item-icon" src="https://cdn.simpleicons.org/linear/FFFFFF" onerror="this.remove()"
+                        alt="" width="20" height="20">Linear</span>
+                    <span class="stack-item" data-tooltip="Workspace-style browser UX"><img class="stack-item-icon"
+                        src="https://cdn.simpleicons.org/arc/FFFFFF" onerror="this.remove()" alt="" width="20"
+                        height="20">Arc Browser</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: AUDIENCES -->
+        <div id="view-audiences" class="tab-content">
+          <section class="section" id="audiences" aria-labelledby="audiences-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal">Who I Work With</span>
+              <h2 id="audiences-heading" class="reveal" style="margin-bottom: var(--space-3xl);">
+                Three paths. <em>One&nbsp;standard.</em>
+              </h2>
+
+              <div class="audience-grid reveal-stagger">
+                <div class="audience-card">
+                  <h3>Enterprise</h3>
+                  <p>I build design environments for organizations — systems, tools, and workflows that multiply your
+                    team's
+                    output without multiplying headcount.</p>
+                  <a href="#contact" class="audience-cta">
+                    Let's talk <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
+
+                <div class="audience-card">
+                  <h3>Startups</h3>
+                  <p>From zero to shipped — faster than you think is possible. One person, full design and engineering
+                    capability.</p>
+                  <a href="#contact" class="audience-cta">
+                    Let's talk <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
+
+                <div class="audience-card">
+                  <h3>Individuals</h3>
+                  <p>Custom solutions for unique problems. I'll build exactly what you need — not what's available off
+                    the
+                    shelf.</p>
+                  <a href="#contact" class="audience-cta">
+                    Let's talk <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: RECOMMENDATIONS -->
+        <div id="view-recommendations" class="tab-content">
+          <section class="recommendations section" id="recommendations" aria-labelledby="recommendations-heading">
+            <div class="container">
+              <div class="rec-header reveal">
+                <span class="section-eyebrow">Recommendations</span>
+                <h2 id="recommendations-heading">What people <em>say.</em></h2>
+              </div>
+            </div>
+
+            <!-- Marquee — full-bleed horizontal scroll -->
+            <div class="rec-marquee reveal" aria-label="Testimonials from colleagues and clients">
+              <div class="rec-marquee-track">
+
+                <!-- 1. Anastasia Fialko -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">I had the pleasure of working with Roman, who provided invaluable consultations on
+                    optimising AI workflows and leveraging artificial intelligence in my projects. His design thinking
+                    is
+                    exceptional, and he is truly one of the best specialists in the market I've encountered. He is
+                    highly
+                    skilled and approaches problems systematically. I use several software tools he developed, which
+                    have
+                    simplified my work life by about 50%. I highly recommend him as an outstanding specialist in this
+                    field.
+                  </p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/anastasia-fialko.jpg" alt="Anastasia Fialko" width="48"
+                      height="48" loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Anastasia Fialko</cite>
+                      <span class="rec-role">Marketing Lead @ Tech Nomads</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 2. Damyr Hadiiev -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">Roman is an excellent UX Designer with strong technical, communication, product,
+                    and
+                    research skills. We worked together on one of our key R&amp;D AI-audio driven projects over the last
+                    year,
+                    and his proactive execution was one of the main drivers of its success. He is highly communicative,
+                    sharp-minded, and has strong analytical skills and critical thinking. Roman understands complex
+                    design
+                    systems from both a functional and aesthetic perspective, which makes him a uniquely effective
+                    partner for
+                    challenging product work.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/damyr-hadiiev.jpg" alt="Damyr Hadiiev" width="48" height="48"
+                      loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Damyr Hadiiev</cite>
+                      <span class="rec-role">Senior Science Practice Lead &middot; AI &amp; Computer Vision</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 3. Leonid Pavlovsky -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">Worked with Roman on a commercial project and the experience was super positive.
+                    We've
+                    worked in dynamically changing conditions. Roman demonstrated good knowledge of AI interface trends,
+                    and
+                    was able to adapt to changing requirements fast. In the process he earned great trust and
+                    collaboration
+                    with the client. I'd be happy to work with Roman in the future projects.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/leonid-pavlovsky.jpg" alt="Leonid Pavlovsky" width="48"
+                      height="48" loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Leonid Pavlovsky</cite>
+                      <span class="rec-role">R&amp;D Product Manager &middot; 20k Students on Gen AI</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 4. Vladyslav Kozlovskyi -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">Roman has a talent to simplify complex design solutions; to build and organise
+                    multi-platform design systems into scalable and easy to use beautiful digital products. Impressive
+                    experience, strong lead and mentoring skills. Passion to learn in wide areas, such as music, art,
+                    motion
+                    and digital design, cartography, automotive design and more. Design systems, design patterns,
+                    accessible
+                    design solutions, user centered design and a professional who values your and his time.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/vladyslav-kozlovskyi.jpg" alt="Vladyslav Kozlovskyi" width="48"
+                      height="48" loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Vladyslav Kozlovskyi</cite>
+                      <span class="rec-role">Senior UX/UI Designer &amp; Design System Manager</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 5. Rory Colgan -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">Roman is a solid designer, capable of managing and delivering all aspects of the
+                    product
+                    design life cycle. On top of all this he's a super nice guy! We worked closely together for some
+                    time...
+                    it was a thoroughly pleasurable experience.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/rory-colgan.jpg" alt="Rory Colgan" width="48" height="48"
+                      loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Rory Colgan</cite>
+                      <span class="rec-role">Design Recruitment</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 6. Lesia Nikoza -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">He was my mentor at SoftServe Internship program. It was great opportunity for me!
+                    I'm
+                    very thankful for helping me get new skills starting from communication and time management to
+                    Visual
+                    Design, Animation and growing as a professional. Will be happy to work with him in the future!</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/lesia-nikoza.jpg" alt="Lesia Nikoza" width="48" height="48"
+                      loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Lesia Nikoza</cite>
+                      <span class="rec-role">Senior User Experience Designer @ SoftServe</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 7. Kate Holubtsova -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">He is a talented UX Designer, responsible and qualified specialist. Roman is the
+                    person
+                    who can identify the right problem and solve it in the most elegant way. His enthusiasm,
+                    perfectionism,
+                    ability to ask right questions really helped to deliver great design solutions. He became a great
+                    mentor
+                    for me! I would strongly recommend Roman.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/kate-holubtsova.jpg" alt="Kate Holubtsova" width="48"
+                      height="48" loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Kate Holubtsova</cite>
+                      <span class="rec-role">Senior Product Designer @ Adevinta</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+                <!-- 8. Jenny El Gabali -->
+                <blockquote class="rec-card">
+                  <p class="rec-text">Roman is a very experienced, capable and knowledgeable UI/UX Designer. He is very
+                    honest, loyal and hard working and an absolute credit to his employer. He has genuine passion for
+                    travel
+                    and new experiences and I am sure he will go far in the future.</p>
+                  <footer class="rec-author">
+                    <img class="rec-avatar" src="img/rec/jenny-el-gabali.jpg" alt="Jenny El Gabali" width="48"
+                      height="48" loading="lazy">
+                    <div class="rec-meta">
+                      <cite class="rec-name">Jenny El Gabali</cite>
+                      <span class="rec-role">Head of Admissions @ Rathdown School</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                      rel="noopener noreferrer" class="rec-li-icon" aria-label="View on LinkedIn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  </footer>
+                </blockquote>
+
+              </div>
+            </div>
+
+            <div class="container">
+              <a href="https://www.linkedin.com/in/krizhanovsky/details/recommendations/" target="_blank"
+                rel="noopener noreferrer" class="rec-linkedin-link reveal">
+                View all on LinkedIn <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: FOUNDATION -->
+        <div id="view-foundation" class="tab-content">
+          <section class="foundation section" id="foundation" aria-labelledby="foundation-heading">
+            <div class="container">
+              <div class="foundation-header reveal">
+                <span class="section-eyebrow">The Foundation</span>
+                <h2 id="foundation-heading" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em;">
+                  10+ years of UX before AI changed <span id="vapour-text-container"></span>
+                </h2>
+                <p>These projects shaped the methodology I now apply with AI. The problems were real. The processes were
+                  rigorous. The results were shipped.</p>
+              </div>
+
+              <div class="foundation-grid reveal-stagger">
+                <div class="foundation-card">
+                  <span class="foundation-card-period">Enterprise</span>
+                  <h4>Healthcare Platform</h4>
+                  <p>Complex clinical workflows redesigned for speed and safety across a multi-hospital network.</p>
+                </div>
+
+                <div class="foundation-card">
+                  <span class="foundation-card-period">Platform</span>
+                  <h4>Code Discovery</h4>
+                  <p>Developer-facing search and navigation for a large-scale code intelligence platform.</p>
+                </div>
+
+                <div class="foundation-card">
+                  <span class="foundation-card-period">Mobile</span>
+                  <h4>MotoShare</h4>
+                  <p>Peer-to-peer vehicle sharing app — from concept to shipped iOS and Android product.</p>
+                </div>
+
+                <div class="foundation-card">
+                  <span class="foundation-card-period">Enterprise</span>
+                  <h4>Vendor Portal</h4>
+                  <p>Multi-tenant vendor management system handling complex approval and compliance flows.</p>
+                </div>
+
+                <div class="foundation-card">
+                  <span class="foundation-card-period">IoT</span>
+                  <h4>Vehicle Tracking</h4>
+                  <p>Real-time fleet tracking system with geofencing, alerts, and driver behaviour analytics.</p>
+                </div>
+
+                <div class="foundation-card">
+                  <span class="foundation-card-period">Leadership</span>
+                  <h4>Team &amp; Process</h4>
+                  <p>Built and led design teams, established design operations, and mentored junior designers.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- VIEW: CONTACT -->
+        <div id="view-contact" class="tab-content">
+          <section class="contact section" id="contact" aria-labelledby="contact-heading">
+            <div class="container">
+              <span class="section-eyebrow reveal" style="justify-content: center;">Contact</span>
+              <h2 id="contact-heading" class="reveal">Let's build your <em>design&nbsp;future.</em></h2>
+
+              <p class="contact-sub reveal">
+                Ready to move faster without losing quality? Let's discuss your project.
+              </p>
+
+              <a href="mailto:mailtotheroman@gmail.com" class="contact-email reveal">
+                mailtotheroman@gmail.com
+              </a>
+
+              <div class="contact-actions reveal">
+                <a href="mailto:mailtotheroman@gmail.com" class="btn btn-primary">
+                  Book a 30-min call <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+              </div>
+
+              <div class="contact-badge reveal">
+                <span class="dot" aria-hidden="true"></span>
+                Open to projects · 2 spots in Q2 2026
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Catch Me! Easter Egg -->
+  <div class="catch-me" id="catch-me" aria-hidden="true" style="display:none;">
+    <div class="catch-me__dot"></div>
+    <span class="catch-me__label">CATCH ME!</span>
+  </div>
+
+  <div class="catch-me-overlay" id="catch-me-overlay" role="dialog" aria-label="Magic message">
+    <button class="catch-me-overlay__close" id="catch-me-close" aria-label="Close">&times;</button>
+    <p class="catch-me-overlay__text">
+      People don't want complicated interfaces or many functions — they want their problems to be solved with <span
+        class="catch-me-overlay__accent">Magic.</span>
+    </p>
+    <p class="catch-me-overlay__text catch-me-overlay__accent"
+      style="font-size: clamp(28px, 5vw, 56px); margin: 0 0 40px;">
+      I do the Magic!
+    </p>
+    <button class="catch-me-overlay__back" id="catch-me-back"><span aria-hidden="true">&larr;</span> Go back</button>
+  </div>
+
+</body>
+
+</html>

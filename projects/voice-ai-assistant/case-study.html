@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<!--
+  voice-ai-assistant-case-study.html
+  Assembly Agent — Engine v5.6 (Expanded Edition)
+  Generated: 2026-03-16
+  Style: DARK | Density: NORMAL | Fonts: DM Sans + Instrument Serif (from reference)
+  Structure: Deliverable-centric model + deep UX process + competitive research + personas
+  Theme: Dark (#0A0A0A + #CCFF00 + #FFFFFF)
+  Animations: GSAP 3.12 + ScrollTrigger
+-->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>TYPERR — AI-Native Voice Workflow for macOS · Roman Kryzhanovskyi</title>
+  <meta name="description"
+    content="How I designed and built a macOS menu bar utility that replaces 3 separate tools with one push-to-talk gesture — dictation, translation, and AI prompt generation in a single voice workflow.">
+  <meta name="keywords"
+    content="voice UI, macOS app, AI product design, menu bar utility, local AI model, push-to-talk, voice workflow, UX engineering, Roman Kryzhanovskyi">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <link rel="canonical" href="https://roman.design/case-studies/voice-ai-assistant">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="TYPERR — AI-Native Voice Workflow for macOS · Roman Kryzhanovskyi">
+  <meta property="og:description"
+    content="One push-to-talk gesture replaces three separate tools. How I designed and built an AI-native voice layer for macOS.">
+  <meta property="og:image" content="./assets/img/main-window-second-version@2x.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/voice-ai-assistant">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi · Portfolio">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TYPERR — AI-Native Voice Workflow for macOS · Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="One push-to-talk gesture replaces three separate tools.">
+  <meta name="twitter:image" content="./assets/img/main-window-second-version@2x.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "TYPERR — AI-Native Voice Workflow for macOS",
+    "description": "How I designed and built a macOS menu bar utility that replaces 3 separate tools with one push-to-talk gesture.",
+    "author": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi" }
+  }
+  </script>
+
+  <!-- Fonts — DM Sans + Instrument Serif (from reference) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — v5.6 Dark Theme (from reference)
+       ============================================================ */
+    :root {
+      --bg-primary: #0A0A0A;
+      --bg-secondary: #131517;
+      --bg-card: #1A1C1F;
+      --bg-card-hover: #222426;
+
+      --accent-lime: #CCFF00;
+      --accent-lime-dim: rgba(204, 255, 0, 0.12);
+
+      --text-primary: #FFFFFF;
+      --text-secondary: #BBBBBB;
+      --text-muted: #888888;
+
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Sans', system-ui, sans-serif;
+
+      --s-1: 8px;
+      --s-2: 16px;
+      --s-3: 24px;
+      --s-4: 32px;
+      --s-5: 40px;
+      --s-6: 48px;
+      --s-8: 64px;
+      --s-10: 80px;
+      --s-12: 96px;
+
+      --r-sm: 8px;
+      --r-md: 12px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 4px 16px rgba(204, 255, 0, 0.08);
+
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --dur: 220ms;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-weight: 300;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: opacity var(--dur) var(--ease);
+    }
+
+    a:hover {
+      opacity: .7;
+    }
+
+    /* ============================================================
+       ACCESSIBILITY
+       ============================================================ */
+    .skip-to-content {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      background: var(--accent-lime);
+      color: #0A0A0A;
+      padding: var(--s-1) var(--s-3);
+      z-index: 200;
+      text-decoration: none;
+      border-radius: var(--r-sm);
+      font-weight: 700;
+      font-size: .85rem;
+      text-transform: uppercase;
+    }
+
+    .skip-to-content:focus {
+      top: var(--s-1);
+      opacity: 1;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--s-6);
+    }
+
+    .container--wide {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--s-6);
+    }
+
+    @media (max-width: 768px) {
+
+      .container,
+      .container--wide {
+        padding: 0 var(--s-3);
+      }
+    }
+
+    .section {
+      padding: var(--s-12) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    h4 {
+      font-family: var(--font-body);
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--s-2);
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.15;
+      margin-bottom: var(--s-3);
+    }
+
+    h3 {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      line-height: 1.25;
+      margin-bottom: var(--s-2);
+    }
+
+    p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--s-2);
+      font-size: 1.0625rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    h1 em,
+    h2 em,
+    h3 em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--accent-lime);
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-3);
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--accent-lime);
+    }
+
+    .hero-hook {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
+      color: var(--text-secondary);
+      max-width: 680px;
+      line-height: 1.45;
+      margin: 16px 0 28px;
+    }
+
+    /* ============================================================
+       DOT NAV
+       ============================================================ */
+    .dot-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      cursor: pointer;
+      transition: all var(--dur) var(--ease);
+      position: relative;
+    }
+
+    .nav-dot:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .nav-dot.active {
+      background: var(--accent-lime);
+      transform: scale(1.3);
+    }
+
+    .nav-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+      font-weight: 500;
+    }
+
+    .nav-dot:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 900px) {
+      .dot-nav {
+        display: none;
+      }
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: var(--s-12) 0 var(--s-8);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-logo-video {
+      max-width: 280px;
+      margin-bottom: var(--s-6);
+    }
+
+    .hero-logo-video video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero-eyebrow {
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-3);
+      font-weight: 700;
+    }
+
+    .hero-lead {
+      font-size: 1.125rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin-top: var(--s-3);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-4);
+      margin-top: var(--s-6);
+      border-top: 1px solid var(--border);
+      padding-top: var(--s-4);
+    }
+
+    .meta-item h4 {
+      margin-bottom: 4px;
+    }
+
+    .meta-item p {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .meta-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-image {
+      margin-top: var(--s-6);
+      overflow: hidden;
+    }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-3);
+      margin-top: var(--s-6);
+    }
+
+    .metric-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--s-3);
+      text-align: center;
+    }
+
+    .metric-block--highlight {
+      background: var(--accent-lime);
+      border-color: var(--accent-lime);
+    }
+
+    .metric-block--highlight .metric-value {
+      color: #0A0A0A;
+    }
+
+    .metric-block--highlight .metric-label {
+      color: #0A0A0A;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .metric-label {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+      .metrics-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ============================================================
+       TWO-COLUMN
+       ============================================================ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-6);
+      align-items: start;
+      margin-top: var(--s-4);
+    }
+
+    .two-col--reverse {
+      direction: rtl;
+    }
+
+    .two-col--reverse>* {
+      direction: ltr;
+    }
+
+    .two-col__media {
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+
+    .two-col__media img {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+
+      .two-col,
+      .two-col--reverse {
+        grid-template-columns: 1fr;
+        direction: ltr;
+      }
+    }
+
+    /* ============================================================
+       ANIMATED BORDER
+       ============================================================ */
+    @property --border-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes rotateBorder {
+      to {
+        --border-angle: 360deg;
+      }
+    }
+
+    /* ============================================================
+       CARDS
+       ============================================================ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      transition: all var(--dur) var(--ease);
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* Mode cards — animated gradient border + zoom */
+    .mode-cards .card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid transparent;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .mode-cards .card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--r-lg);
+      padding: 1px;
+      background: linear-gradient(var(--border), var(--border));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      transition: background 0.3s ease;
+    }
+
+    .mode-cards .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(204, 255, 0, 0.08), 0 24px 64px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-cards .card:hover::before {
+      background: conic-gradient(from var(--border-angle), transparent 25%, var(--accent-lime) 50%, transparent 75%);
+      animation: rotateBorder 3s linear infinite;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      font-size: .95rem;
+    }
+
+    /* Persona cards */
+    .persona-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .persona-card__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      background: var(--accent-lime-dim);
+      border: 1px solid rgba(204, 255, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-2);
+    }
+
+    .persona-card__icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .persona-card__traits {
+      margin-top: var(--s-2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .persona-trait {
+      font-size: .7rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: var(--r-sm);
+      font-weight: 600;
+    }
+
+    /* Competitor cards */
+    .competitor-card {
+      border-left: 3px solid var(--border);
+    }
+
+    .competitor-card__name {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .competitor-card__weakness {
+      font-size: .85rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* Hypothesis block */
+    .hypothesis-block {
+      margin-top: var(--s-4);
+      background: var(--accent-lime-dim);
+      border: 1px solid rgba(204, 255, 0, 0.2);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+    }
+
+    .hypothesis-block__label {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent-lime);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: var(--s-2);
+    }
+
+    .hypothesis-block p {
+      color: var(--text-primary);
+      font-weight: 400;
+      font-size: 1.05rem;
+    }
+
+    /* Principle cards */
+    .principle-card {
+      border-top: 2px solid var(--accent-lime);
+    }
+
+    .principle-card__number {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* Goal cards */
+    .goal-card {
+      text-align: center;
+      padding: var(--s-5);
+    }
+
+    .goal-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent-lime-dim);
+      border: 1px solid rgba(204, 255, 0, 0.2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-2);
+    }
+
+    .goal-card__icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Keyboard key illustrations */
+    .kbd-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: var(--s-3);
+      align-items: center;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 40px;
+      padding: 0 12px;
+      background: linear-gradient(180deg, #2A2C2F 0%, #1A1C1F 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 3px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .kbd--active {
+      background: linear-gradient(180deg, rgba(204, 255, 0, 0.2) 0%, rgba(204, 255, 0, 0.08) 100%);
+      border-color: rgba(204, 255, 0, 0.3);
+      border-bottom-color: rgba(204, 255, 0, 0.15);
+      color: var(--accent-lime);
+      box-shadow: 0 2px 8px rgba(204, 255, 0, 0.15), inset 0 1px 0 rgba(204, 255, 0, 0.1);
+    }
+
+    .kbd--wide {
+      min-width: 80px;
+    }
+
+    .kbd-plus {
+      color: var(--text-muted);
+      font-size: .85rem;
+      font-weight: 400;
+    }
+
+    /* UX decision cards — horizontal scroll */
+    .decisions-scroll {
+      display: flex;
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: var(--s-2);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .decisions-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .decisions-scroll::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 2px;
+    }
+
+    .decisions-scroll::-webkit-scrollbar-thumb {
+      background: var(--accent-lime-dim);
+      border-radius: 2px;
+    }
+
+    .decisions-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(204, 255, 0, 0.3);
+    }
+
+    .decisions-scroll .card {
+      min-width: 300px;
+      max-width: 340px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+    }
+
+    .decision-card {
+      border-left: 3px solid var(--accent-lime);
+    }
+
+    .decision-card__number {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* Image caption */
+    .img-caption {
+      font-family: var(--font-body);
+      font-size: 1.0625rem;
+      color: var(--text-secondary);
+      margin-top: var(--s-2);
+      font-weight: 300;
+      line-height: 1.7;
+      text-align: center;
+      letter-spacing: 0;
+    }
+
+    /* Metric tracking cards */
+    .tracking-card {
+      text-align: center;
+    }
+
+    .tracking-card__metric {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--accent-lime);
+      margin-bottom: 6px;
+    }
+
+    /* ============================================================
+       INSIGHTS LIST
+       ============================================================ */
+    .insights-list {
+      list-style: none;
+      margin-top: var(--s-4);
+    }
+
+    .insights-list li {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--s-3) var(--s-4);
+      margin-bottom: var(--s-2);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      position: relative;
+      padding-left: var(--s-6);
+    }
+
+    .insights-list li::before {
+      content: '';
+      position: absolute;
+      left: var(--s-3);
+      top: 22px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+    }
+
+    .insight-block {
+      margin-top: var(--s-4);
+      background: var(--accent-lime);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+    }
+
+    .insight-block__label {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #0A0A0A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: var(--s-2);
+    }
+
+    .insight-block p {
+      color: #0A0A0A;
+      font-weight: 500;
+      font-size: 1.05rem;
+    }
+
+    /* ============================================================
+       DELIVERABLES & TOOL TAGS
+       ============================================================ */
+    .deliverables-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: var(--s-3);
+    }
+
+    .deliverable-tag {
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      font-weight: 700;
+    }
+
+    .tool-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: var(--s-2);
+    }
+
+    .tool-tag {
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--accent-lime-dim);
+      color: var(--accent-lime);
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      font-weight: 700;
+      border: 1px solid rgba(204, 255, 0, 0.2);
+    }
+
+    /* ============================================================
+       PROCESS STEPS
+       ============================================================ */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+    }
+
+    .process-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--s-3);
+      text-align: center;
+    }
+
+    .process-card__number {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .process-card__title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .process-card__desc {
+      font-size: .85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .diagram-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4) var(--s-3);
+      margin-top: var(--s-4);
+      overflow-x: auto;
+    }
+
+    /* ============================================================
+       RESULTS
+       ============================================================ */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+    }
+
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+    }
+
+    .result-number {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .result-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 8px;
+    }
+
+    .result-detail {
+      font-size: .85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .result-card--highlight {
+      background: var(--accent-lime);
+      border-color: var(--accent-lime);
+    }
+
+    .result-card--highlight .result-number {
+      color: #0A0A0A;
+    }
+
+    .result-card--highlight .result-label {
+      color: #0A0A0A;
+    }
+
+    .result-card--highlight .result-detail {
+      color: rgba(10, 10, 10, 0.6);
+    }
+
+    /* ============================================================
+       LESSONS
+       ============================================================ */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+    }
+
+    .lesson-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+    }
+
+    .lesson-card__number {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-2);
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       AI LAYER
+       ============================================================ */
+    .ai-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      margin-bottom: var(--s-3);
+    }
+
+    .ai-card__tool {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent-lime);
+      margin-bottom: var(--s-1);
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       CTA
+       ============================================================ */
+    .cta-section {
+      text-align: center;
+      padding: var(--s-10) 0;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-lime);
+      color: #0A0A0A;
+      padding: 14px 36px;
+      border-radius: var(--r-md);
+      font-weight: 700;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: all var(--dur) var(--ease);
+      border: 2px solid var(--accent-lime);
+    }
+
+    .cta-button:hover {
+      background: transparent;
+      color: var(--accent-lime);
+      opacity: 1;
+    }
+
+    /* ============================================================
+       IMAGE BLOCK
+       ============================================================ */
+    .img-block {
+      margin-top: var(--s-4);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+
+    .img-block img {
+      width: 100%;
+    }
+
+    .img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+    }
+
+    .img-row>div {
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .img-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ============================================================
+       FLOW STEP (for user scenario)
+       ============================================================ */
+    .flow-steps {
+      margin-top: var(--s-4);
+      position: relative;
+    }
+
+    .flow-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: var(--s-3);
+      margin-bottom: var(--s-4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .flow-step__number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--accent-lime);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--accent-lime);
+      flex-shrink: 0;
+    }
+
+    .flow-step__content {
+      padding-top: 6px;
+    }
+
+    .flow-step__content h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    .flow-step__content p {
+      font-size: .95rem;
+      margin-bottom: 0;
+    }
+
+    .flow-step+.flow-step::before {
+      content: '';
+      position: absolute;
+      left: 21px;
+      top: -20px;
+      width: 2px;
+      height: 20px;
+      background: rgba(204, 255, 0, 0.15);
+      z-index: 0;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .site-footer {
+      text-align: center;
+      padding: var(--s-4) 0;
+      font-size: .72rem;
+      color: var(--text-muted);
+      letter-spacing: .04em;
+    }
+
+    @media (max-width: 480px) {
+      .section {
+        padding: var(--s-8) 0;
+      }
+    }
+  </style>
+  <script src="../../shared/project-header.js" defer></script>
+</head>
+
+<body>
+
+  <a href="#main-content" class="skip-to-content">Skip to content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Section navigation">
+    <button class="nav-dot active" data-label="Hero" aria-label="Go to Hero section"></button>
+    <button class="nav-dot" data-label="Challenge" aria-label="Go to Challenge section"></button>
+    <button class="nav-dot" data-label="Hypothesis" aria-label="Go to Hypothesis section"></button>
+    <button class="nav-dot" data-label="Competitors" aria-label="Go to Competitive Research section"></button>
+    <button class="nav-dot" data-label="Personas" aria-label="Go to User Personas section"></button>
+    <button class="nav-dot" data-label="Goals" aria-label="Go to Goals section"></button>
+    <button class="nav-dot" data-label="UX Principles" aria-label="Go to UX Principles section"></button>
+    <button class="nav-dot" data-label="User Flow" aria-label="Go to User Flow section"></button>
+    <button class="nav-dot" data-label="Input Grammar" aria-label="Go to Input Grammar section"></button>
+    <button class="nav-dot" data-label="Architecture" aria-label="Go to Architecture section"></button>
+    <button class="nav-dot" data-label="Surfaces" aria-label="Go to Surfaces section"></button>
+    <button class="nav-dot" data-label="UX Decisions" aria-label="Go to UX Decisions section"></button>
+    <button class="nav-dot" data-label="Evolution" aria-label="Go to Evolution section"></button>
+    <button class="nav-dot" data-label="UX Process" aria-label="Go to UX Process section"></button>
+    <button class="nav-dot" data-label="Results" aria-label="Go to Results section"></button>
+    <button class="nav-dot" data-label="Metrics" aria-label="Go to Metrics section"></button>
+    <button class="nav-dot" data-label="Lessons" aria-label="Go to Lessons section"></button>
+    <button class="nav-dot" data-label="AI" aria-label="Go to AI section"></button>
+    <button class="nav-dot" data-label="Contact" aria-label="Go to Contact section"></button>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         SECTION A — HERO
+         ============================================================ -->
+    <section id="s-hero" class="hero" aria-label="Project hero">
+      <div class="container">
+        <div class="hero-logo-video">
+          <video autoplay loop muted playsinline aria-hidden="true">
+            <source src="assets/logo-animated.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="hero-eyebrow">Case Study · AI Product · macOS Native</div>
+        <h1>TYPERR</h1>
+        <p class="hero-hook">I designed and built a voice workflow layer for macOS — not another AI chat, but an
+          invisible tool that turns speech into action without leaving your current app.</p>
+        <p class="hero-lead">Three separate tools — dictation, translation, AI prompt generation — collapsed into one
+          push-to-talk gesture. A menu bar utility that lives in the background, respects your workflow, and delivers
+          results directly where you need them.</p>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <h4>Role</h4>
+            <p>Product Designer + Engineer</p>
+          </div>
+          <div class="meta-item">
+            <h4>Platform</h4>
+            <p>macOS · Menu Bar</p>
+          </div>
+          <div class="meta-item">
+            <h4>Stack</h4>
+            <p>Swift · Local AI Model · External LLM API</p>
+          </div>
+          <div class="meta-item">
+            <h4>Type</h4>
+            <p>AI-Native Utility · 0→1</p>
+          </div>
+        </div>
+
+        <div class="metrics-strip">
+          <div class="metric-block metric-block--highlight">
+            <div class="metric-value">3→1</div>
+            <div class="metric-label">Tools Replaced</div>
+          </div>
+          <div class="metric-block">
+            <div class="metric-value">1</div>
+            <div class="metric-label">Input Gesture</div>
+          </div>
+          <div class="metric-block">
+            <div class="metric-value">3</div>
+            <div class="metric-label">Output Modes</div>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <img src="./assets/img/main-window-second-version@2x.png"
+            srcset="./assets/img/main-window-second-version.png 1x, ./assets/img/main-window-second-version@2x.png 2x"
+            alt="TYPERR main window — voice workflow interface with prompt result panel" loading="eager">
+          <p class="img-caption">The app overall has no UI but it's Settings page does.</p>
+        </div>
+
+        <div class="hero-image" style="margin-top: var(--s-4); text-align: center;">
+          <img src="./assets/img/interface@2x.png"
+            srcset="./assets/img/interface.png 1x, ./assets/img/interface@2x.png 2x"
+            alt="TYPERR working application status interface" loading="eager" style="margin: 0 auto;">
+          <p class="img-caption">And working application status does. When you call it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION B — CHALLENGE
+         ============================================================ -->
+    <section id="s-challenge" class="section" aria-labelledby="challenge-title">
+      <div class="container">
+        <span class="section-label">The Challenge</span>
+        <h2 id="challenge-title">I Eliminated the <em>Tool Switching</em> Problem</h2>
+
+        <p>Users with AI-heavy workflows cycle through an exhausting chain: dictate in one app, translate in another,
+          prompt in a third, then paste into the actual workspace. Each context switch creates cognitive overhead,
+          breaks flow, and increases error risk.</p>
+        <p>The real problem wasn't any single tool — it was the gaps between them, the copy-paste overhead, the context
+          loss, and the mental cost of deciding which app to open first.</p>
+
+        <div class="cards-grid">
+          <div class="card">
+            <h3>Too Many Micro-Tools per Thought</h3>
+            <p>Before TYPERR, a single voice-driven task required 6 steps: formulate thought, get transcription,
+              translate if needed, rewrite as prompt, paste into target app, manually fix the result.</p>
+          </div>
+          <div class="card">
+            <h3>Gap Between Voice and Deliverable</h3>
+            <p>Most voice products stop at raw transcription. The real user task is never "get raw text" — it's insert a
+              ready phrase, translate speech, generate an email reply, or create a prompt.</p>
+          </div>
+          <div class="card">
+            <h3>Distrust of the AI Layer</h3>
+            <p>AI tools have a core UX problem: users don't understand when local logic fired vs cloud API, why the
+              result looks this way, or what to do when something breaks.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--s-4);">
+          <h4>My Mandate</h4>
+          <p style="font-weight: 500; color: var(--text-primary);">Design and build a macOS utility that makes voice a
+            natural layer over any application — not a destination you have to visit.</p>
+        </div>
+
+        <div class="tool-tags" style="margin-top: var(--s-3);">
+          <span class="tool-tag">Product Design</span>
+          <span class="tool-tag">Interaction Design</span>
+          <span class="tool-tag">Native Development</span>
+          <span class="tool-tag">Voice UX</span>
+          <span class="tool-tag">AI Orchestration</span>
+          <span class="tool-tag">Desktop UX</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — PRODUCT HYPOTHESIS
+         ============================================================ -->
+    <section id="s-hypothesis" class="section" aria-labelledby="hypothesis-title">
+      <div class="container">
+        <span class="section-label">Product Hypothesis</span>
+        <h2 id="hypothesis-title">I Reframed Voice as <em>a Workflow Layer</em></h2>
+
+        <p>The initial task looked simple: let users speak instead of typing. But I reframed the product from
+          "speech-to-text app" to "desktop voice workflow system" — shifting focus from raw ASR to orchestrating
+          scenarios across the OS.</p>
+        <p>This reframing changed everything: from just transcription to scenario routing, from a standalone window to
+          ambient background presence, from one output to three purpose-specific delivery surfaces.</p>
+
+        <div class="hypothesis-block">
+          <div class="hypothesis-block__label">↳ Core Hypothesis</div>
+          <p>Voice UX becomes truly valuable when it's embedded in the work flow and doesn't force the user to switch
+            between multiple tools. One input gesture, one mental model, three outcomes depending on context and mode.
+          </p>
+        </div>
+
+        <p style="margin-top: var(--s-4);">Instead of "open app for dictation, another for translation, third for
+          prompts, fourth to paste the result" — TYPERR offers one gesture that turns voice from a separate feature into
+          a universal work layer over macOS.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — COMPETITIVE RESEARCH
+         ============================================================ -->
+    <section id="s-competitors" class="section" aria-labelledby="competitors-title">
+      <div class="container">
+        <span class="section-label">Competitive Research</span>
+        <h2 id="competitors-title">I Researched the Market and Found <em>No Real Alternative</em></h2>
+
+        <p>Before building, I audited every comparable macOS voice tool on the market. Every single competitor requires
+          a paid subscription, comes with platform-specific limitations, and none offer the combined feature set TYPERR
+          delivers.</p>
+        <p>This research confirmed the opportunity: there was no tool that unified dictation, translation, and AI prompt
+          generation in a single ambient interface with local-first processing.</p>
+
+        <div class="cards-grid">
+          <div class="card competitor-card">
+            <div class="competitor-card__name">Whisper Transcription</div>
+            <h3>Transcription Only</h3>
+            <p>Handles dictation well but stops at raw text — no translation, no AI processing, no prompt generation.
+            </p>
+            <div class="competitor-card__weakness">Paid subscription · Single function · No workflow integration</div>
+          </div>
+          <div class="card competitor-card">
+            <div class="competitor-card__name">MacWhisper</div>
+            <h3>File-Based Workflow</h3>
+            <p>Requires importing audio files rather than real-time push-to-talk capture. Designed for post-processing,
+              not live workflow.</p>
+            <div class="competitor-card__weakness">Paid subscription · Not real-time · File import model</div>
+          </div>
+          <div class="card competitor-card">
+            <div class="competitor-card__name">Superwhisper</div>
+            <h3>Closest Competitor</h3>
+            <p>Offers real-time dictation with AI enhancement, but lacks translation mode and doesn't provide a
+              dedicated prompt panel with regeneration and refinement.</p>
+            <div class="competitor-card__weakness">Paid subscription · No translation · No prompt workflow</div>
+          </div>
+          <div class="card competitor-card">
+            <div class="competitor-card__name">Apple Dictation</div>
+            <h3>Built-in but Limited</h3>
+            <p>Free and system-level, but limited to basic dictation with no AI layer, no translation, no prompt
+              generation, and no customization.</p>
+            <div class="competitor-card__weakness">No AI · No translation · No extensibility</div>
+          </div>
+          <div class="card competitor-card">
+            <div class="competitor-card__name">Wispr Flow</div>
+            <h3>Polished but Subscription-Locked</h3>
+            <p>Strong dictation with AI auto-editing and filler word removal. Multi-platform (Mac, Windows, iOS) with
+              100+ language support — but no dedicated prompt generation workflow or review panel.</p>
+            <div class="competitor-card__weakness">$12/mo subscription · No prompt panel · No local-first architecture
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-block">
+          <div class="insight-block__label">↳ Key Finding</div>
+          <p>No existing tool offers all three capabilities (dictation + translation + AI prompts) in one push-to-talk
+            interface with local-first processing and no subscription model. The market gap was clear.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — USER PERSONAS
+         ============================================================ -->
+    <section id="s-personas" class="section" aria-labelledby="personas-title">
+      <div class="container">
+        <span class="section-label">Who This Is For</span>
+        <h2 id="personas-title">I Identified Three <em>Core User Segments</em></h2>
+
+        <p>The product targets users who live in AI-heavy workflows and lose significant time to tool switching. Each
+          persona represents a distinct use case, but they all share one pain: too many micro-tools per thought.</p>
+
+        <div class="cards-grid">
+          <div class="card persona-card">
+            <div class="persona-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                <path
+                  d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+              </svg></div>
+            <h3>Founders, Operators, Managers</h3>
+            <p>People who frequently respond by voice, formulate ideas on the go, and work simultaneously across email,
+              chats, docs, and browser. They value speed over interface perfection.</p>
+            <div class="persona-card__traits">
+              <span class="persona-trait">High Volume</span>
+              <span class="persona-trait">Multi-App</span>
+              <span class="persona-trait">Speed-First</span>
+            </div>
+          </div>
+          <div class="card persona-card">
+            <div class="persona-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                <path
+                  d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+              </svg></div>
+            <h3>Designers, Creators, Prompt-Heavy Users</h3>
+            <p>People who work extensively with Midjourney, ChatGPT, Claude, and similar systems — frequently crafting
+              complex multi-step prompts and wanting to turn voice thoughts into quality text.</p>
+            <div class="persona-card__traits">
+              <span class="persona-trait">AI-Native</span>
+              <span class="persona-trait">Creative</span>
+              <span class="persona-trait">Prompt-Driven</span>
+            </div>
+          </div>
+          <div class="card persona-card">
+            <div class="persona-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                <path d="M2 12h20" />
+              </svg></div>
+            <h3>Multilingual Professionals</h3>
+            <p>People who think in one language but write in another — frequently switching between Russian, English,
+              and other languages. They want to eliminate the "dictate separately, translate separately, paste
+              separately" flow.</p>
+            <div class="persona-card__traits">
+              <span class="persona-trait">Bilingual+</span>
+              <span class="persona-trait">Translation</span>
+              <span class="persona-trait">Cross-Language</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — PROJECT GOALS
+         ============================================================ -->
+    <section id="s-goals" class="section" aria-labelledby="goals-title">
+      <div class="container">
+        <span class="section-label">Project Goals</span>
+        <h2 id="goals-title">Four UX Goals <em>That Shaped Every Decision</em></h2>
+
+        <div class="cards-grid">
+          <div class="card goal-card">
+            <div class="goal-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg></div>
+            <h3>Minimize Decision Overhead</h3>
+            <p>Users shouldn't decide "do I need a translator? an AI tool? a dictation app?" — they learn one input
+              pattern, and the system routes scenarios automatically.</p>
+          </div>
+          <div class="card goal-card">
+            <div class="goal-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg></div>
+            <h3>Preserve Flow State</h3>
+            <p>The product must never pull users into a separate main window. That's why the architecture is a menu bar
+              app with minimal floating surfaces.</p>
+          </div>
+          <div class="card goal-card">
+            <div class="goal-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <line x1="1" x2="23" y1="1" y2="23" />
+              </svg></div>
+            <h3>Make AI Quiet, Not Pushy</h3>
+            <p>AI in the product is a background capability, not a main screen. The interface is near-invisible in idle,
+              shows compact overlays during capture, and only opens a panel for high-value outputs.</p>
+          </div>
+          <div class="card goal-card">
+            <div class="goal-card__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg></div>
+            <h3>Make Reliability Part of Perception</h3>
+            <p>Users must understand what the system is doing: microphone access, API readiness, model loading status,
+              listening vs processing state. Trust is built through transparency, not magic.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — UX PRINCIPLES
+         ============================================================ -->
+    <section id="s-principles" class="section" aria-labelledby="principles-title">
+      <div class="container">
+        <span class="section-label">Design Foundations</span>
+        <h2 id="principles-title">Three UX Principles <em>I Built the Product Around</em></h2>
+
+        <div class="cards-grid">
+          <div class="card principle-card">
+            <div class="principle-card__number">Principle 01</div>
+            <h3>Local-First for Speed and Flow</h3>
+            <p>The local ASR model isn't just for privacy — it ensures the baseline scenario is fast, predictable,
+              network-independent, and suitable for real work tempo. Offline capability is a UX feature, not a technical
+              constraint.</p>
+          </div>
+          <div class="card principle-card">
+            <div class="principle-card__number">Principle 02</div>
+            <h3>Cloud Only When the Task Needs It</h3>
+            <p>The cloud layer activates only when local ASR isn't enough: for smart prompt processing, translation
+              enrichment, and complex deliverable-oriented AI responses. Cloud is an enhancer, never a dependency.</p>
+          </div>
+          <div class="card principle-card">
+            <div class="principle-card__number">Principle 03</div>
+            <h3>Trust Is Part of the Interface</h3>
+            <p>The product embeds mechanisms that improve not just accuracy but the feeling of reliability: fallback
+              behavior, API diagnostics, model status, keyboard diagnostics, prompt history, and explicit onboarding.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — USER SCENARIO / END-TO-END FLOW
+         ============================================================ -->
+    <section id="s-flow" class="section" aria-labelledby="flow-title">
+      <div class="container">
+        <span class="section-label">User Scenario</span>
+        <h2 id="flow-title">I Mapped the <em>End-to-End Flow</em></h2>
+
+        <p>The user journey is deceptively simple on the surface — press a key, speak, get the result. But underneath,
+          the system handles mode detection, audio capture, processing routing, and surface selection in milliseconds.
+        </p>
+
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step__number">01</div>
+            <div class="flow-step__content">
+              <h3>Press and Hold Hotkey</h3>
+              <p>Global keyboard hook detects the key combination and determines the active mode: dictation,
+                translation, or smart prompt.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step__number">02</div>
+            <div class="flow-step__content">
+              <h3>Audio Capture Begins</h3>
+              <p>Microphone activates, audio converts to Whisper-compatible format, and the current feedback surface
+                shows the listening state.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step__number">03</div>
+            <div class="flow-step__content">
+              <h3>User Speaks</h3>
+              <p>VAD, segmentation, and real-time draft transcription run locally via on-device AI model on Apple
+                Silicon.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step__number">04</div>
+            <div class="flow-step__content">
+              <h3>Key Released — Processing Starts</h3>
+              <p>Capture session closes, and the system routes to the appropriate pipeline based on mode: local-only for
+                dictation, cloud-augmented for translation and prompts.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step__number">05</div>
+            <div class="flow-step__content">
+              <h3>Result Delivered to the Right Surface</h3>
+              <p>Dictation and translation inject text silently into the active app. Smart prompt results open in a
+                dedicated review panel with regenerate, copy, and voice refinement options.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- End-to-end flow diagram -->
+        <div class="diagram-wrap" role="img" aria-label="End-to-end user flow from hotkey press to result delivery">
+          <svg viewBox="0 0 1100 220" style="width: 100%; height: auto;">
+            <!-- Step 1: Hotkey -->
+            <rect x="10" y="20" width="180" height="180" rx="12" fill="rgba(204,255,0,0.08)" stroke="#CCFF00"
+              stroke-width="1.5" stroke-opacity="0.3" />
+            <text x="100" y="58" font-family="'Instrument Serif', serif" font-size="17" fill="#FFFFFF"
+              text-anchor="middle">Hotkey</text>
+            <text x="100" y="82" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Global hook</text>
+            <text x="100" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Mode detect</text>
+            <text x="100" y="170" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00"
+              text-anchor="middle">ShortcutManager</text>
+
+            <line x1="190" y1="110" x2="220" y2="110" stroke="#555" stroke-width="2" />
+            <polygon points="220,110 212,105 212,115" fill="#555" />
+
+            <!-- Step 2: Capture -->
+            <rect x="225" y="20" width="180" height="180" rx="12" fill="rgba(204,255,0,0.08)" stroke="#CCFF00"
+              stroke-width="1.5" stroke-opacity="0.3" />
+            <text x="315" y="58" font-family="'Instrument Serif', serif" font-size="17" fill="#FFFFFF"
+              text-anchor="middle">Capture</text>
+            <text x="315" y="82" font-family="'DM Sans', sans-serif" font-size="12" fill="#888" text-anchor="middle">Mic
+              → 16kHz mono</text>
+            <text x="315" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">VAD + segmentation</text>
+            <text x="315" y="170" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00"
+              text-anchor="middle">AudioEngine</text>
+
+            <line x1="405" y1="110" x2="435" y2="110" stroke="#555" stroke-width="2" />
+            <polygon points="435,110 427,105 427,115" fill="#555" />
+
+            <!-- Step 3: Transcribe -->
+            <rect x="440" y="20" width="180" height="180" rx="12" fill="rgba(204,255,0,0.08)" stroke="#CCFF00"
+              stroke-width="1.5" stroke-opacity="0.3" />
+            <text x="530" y="58" font-family="'Instrument Serif', serif" font-size="17" fill="#FFFFFF"
+              text-anchor="middle">Transcribe</text>
+            <text x="530" y="82" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Local AI model</text>
+            <text x="530" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Draft → final text</text>
+            <text x="530" y="170" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00"
+              text-anchor="middle">TranscriptionSvc</text>
+
+            <line x1="620" y1="110" x2="650" y2="110" stroke="#555" stroke-width="2" />
+            <polygon points="650,110 642,105 642,115" fill="#555" />
+
+            <!-- Step 4: Route -->
+            <rect x="655" y="20" width="180" height="180" rx="12" fill="rgba(204,255,0,0.15)" stroke="#CCFF00"
+              stroke-width="1.5" stroke-opacity="0.5" />
+            <text x="745" y="58" font-family="'Instrument Serif', serif" font-size="17" fill="#CCFF00"
+              text-anchor="middle">Route</text>
+            <text x="745" y="82" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Dictation → inject</text>
+            <text x="745" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Translate → inject</text>
+            <text x="745" y="122" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Prompt → panel</text>
+            <text x="745" y="170" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00"
+              text-anchor="middle">AppServiceCtrl</text>
+
+            <line x1="835" y1="110" x2="865" y2="110" stroke="#555" stroke-width="2" />
+            <polygon points="865,110 857,105 857,115" fill="#555" />
+
+            <!-- Step 5: Deliver -->
+            <rect x="870" y="20" width="200" height="180" rx="12" fill="rgba(204,255,0,0.2)" stroke="#CCFF00"
+              stroke-width="2" />
+            <text x="970" y="58" font-family="'Instrument Serif', serif" font-size="17" font-weight="400" fill="#CCFF00"
+              text-anchor="middle">Deliver</text>
+            <text x="970" y="82" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">Inline inject to app</text>
+            <text x="970" y="102" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">OR review panel</text>
+            <text x="970" y="170" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00"
+              text-anchor="middle">KeyboardInjector</text>
+          </svg>
+        </div>
+
+        <div class="deliverables-list" style="margin-top: var(--s-4);">
+          <span class="deliverable-tag">User Flow Map</span>
+          <span class="deliverable-tag">Mode Routing Logic</span>
+          <span class="deliverable-tag">Surface Selection Rules</span>
+          <span class="deliverable-tag">State Machine Spec</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DELIVERABLE 1 — Input Grammar Design
+         ============================================================ -->
+    <section id="s-grammar" class="section" aria-labelledby="grammar-title">
+      <div class="container">
+        <span class="section-label">Deliverable · Interaction Design</span>
+        <h2 id="grammar-title">I Designed a <em>Single Input Grammar</em> for Three Outcomes</h2>
+
+        <p>The strongest UX decision in TYPERR: one push-to-talk gesture with modifier keys that route to different
+          modes. Hold the base key for dictation, add a translation modifier for translation, add a prompt modifier for
+          AI smart prompt.</p>
+        <p>This eliminates decision overhead — users learn one muscle memory pattern, and the system handles routing
+          internally. No menus, no mode selectors, no visible UI at all.</p>
+
+        <div class="cards-grid mode-cards">
+          <div class="card">
+            <div class="kbd-row"><span class="kbd kbd--active kbd--wide">Hold</span></div>
+            <h3>Hold Key → Dictation</h3>
+            <p>Local ASR via on-device AI model — text inserts directly into the active field. No window switch, no
+              clipboard dance.</p>
+          </div>
+          <div class="card">
+            <div class="kbd-row"><span class="kbd kbd--active kbd--wide">Hold</span><span class="kbd-plus">+</span><span
+                class="kbd kbd--active">T</span></div>
+            <h3>Hold + Translation Mod → Translation</h3>
+            <p>Speak in any language, get the result in the target language — inserted inline into the current app.</p>
+          </div>
+          <div class="card">
+            <div class="kbd-row"><span class="kbd kbd--active kbd--wide">Hold</span><span class="kbd-plus">+</span><span
+                class="kbd kbd--active">P</span></div>
+            <h3>Hold + Prompt Mod → Smart Prompt</h3>
+            <p>Voice task + optional selected text context → AI-generated result in a dedicated review panel. Supports
+              regeneration and voice refinement.</p>
+          </div>
+        </div>
+
+        <p style="margin-top: var(--s-4);">This input grammar solves multiple problems at once: it lowers the learning
+          curve, removes unnecessary UI, makes the product feel like muscle memory instead of a menu system, and allows
+          future extension without changing the mental model.</p>
+
+        <div class="deliverables-list">
+          <span class="deliverable-tag">Input Grammar Spec</span>
+          <span class="deliverable-tag">Keyboard Hook System</span>
+          <span class="deliverable-tag">Mode Routing Logic</span>
+          <span class="deliverable-tag">State Machine Design</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DELIVERABLE 2 — System Architecture
+         ============================================================ -->
+    <section id="s-architecture" class="section" aria-labelledby="arch-title">
+      <div class="container">
+        <span class="section-label">Deliverable · Architecture</span>
+        <h2 id="arch-title">I Architected a <em>Local-First</em> Pipeline with Cloud Augmentation</h2>
+
+        <p>The core architecture separates local and cloud processing by intent — dictation uses a local AI model
+          on-device for speed and offline reliability, while translation and smart prompt layer cloud LLM APIs only when
+          the task demands it.</p>
+        <p>This isn't just a technical choice — it's a UX principle where the baseline must be fast, predictable, and
+          network-independent. Cloud is an enhancer, never a dependency.</p>
+
+        <!-- Architecture diagram -->
+        <div class="diagram-wrap" role="img"
+          aria-label="Application architecture — services, state management, and output surfaces">
+          <svg viewBox="0 0 900 380" style="min-width: 700px; width: 100%; height: auto;">
+            <!-- Global Hotkey input -->
+            <rect x="10" y="160" width="120" height="60" rx="8" fill="rgba(204,255,0,0.15)" stroke="#CCFF00"
+              stroke-width="1.5" />
+            <text x="70" y="185" font-family="'Instrument Serif', serif" font-size="13" fill="#CCFF00"
+              text-anchor="middle">Global Hotkey</text>
+            <text x="70" y="202" font-family="'DM Sans', sans-serif" font-size="10" fill="#888"
+              text-anchor="middle">CGEvent tap</text>
+
+            <line x1="130" y1="190" x2="160" y2="190" stroke="#555" stroke-width="1.5" />
+            <polygon points="160,190 153,186 153,194" fill="#555" />
+
+            <!-- ShortcutManager -->
+            <rect x="165" y="160" width="130" height="60" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="230" y="185" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">ShortcutManager</text>
+            <text x="230" y="202" font-family="'DM Sans', sans-serif" font-size="9" fill="#888"
+              text-anchor="middle">Mode detection</text>
+
+            <line x1="295" y1="190" x2="325" y2="190" stroke="#555" stroke-width="1.5" />
+            <polygon points="325,190 318,186 318,194" fill="#555" />
+
+            <!-- AppServiceController (central) -->
+            <rect x="330" y="140" width="160" height="100" rx="10" fill="rgba(204,255,0,0.12)" stroke="#CCFF00"
+              stroke-width="2" stroke-opacity="0.5" />
+            <text x="410" y="172" font-family="'DM Sans', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle"
+              font-weight="700">AppServiceController</text>
+            <text x="410" y="192" font-family="'DM Sans', sans-serif" font-size="10" fill="#888"
+              text-anchor="middle">Orchestration layer</text>
+            <text x="410" y="208" font-family="'DM Sans', sans-serif" font-size="10" fill="#888"
+              text-anchor="middle">Start/stop/route/inject</text>
+            <text x="410" y="224" font-family="'DM Sans', sans-serif" font-size="10" fill="#888"
+              text-anchor="middle">Fallback + refinement</text>
+
+            <!-- Services branching from controller -->
+            <!-- AudioEngine (top-left) -->
+            <line x1="410" y1="140" x2="410" y2="60" stroke="#555" stroke-width="1" />
+            <line x1="410" y1="60" x2="250" y2="60" stroke="#555" stroke-width="1" />
+            <polygon points="250,60 257,56 257,64" fill="#555" />
+            <rect x="120" y="30" width="130" height="60" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="185" y="55" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">AudioEngine</text>
+            <text x="185" y="72" font-family="'DM Sans', sans-serif" font-size="9" fill="#888" text-anchor="middle">Mic
+              → 16kHz mono</text>
+
+            <!-- TranscriptionService (top-right) -->
+            <line x1="410" y1="60" x2="570" y2="60" stroke="#555" stroke-width="1" />
+            <polygon points="570,60 563,56 563,64" fill="#555" />
+            <rect x="575" y="30" width="140" height="60" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="645" y="55" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">TranscriptionSvc</text>
+            <text x="645" y="72" font-family="'DM Sans', sans-serif" font-size="9" fill="#888"
+              text-anchor="middle">Local AI · On-Device ASR</text>
+
+            <!-- PromptModeService (bottom-left) -->
+            <line x1="370" y1="240" x2="370" y2="290" stroke="#555" stroke-width="1" />
+            <line x1="370" y1="290" x2="220" y2="290" stroke="#555" stroke-width="1" />
+            <polygon points="220,290 227,286 227,294" fill="#555" />
+            <rect x="80" y="265" width="140" height="60" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="150" y="290" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">PromptModeSvc</text>
+            <text x="150" y="307" font-family="'DM Sans', sans-serif" font-size="9" fill="#888" text-anchor="middle">LLM
+              API · Cloud</text>
+
+            <!-- SelectedTextService (bottom) -->
+            <line x1="410" y1="240" x2="410" y2="340" stroke="#555" stroke-width="1" />
+            <polygon points="410,340 406,333 414,333" fill="#555" />
+            <rect x="340" y="340" width="140" height="40" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="410" y="365" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">SelectedTextSvc</text>
+
+            <!-- KeyboardInjector (bottom-right) -->
+            <line x1="450" y1="240" x2="450" y2="290" stroke="#555" stroke-width="1" />
+            <line x1="450" y1="290" x2="600" y2="290" stroke="#555" stroke-width="1" />
+            <polygon points="600,290 593,286 593,294" fill="#555" />
+            <rect x="605" y="265" width="140" height="60" rx="8" fill="rgba(204,255,0,0.08)"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <text x="675" y="290" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle"
+              font-weight="500">KeyboardInjector</text>
+            <text x="675" y="307" font-family="'DM Sans', sans-serif" font-size="9" fill="#888"
+              text-anchor="middle">CGEvent → active app</text>
+
+            <!-- AppState (right side) -->
+            <line x1="490" y1="190" x2="690" y2="190" stroke="rgba(204,255,0,0.3)" stroke-width="1"
+              stroke-dasharray="4 4" />
+            <rect x="695" y="150" width="130" height="80" rx="8" fill="rgba(204,255,0,0.06)"
+              stroke="rgba(204,255,0,0.3)" stroke-width="1.5" />
+            <text x="760" y="180" font-family="'DM Sans', sans-serif" font-size="11" fill="#CCFF00" text-anchor="middle"
+              font-weight="500">AppState</text>
+            <text x="760" y="197" font-family="'DM Sans', sans-serif" font-size="9" fill="#888"
+              text-anchor="middle">Single source of truth</text>
+            <text x="760" y="212" font-family="'DM Sans', sans-serif" font-size="9" fill="#888"
+              text-anchor="middle">Reactive UI binding</text>
+          </svg>
+        </div>
+
+        <div class="img-block">
+          <img src="./assets/img/test-pipeline-logs@2x.png"
+            srcset="./assets/img/test-pipeline-logs.png 1x, ./assets/img/test-pipeline-logs@2x.png 2x"
+            alt="TYPERR pipeline debug view — showing transcription and AI processing stages" loading="lazy">
+        </div>
+
+        <div class="deliverables-list" style="margin-top: var(--s-4);">
+          <span class="deliverable-tag">AppService Controller</span>
+          <span class="deliverable-tag">Audio Engine Manager</span>
+          <span class="deliverable-tag">Transcription Service</span>
+          <span class="deliverable-tag">Prompt Mode Service</span>
+          <span class="deliverable-tag">Keyboard Injector</span>
+          <span class="deliverable-tag">Shortcut Manager</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DELIVERABLE 3 — Surface Design
+         ============================================================ -->
+    <section id="s-surfaces" class="section" aria-labelledby="surfaces-title">
+      <div class="container">
+        <span class="section-label">Deliverable · Interface Design</span>
+        <h2 id="surfaces-title">I Designed Four <em>Purpose-Specific</em> Surfaces</h2>
+
+        <div class="two-col">
+          <div class="two-col__text">
+            <p>Not all results deserve the same delivery surface. I separated the interface into four distinct layers,
+              each optimized for its specific output type and user attention level.</p>
+            <p>Dictation and translation inject text silently — low-friction, inline delivery. Smart prompt results open
+              in a side panel because they're longer, more valuable, and may need editing or regeneration.</p>
+
+            <div class="cards-grid" style="margin-top: var(--s-3);">
+              <div class="card">
+                <h3>Menu Bar Presence</h3>
+                <p>Always-on ambient status: idle icon, loading state, error indicator, active listening feedback.</p>
+              </div>
+              <div class="card">
+                <h3>Compact Overlays</h3>
+                <p>Minimal floating windows during listening and processing — they give feedback without stealing focus
+                  from the user's work.</p>
+              </div>
+              <div class="card">
+                <h3>Prompt Result Panel</h3>
+                <p>Dedicated review surface for high-value AI outputs with result type display, conversation history,
+                  regenerate, copy, and hold-to-refine.</p>
+              </div>
+              <div class="card">
+                <h3>Settings Control Center</h3>
+                <p>Not a secondary screen but a real operational panel: hotkey assignment, language selection, API
+                  management, diagnostics, model status, and debug entry.</p>
+              </div>
+            </div>
+
+            <div class="deliverables-list">
+              <span class="deliverable-tag">Menu Bar Presence</span>
+              <span class="deliverable-tag">Overlay States</span>
+              <span class="deliverable-tag">Prompt Result Panel</span>
+              <span class="deliverable-tag">Settings Control Center</span>
+            </div>
+          </div>
+          <div class="two-col__media">
+            <img src="./assets/img/assistant@2x.png"
+              srcset="./assets/img/assistant.png 1x, ./assets/img/assistant@2x.png 2x"
+              alt="TYPERR prompt assistant panel — AI result with regenerate and copy controls" loading="lazy">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — KEY UX DECISIONS
+         ============================================================ -->
+    <section id="s-decisions" class="section" aria-labelledby="decisions-title">
+      <div class="container">
+        <span class="section-label">Design Decisions</span>
+        <h2 id="decisions-title">Eight UX Decisions <em>That Shaped the Product</em></h2>
+
+        <p>Every product is a stack of decisions. These are the eight choices that define TYPERR's interaction model and
+          separate it from every other voice tool on the market.</p>
+
+        <div class="decisions-scroll">
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 01</div>
+            <h3>Menu Bar Over Traditional App</h3>
+            <p>This reduces the visual cost of the product to near-zero. It never competes with primary work windows for
+              screen space.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 02</div>
+            <h3>Push-to-Talk Over Tap-to-Toggle</h3>
+            <p>Faster, clearer, fewer state errors, and a better feeling of "on-demand" tooling. The gesture maps
+              naturally to "hold to speak, release to send."</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 03</div>
+            <h3>One Grammar for Three Modes</h3>
+            <p>The strongest structural UX choice in the project. Complexity lives inside the system architecture, not
+              on the interface surface.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 04</div>
+            <h3>Inline Output for Low-Friction Scenarios</h3>
+            <p>Dictation and translation results inject directly into the active app — saving time and preserving flow
+              state.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 05</div>
+            <h3>Dedicated Panel for High-Value Outputs</h3>
+            <p>Smart Prompt results go to a review surface because they're longer, costlier to get wrong, and may need
+              regeneration or voice refinement.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 06</div>
+            <h3>Selected Text as Silent Context</h3>
+            <p>Users don't need to repeat context by voice — the system reads the current text selection and uses it as
+              part of the AI task automatically.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 07</div>
+            <h3>Settings as Control Center</h3>
+            <p>The settings window isn't a formality — it's an operational panel for managing quality, behavior,
+              diagnostics, and API health.</p>
+          </div>
+          <div class="card decision-card">
+            <div class="decision-card__number">Decision 08</div>
+            <h3>Diagnostics as User Confidence</h3>
+            <p>If a voice/AI product can't be diagnosed by the user, it quickly feels unreliable. In TYPERR, this is
+              treated as a first-class UX principle.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DELIVERABLE 5 — Product Evolution
+         ============================================================ -->
+    <section id="s-evolution" class="section" aria-labelledby="evolution-title">
+      <div class="container">
+        <span class="section-label">Deliverable · Iteration</span>
+        <h2 id="evolution-title">I Evolved the Product Through <em>Working Software</em></h2>
+
+        <p>TYPERR wasn't designed in a vacuum — I built every version myself, testing interaction quality against real
+          daily usage. Each iteration tightened the feedback loop between design intent and actual behavior.</p>
+
+        <div class="img-row">
+          <figure style="margin: 0; text-align: center;">
+            <img src="./assets/img/main-window-first-version-01@2x.png"
+              srcset="./assets/img/main-window-first-version-01.png 1x, ./assets/img/main-window-first-version-01@2x.png 2x"
+              alt="TYPERR v1 — initial settings and configuration interface" loading="lazy">
+            <figcaption
+              style="margin-top: 12px; font-size: .8rem; color: rgba(255,255,255,0.45); font-family: var(--font-body); letter-spacing: .02em;">
+              v1 — Basic voice utility with push-to-talk dictation and menu bar presence</figcaption>
+          </figure>
+          <figure style="margin: 0; text-align: center;">
+            <img src="./assets/img/main-window-second-version@2x.png"
+              srcset="./assets/img/main-window-second-version.png 1x, ./assets/img/main-window-second-version@2x.png 2x"
+              alt="TYPERR v2 — refined interface with improved layout and prompt panel" loading="lazy">
+            <figcaption
+              style="margin-top: 12px; font-size: .8rem; color: rgba(255,255,255,0.45); font-family: var(--font-body); letter-spacing: .02em;">
+              v2 — Workflow system with translation mode, smart prompt panel, and conversation history</figcaption>
+          </figure>
+        </div>
+
+        <!-- Evolution diagram -->
+        <div class="diagram-wrap" style="margin-top: var(--s-6);" role="img"
+          aria-label="Product evolution from v1 voice utility to v3 production quality">
+          <svg viewBox="0 0 1100 180" style="min-width: 900px; width: 100%; height: auto;">
+            <!-- v1 -->
+            <rect x="10" y="15" width="320" height="145" rx="10" fill="rgba(204,255,0,0.08)" stroke="var(--accent-lime)"
+              stroke-width="1.5" stroke-opacity="0.3" />
+            <text x="170" y="46" font-family="'Instrument Serif', serif" font-size="18" fill="#FFFFFF"
+              text-anchor="middle">v1 — Voice Utility</text>
+            <text x="170" y="72" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Push-to-talk dictation</text>
+            <text x="170" y="92" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Menu bar presence</text>
+            <text x="170" y="112" font-family="'DM Sans', sans-serif" font-size="12" fill="#888"
+              text-anchor="middle">Local on-device ASR</text>
+            <text x="170" y="140" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">Core interaction validated</text>
+
+            <line x1="330" y1="88" x2="370" y2="88" stroke="#555" stroke-width="1.5" />
+            <polygon points="370,88 363,84 363,92" fill="#555" />
+
+            <!-- v2 -->
+            <rect x="375" y="15" width="320" height="145" rx="10" fill="rgba(204,255,0,0.12)"
+              stroke="var(--accent-lime)" stroke-width="1.5" stroke-opacity="0.4" />
+            <text x="535" y="46" font-family="'Instrument Serif', serif" font-size="18" fill="#FFFFFF"
+              text-anchor="middle">v2 — Workflow System</text>
+            <text x="535" y="72" font-family="'DM Sans', sans-serif" font-size="12" fill="#888" text-anchor="middle">+
+              Translation mode</text>
+            <text x="535" y="92" font-family="'DM Sans', sans-serif" font-size="12" fill="#888" text-anchor="middle">+
+              Smart prompt + classification</text>
+            <text x="535" y="112" font-family="'DM Sans', sans-serif" font-size="12" fill="#888" text-anchor="middle">+
+              Prompt panel + regenerate</text>
+            <text x="535" y="140" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">Three modes unified</text>
+
+            <line x1="695" y1="88" x2="735" y2="88" stroke="#555" stroke-width="1.5" />
+            <polygon points="735,88 728,84 728,92" fill="#555" />
+
+            <!-- v3 -->
+            <rect x="740" y="15" width="320" height="145" rx="10" fill="rgba(204,255,0,0.2)" stroke="#CCFF00"
+              stroke-width="2" />
+            <text x="900" y="46" font-family="'Instrument Serif', serif" font-size="18" font-weight="400" fill="#CCFF00"
+              text-anchor="middle">v3 — Production</text>
+            <text x="900" y="72" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">+ Capture session protection</text>
+            <text x="900" y="92" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">+ Diagnostics + onboarding</text>
+            <text x="900" y="112" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">+ Window polish + app icon</text>
+            <text x="900" y="140" font-family="'DM Sans', sans-serif" font-size="12" fill="#CCFF00"
+              text-anchor="middle">Public working version</text>
+          </svg>
+        </div>
+
+        <div class="deliverables-list" style="margin-top: var(--s-4);">
+          <span class="deliverable-tag">3 Major Iterations</span>
+          <span class="deliverable-tag">Working Public Version</span>
+          <span class="deliverable-tag">Custom App Icon</span>
+          <span class="deliverable-tag">Test Suite</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — UX PROCESS
+         ============================================================ -->
+    <section id="s-process" class="section" aria-labelledby="process-title">
+      <div class="container">
+        <span class="section-label">Design Process</span>
+        <h2 id="process-title">Five-Phase <em>UX Process</em></h2>
+
+        <div class="process-steps">
+          <div class="process-card">
+            <div class="process-card__number">Phase 01</div>
+            <div class="process-card__title">Framing</div>
+            <div class="process-card__desc">Reframed from "dictation app" to "voice workflow layer"</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 02</div>
+            <div class="process-card__title">Mental Model</div>
+            <div class="process-card__desc">Unified input grammar, outcome modes, output surfaces</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 03</div>
+            <div class="process-card__title">Feedback Surfaces</div>
+            <div class="process-card__desc">Ambient, operational, and diagnostic UX layers</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 04</div>
+            <div class="process-card__title">Trust Loop</div>
+            <div class="process-card__desc">API diagnostics, model status, fallback, onboarding</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 05</div>
+            <div class="process-card__title">Ship via Iteration</div>
+            <div class="process-card__desc">Practical builds, daily testing, real usage feedback</div>
+          </div>
+        </div>
+
+        <div class="phase-details" style="margin-top: var(--s-6);">
+          <div class="phase-item" style="margin-bottom: var(--s-5);">
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin-bottom: 8px;">Phase 1: Product
+              Framing</h3>
+            <p>The initial task was "let users speak instead of typing." I reframed it into a desktop voice workflow
+              system — shifting focus from ASR to scenario orchestration, reduced app switching, and state design.</p>
+          </div>
+          <div class="phase-item" style="margin-bottom: var(--s-5);">
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin-bottom: 8px;">Phase 2: Simplifying
+              the Mental Model</h3>
+            <p>Instead of scattered features, I chose one core gesture, multiple outcome modes, and different output
+              surfaces. Complexity stays inside the architecture, not the interface.</p>
+          </div>
+          <div class="phase-item" style="margin-bottom: var(--s-5);">
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin-bottom: 8px;">Phase 3: Designing
+              Feedback Surfaces</h3>
+            <p>I designed how the system communicates with the user: compact overlays during listening, processing
+              indicators during heavy work, settings as control panel, and prompt panel as review surface.</p>
+          </div>
+          <div class="phase-item" style="margin-bottom: var(--s-5);">
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin-bottom: 8px;">Phase 4: Building the
+              Trust Loop</h3>
+            <p>To prevent the product from feeling like "magic that sometimes breaks," I embedded API status checks,
+              model loading indicators, hotkey diagnostics, explicit error messages, and onboarding guards.</p>
+          </div>
+          <div class="phase-item">
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin-bottom: 8px;">Phase 5: Iterating
+              Through Working Software</h3>
+            <p>The product evolved through practical iterations: base dictation, then translation logic, then
+              SuperPrompt improvements, then reliability fixes, then public version polish and custom app branding.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION E — RESULTS
+         ============================================================ -->
+    <section id="s-results" class="section" aria-labelledby="results-title">
+      <div class="container">
+        <span class="section-label">Results</span>
+        <h2 id="results-title">What I Shipped</h2>
+
+        <div class="results-grid">
+          <div class="result-card result-card--highlight">
+            <div class="result-number">3→1</div>
+            <div class="result-label">Tools Consolidated</div>
+            <div class="result-detail">Dictation + Translation + AI Prompt</div>
+          </div>
+          <div class="result-card">
+            <div class="result-number">1</div>
+            <div class="result-label">Unified Input Gesture</div>
+            <div class="result-detail">Push-to-talk with modifier routing</div>
+          </div>
+          <div class="result-card">
+            <div class="result-number">4</div>
+            <div class="result-label">Interface Surfaces</div>
+            <div class="result-detail">Menu bar, overlay, panel, settings</div>
+          </div>
+          <div class="result-card">
+            <div class="result-number">3</div>
+            <div class="result-label">Major Iterations</div>
+            <div class="result-detail">Voice utility → workflow system → production</div>
+          </div>
+          <div class="result-card">
+            <div class="result-number">6</div>
+            <div class="result-label">Core Services Built</div>
+            <div class="result-detail">Shortcut, Audio, Transcription, Prompt, Text, Injector</div>
+          </div>
+          <div class="result-card">
+            <div class="result-number">0</div>
+            <div class="result-label">Windows to Switch</div>
+            <div class="result-detail">Results inject into the active app</div>
+          </div>
+        </div>
+
+        <p style="margin-top: var(--s-6);">TYPERR shipped as a working macOS utility with local ASR, cloud-augmented AI,
+          and a desktop interaction model that doesn't exist in any competing product.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION — SUCCESS METRICS
+         ============================================================ -->
+    <section id="s-metrics" class="section" aria-labelledby="metrics-title">
+      <div class="container">
+        <span class="section-label">Success Metrics</span>
+        <h2 id="metrics-title">How I Measure <em>UX Quality</em></h2>
+
+        <p>For a voice + AI product, traditional conversion metrics don't capture the full picture. I defined six
+          UX-specific metrics that map directly to the interaction model and trust system.</p>
+
+        <div class="cards-grid">
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">Time to First Output</div>
+            <h3>First Successful Result</h3>
+            <p>How long from first launch to first successful dictation or prompt result — measures onboarding friction
+              and setup completion quality.</p>
+          </div>
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">First-Pass Accept Rate</div>
+            <h3>Result Accepted Without Edit</h3>
+            <p>How often the result is accepted without manual correction or regeneration — the core signal of output
+              quality and trust.</p>
+          </div>
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">False Commit Rate</div>
+            <h3>Noise/Fragment Committed</h3>
+            <p>How often the system commits a result where the user didn't intend to — measures the reliability of the
+              capture session and VAD logic.</p>
+          </div>
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">Panel Reuse Rate</div>
+            <h3>Regenerate + Refine Usage</h3>
+            <p>How often users engage with the prompt panel's regenerate, copy, and hold-to-refine features — signals
+              whether the review surface adds value.</p>
+          </div>
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">Translation Speed</div>
+            <h3>Speak → Translated Text</h3>
+            <p>Total time from voice input to translated text appearing in the active app — the key metric for
+              multilingual workflow efficiency.</p>
+          </div>
+          <div class="card tracking-card">
+            <div class="tracking-card__metric">Setup Completion %</div>
+            <h3>API Setup Without Drop-off</h3>
+            <p>Percentage of users who complete the full API setup without abandoning — measures onboarding UX quality
+              and smart default effectiveness.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION F — LESSONS
+         ============================================================ -->
+    <section id="s-lessons" class="section" aria-labelledby="lessons-title">
+      <div class="container">
+        <span class="section-label">Lessons</span>
+        <h2 id="lessons-title">What This Project <em>Taught Me</em></h2>
+
+        <div class="lessons-grid">
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 01</div>
+            <h3>The Best AI UX Is Invisible</h3>
+            <p>TYPERR's power comes from what it doesn't show — no chat interface, no mode selector, no visible AI. The
+              strongest UX decision was removing UI, not adding it.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 02</div>
+            <h3>Trust Requires Transparency, Not Magic</h3>
+            <p>AI products that hide their internals feel unreliable after the first failure. Building diagnostics as a
+              product feature is the difference between a tool people tolerate and one they depend on.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 03</div>
+            <h3>Designer + Engineer = Tighter Feedback Loops</h3>
+            <p>By implementing the product myself, I could test interaction quality against real muscle memory within
+              hours. The gap between design intent and shipped behavior collapsed to zero.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION G — AI LAYER
+         ============================================================ -->
+    <section id="s-ai" class="section" aria-labelledby="ai-title">
+      <div class="container">
+        <span class="section-label">AI Layer</span>
+        <h2 id="ai-title">AI Is the <em>Core Product</em> — Not an Add-On</h2>
+
+        <p>Unlike my earlier projects where AI was retrospective, TYPERR was designed AI-first from day one. Every
+          architectural decision was shaped by AI capabilities and constraints.</p>
+
+        <div class="ai-card">
+          <div class="ai-card__tool">Tool 1 · Local AI Model (On-Device)</div>
+          <h3>Local Speech-to-Text</h3>
+          <p><strong>Task:</strong> Real-time transcription with VAD, segmentation, second-pass correction, and draft
+            update path — all running locally on Apple Silicon.</p>
+          <p><strong>Outcome:</strong> Sub-second feedback, offline capability, and privacy by default. The baseline
+            experience works without any network connection.</p>
+        </div>
+
+        <div class="ai-card">
+          <div class="ai-card__tool">Tool 2 · External LLM API (Cloud)</div>
+          <h3>Smart Prompt Processing</h3>
+          <p><strong>Task:</strong> Intent classification, output kind detection, quality tier routing, structured
+            content parsing, and AI-powered text transformation.</p>
+          <p><strong>Outcome:</strong> Voice input becomes a classified deliverable — an email reply, a prompt, a code
+            snippet, an instruction — not just raw text.</p>
+        </div>
+
+        <div class="ai-card">
+          <div class="ai-card__tool">Tool 3 · External LLM API (Cloud)</div>
+          <h3>Translation Pipeline</h3>
+          <p><strong>Task:</strong> Source language detection + target language translation, integrated into the same
+            push-to-talk flow with inline result injection.</p>
+          <p><strong>Outcome:</strong> Multilingual users speak in their native language and get translated text in the
+            target app — one gesture, zero window switches.</p>
+        </div>
+
+        <div class="ai-card">
+          <div class="ai-card__tool">Tool 4 · Claude + Cursor</div>
+          <h3>Development Acceleration</h3>
+          <p><strong>Task:</strong> Architecture planning, native macOS implementation patterns, state machine design,
+            API integration debugging.</p>
+          <p><strong>Outcome:</strong> A solo designer-engineer shipped a production macOS utility with 6 core services,
+            4 interface surfaces, and a complete test suite.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION H — CTA
+         ============================================================ -->
+    <section id="s-cta" class="cta-section" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title">Building an AI Product?</h2>
+        <p style="max-width: 560px; margin: 0 auto var(--s-4); color: var(--text-secondary);">I design and build
+          AI-native tools — from voice interfaces to desktop utilities to automated workflows. If you need someone who
+          can think through the UX and ship the code, let's talk.</p>
+        <a href="mailto:mailtotheroman@gmail.com" class="cta-button">
+          Get in Touch
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>&copy; 2026 Roman Kryzhanovskyi. All rights reserved.</p>
+  </footer>
+
+  <!-- GSAP + ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var dots = document.querySelectorAll('.nav-dot');
+      var sections = document.querySelectorAll('section[id]');
+      if (dots.length && sections.length) {
+        dots.forEach(function (dot, i) {
+          dot.addEventListener('click', function () {
+            if (sections[i]) sections[i].scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var idx = Array.from(sections).indexOf(entry.target);
+              dots.forEach(function (d) { d.classList.remove('active'); });
+              if (dots[idx]) dots[idx].classList.add('active');
+            }
+          });
+        }, { threshold: 0.3 });
+        sections.forEach(function (s) { observer.observe(s); });
+      }
+
+      if (prefersReducedMotion) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* Section entrance — y only, NO opacity (children handle their own fade) */
+      gsap.utils.toArray('section[id]').forEach(function (section) {
+        gsap.from(section, {
+          y: 40, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 85%', once: true }
+        });
+      });
+
+      /* Card grids — stagger fade+slide, immediateRender:false prevents pre-hiding */
+      document.querySelectorAll('.cards-grid, .results-grid, .process-steps, .lessons-grid, .insights-list, .decisions-scroll').forEach(function (grid) {
+        var children = grid.tagName === 'UL' ? grid.querySelectorAll('li') : grid.children;
+        gsap.from(children, {
+          y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: grid, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Metric counters */
+      document.querySelectorAll('.metric-value, .result-number').forEach(function (el) {
+        var text = el.textContent.trim();
+        var match = text.match(/^([\d,.]+)/);
+        if (match) {
+          var suffix = text.replace(match[1], '');
+          var hasDecimal = match[1].includes('.');
+          gsap.from(el, {
+            textContent: 0, duration: 1.5, ease: 'power2.out',
+            immediateRender: false,
+            snap: { textContent: hasDecimal ? 0.1 : 1 },
+            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+            onUpdate: function () {
+              var val = hasDecimal
+                ? parseFloat(el.textContent).toFixed(1)
+                : Math.round(parseFloat(el.textContent));
+              el.textContent = val + suffix;
+            }
+          });
+        }
+      });
+
+      /* Two-col image slide-in */
+      gsap.utils.toArray('.two-col__media').forEach(function (media) {
+        var isReversed = media.closest('.two-col--reverse');
+        gsap.from(media, {
+          x: isReversed ? -60 : 60, opacity: 0, duration: 0.8, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: media, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Diagram entrance */
+      gsap.utils.toArray('.diagram-wrap').forEach(function (wrap) {
+        gsap.from(wrap, {
+          y: 30, opacity: 0, duration: 0.7, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: wrap, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Image blocks */
+      gsap.utils.toArray('.img-block, .img-row, .hero-image').forEach(function (img) {
+        gsap.from(img, {
+          y: 20, opacity: 0, duration: 0.7, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: img, start: 'top 90%', once: true }
+        });
+      });
+
+      /* Hypothesis and insight blocks */
+      gsap.utils.toArray('.hypothesis-block, .insight-block').forEach(function (block) {
+        gsap.from(block, {
+          y: 20, opacity: 0, duration: 0.6, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: block, start: 'top 90%', once: true }
+        });
+      });
+
+      /* Flow steps */
+      gsap.utils.toArray('.flow-step').forEach(function (step, i) {
+        gsap.from(step, {
+          x: -30, opacity: 0, duration: 0.5, delay: i * 0.08, ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: { trigger: step, start: 'top 90%', once: true }
+        });
+      });
+    })();
+  </script>
+
+</body>
+
+</html>

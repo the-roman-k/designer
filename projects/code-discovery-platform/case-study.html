@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  ROMAN KRYZHANOVSKYI — CODE DISCOVERY PLATFORM CASE STUDY
+  v5.5 Deliverable-Centric Model
+  ============================================================
+  Project: Code Discovery Platform
+  Type: Standard (Deliverable-Centric)
+  Built: 2023
+  Role: Lead Product Designer (Solo)
+  Status: Complete
+
+  ARCHITECTURE:
+  - Deliverable-centric sections (each work phase = one section)
+  - Light monochromatic theme (#EAEAEA bg, #050505 text, #CCFF00 accent)
+  - Inter (900 headings) + Space Mono (labels, tags)
+  - Vanilla JS dot-nav only — no GSAP/WebGL
+  - All images via ./assets/img/ (self-contained bundle)
+  - WCAG 2.1 AA accessible
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#EAEAEA">
+
+  <!-- SEO -->
+  <title>Code Discovery Platform — Case Study · Roman Kryzhanovskyi</title>
+  <meta name="description" content="I built a design department from scratch and shipped the first release of an enterprise code-discovery platform in 6 weeks — discovery framework, personas, UI system, and branding all delivered.">
+  <meta name="keywords" content="code discovery platform, design department, product design, enterprise developer tools, UX case study, design system, Roman Kryzhanovskyi">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <link rel="canonical" href="https://romankryzhanovsky.com/work/code-discovery-platform">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Code Discovery Platform — Case Study · Roman Kryzhanovskyi">
+  <meta property="og:description" content="Building a design department, discovery framework, and product UI from zero to first release in 6 weeks.">
+  <meta property="og:image" content="https://romankryzhanovsky.com/work/code-discovery-platform/assets/img/code-discovery-hero-image@2x.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://romankryzhanovsky.com/work/code-discovery-platform">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Code Discovery Platform — Case Study",
+    "description": "Building a design department, discovery framework, and product UI from zero to first release in 6 weeks.",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi",
+      "url": "https://romankryzhanovsky.com"
+    },
+    "datePublished": "2023-01-01",
+    "dateModified": "2026-03-16"
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — v5.5 Light Monochromatic (motoshare-style)
+       ============================================================ */
+    :root {
+      --bg-primary:    #EAEAEA;
+      --bg-secondary:  #F5F5F5;
+      --bg-card:       #FFFFFF;
+      --bg-card-hover: #F9FAFB;
+      --bg-dark:       #0A0A0A;
+      --bg-dark-card:  #161616;
+
+      --accent-lime:     #CCFF00;
+      --accent-lime-dim: rgba(204,255,0,0.12);
+      --accent-violet:   #7C3AED;
+      --accent-violet-light: #8B5CF6;
+      --accent-blue:     #2563EB;
+      --accent-amber:    #D97706;
+      --accent-green:    #059669;
+
+      --text-primary:   #050505;
+      --text-secondary: #1A1A1A;
+      --text-muted:     #555555;
+      --text-light:     #F5F5F5;
+      --text-light-secondary: #9CA3AF;
+      --text-light-muted: #6B7280;
+
+      --border:        rgba(0,0,0,0.10);
+      --border-strong: rgba(0,0,0,0.22);
+      --border-dark:   #1F1F1F;
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'Space Mono', monospace;
+
+      --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+      --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px; --s-12: 96px;
+      --r-sm: 6px; --r-md: 12px; --r-lg: 16px; --r-full: 9999px;
+      --max-w: 1160px;
+      --section-py: clamp(64px, 10vw, 120px);
+      --shadow-base: 0 4px 6px rgba(0,0,0,.08);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,.12);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: clamp(15px, 2vw, 17px);
+      line-height: 1.65;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display:block; max-width:100%; border-radius: var(--r-md); }
+    a { color: var(--accent-blue); text-decoration:none; transition:color .2s; }
+    a:hover { color: var(--accent-violet-light); }
+
+    /* ===== NAV ===== */
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      height:56px; display:flex; align-items:center;
+      padding: 0 clamp(16px, 4vw, 40px);
+      background: rgba(234,234,234,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav__back {
+      display:flex; align-items:center; gap:8px;
+      color:var(--text-muted); font-size:14px; font-weight:500;
+      transition: color .2s;
+    }
+    .nav__back:hover { color:var(--text-primary); }
+    .nav__title {
+      margin-left:auto;
+      font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+      color:var(--text-muted);
+    }
+
+    /* ===== SECTION DOTS ===== */
+    .section-dots {
+      position:fixed; right:20px; top:50%; transform:translateY(-50%);
+      z-index:90; display:flex; flex-direction:column; gap:10px;
+    }
+    @media(max-width:768px){ .section-dots{display:none;} }
+    .dot {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--border-strong); cursor:pointer;
+      transition: background .25s, transform .25s;
+      position:relative;
+    }
+    .dot.active { background:var(--text-primary); transform:scale(1.4); }
+    .dot:hover { background:var(--text-muted); }
+    .dot[title]:hover::before {
+      content:attr(title);
+      position:absolute; right:16px; top:50%; transform:translateY(-50%);
+      background:var(--text-primary); color:var(--bg-primary);
+      padding:4px 10px; border-radius:4px;
+      font-size:11px; font-weight:600; white-space:nowrap;
+      font-family:var(--font-mono);
+    }
+
+    /* ===== CONTAINER ===== */
+    .container { width:100%; max-width:var(--max-w); margin:0 auto; padding:0 clamp(16px,4vw,40px); }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--accent-violet); margin-bottom:16px;
+      font-family:var(--font-mono);
+    }
+    .section-label svg { flex-shrink:0; }
+
+    /* ===== HERO ===== */
+    .hero {
+      position:relative; overflow:hidden;
+      min-height:100vh;
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding:100px 0 0;
+    }
+    .hero__content {
+      position:relative; z-index:2;
+      padding:0 clamp(16px,4vw,40px) 0;
+      max-width:var(--max-w); margin:0 auto; width:100%;
+    }
+    .hero__eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--text-primary);
+      background:var(--accent-lime); border:1px solid rgba(0,0,0,.08);
+      padding:5px 14px; border-radius:var(--r-full);
+      margin-bottom:28px;
+      font-family:var(--font-mono);
+    }
+    .hero__title {
+      font-size:clamp(38px, 6.5vw, 80px);
+      font-weight:900; line-height:1.05; letter-spacing:-.03em;
+      margin-bottom:24px; text-transform:uppercase;
+    }
+    .hero__lead {
+      font-size:clamp(16px, 2.2vw, 20px);
+      color:var(--text-secondary);
+      max-width:660px; line-height:1.6;
+      margin-bottom:40px;
+    }
+    .hero__meta {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+      gap:1px; background:var(--border);
+      border:1px solid var(--border);
+      border-radius:var(--r-md) var(--r-md) 0 0;
+    }
+    .meta-item {
+      background:var(--bg-card); padding:20px 24px;
+    }
+    .meta-item:first-child { border-radius:var(--r-md) 0 0 0; }
+    .meta-item:last-child  { border-radius:0 var(--r-md) 0 0; }
+    .meta-item__label {
+      font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+      color:var(--text-muted); margin-bottom:6px;
+      font-family:var(--font-mono);
+    }
+    .meta-item__value { font-size:15px; font-weight:600; color:var(--text-primary); }
+
+    /* ===== HERO IMAGE ===== */
+    .hero-image-strip {
+      position:relative; z-index:2;
+      max-width:var(--max-w); margin:0 auto; width:100%;
+      padding:32px clamp(16px,4vw,40px) 0;
+    }
+    .hero-image-wrap {
+      border-radius:var(--r-lg); overflow:hidden;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow-lg);
+    }
+    .hero-image-wrap img { border-radius:0; width:100%; }
+
+    /* ===== METRICS STRIP ===== */
+    .metrics-strip {
+      background:var(--bg-card);
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+    .metrics-strip .container {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+      gap:0;
+    }
+    .metric-cell {
+      padding:40px 32px;
+      border-right:1px solid var(--border);
+      text-align:center;
+      display:flex; flex-direction:column; align-items:center;
+    }
+    .metric-cell:last-child { border-right:none; }
+    @media(max-width:600px){
+      .metric-cell { border-right:none; border-bottom:1px solid var(--border); }
+      .metric-cell:last-child { border-bottom:none; }
+    }
+    .metric-value {
+      display:inline-block;
+      font-size:clamp(36px, 5vw, 56px);
+      font-weight:900; line-height:1;
+      color:var(--text-primary);
+      letter-spacing:-.02em; margin-bottom:8px;
+    }
+    .metric-value--highlight {
+      background:var(--accent-lime); padding:2px 8px; border-radius:4px;
+    }
+    .metric-label {
+      font-size:13px; font-weight:500;
+      color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em;
+      font-family:var(--font-mono);
+    }
+
+    /* ===== SECTIONS ===== */
+    .section { padding:var(--section-py) 0; }
+    .section--alt { background:var(--bg-secondary); }
+    .section--dark { background:var(--bg-dark); color:var(--text-light); }
+
+    /* ===== TWO-COL GRID ===== */
+    .two-col {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:clamp(32px, 5vw, 72px); align-items:start;
+    }
+    @media(max-width:768px){ .two-col{ grid-template-columns:1fr; } }
+    .two-col--reverse { direction:rtl; }
+    .two-col--reverse > * { direction:ltr; }
+    @media(max-width:768px){ .two-col--reverse{ direction:ltr; } }
+
+    /* ===== TEXT CONTENT ===== */
+    .text-content h2 {
+      font-size:clamp(26px, 4vw, 44px);
+      font-weight:900; line-height:1.15; letter-spacing:-.02em;
+      margin-bottom:20px;
+    }
+    .text-content p {
+      color:var(--text-secondary); line-height:1.7;
+      margin-bottom:16px; max-width:54ch;
+    }
+    .text-content p:last-child { margin-bottom:0; }
+
+    /* ===== IMAGE SIDE ===== */
+    .image-side { position:relative; }
+    .image-side img {
+      width:100%; border:1px solid var(--border);
+      box-shadow:var(--shadow-lg);
+    }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      background:var(--bg-card);
+      border-left:3px solid var(--accent-violet);
+      border-radius:0 var(--r-sm) var(--r-sm) 0;
+      padding:20px 24px; margin:28px 0;
+    }
+    .callout__label {
+      display:flex; align-items:center; gap:8px;
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--accent-violet); margin-bottom:8px;
+      font-family:var(--font-mono);
+    }
+    .callout p { color:var(--text-secondary); font-size:15px; margin:0; max-width:none; }
+
+    /* ===== DELIVERABLES LIST ===== */
+    .deliverables { margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
+    .deliverables__title {
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--text-muted); margin-bottom:14px;
+      font-family:var(--font-mono);
+    }
+    .deliverables__list { display:flex; flex-direction:column; gap:9px; list-style:none; }
+    .deliverables__list li {
+      display:flex; align-items:center; gap:10px;
+      font-size:14px; font-weight:500; color:var(--text-secondary);
+    }
+    .deliverables__list li::before {
+      content:''; display:inline-block; width:6px; height:6px; border-radius:50%;
+      background:var(--accent-violet); flex-shrink:0;
+    }
+
+    /* ===== CARDS GRID ===== */
+    .cards-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+      gap:20px; margin-top:40px;
+    }
+    .card {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:28px 24px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .card:hover { border-color:var(--accent-violet); box-shadow:var(--shadow-lg); }
+    .card__icon {
+      width:40px; height:40px; border-radius:var(--r-sm);
+      background:rgba(124,58,237,.1);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--accent-violet); margin-bottom:16px;
+    }
+    .card__title { font-size:15px; font-weight:700; margin-bottom:8px; }
+    .card__body { font-size:14px; color:var(--text-secondary); line-height:1.6; }
+
+    /* ===== TAG PILLS ===== */
+    .tag-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+    .tag {
+      padding:4px 12px; border-radius:var(--r-full);
+      font-size:12px; font-weight:600; letter-spacing:.04em;
+      background:rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.2);
+      color:var(--accent-violet);
+      font-family:var(--font-mono);
+    }
+
+    /* ===== PROCESS STEPS ===== */
+    .process-steps {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:0; background:var(--border-dark); border-radius:var(--r-lg); overflow:hidden;
+      margin-top:40px; border:1px solid var(--border-dark);
+    }
+    .process-step {
+      background:var(--bg-dark-card); padding:28px 20px; text-align:center;
+      position:relative;
+    }
+    .process-step__num {
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--accent-violet); margin-bottom:10px;
+      font-family:var(--font-mono);
+    }
+    .process-step__icon {
+      display:flex; align-items:center; justify-content:center;
+      color:var(--text-light-secondary); margin:0 auto 12px;
+      width:36px; height:36px;
+    }
+    .process-step__title {
+      font-size:14px; font-weight:700; color:var(--text-light); margin-bottom:6px;
+    }
+    .process-step__desc {
+      font-size:12px; color:var(--text-light-muted); line-height:1.55;
+    }
+
+    /* ===== SCREENS GRID ===== */
+    .screens-grid {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px;
+      background:var(--border-dark); border-radius:var(--r-lg); overflow:hidden;
+      border:1px solid var(--border-dark);
+    }
+    @media(max-width:640px){ .screens-grid{ grid-template-columns:1fr; } }
+    .screen-cell { position:relative; overflow:hidden; }
+    .screen-cell img { border-radius:0; width:100%; display:block; aspect-ratio:4/3; object-fit:cover; }
+    .screen-cell__label {
+      position:absolute; bottom:0; left:0; right:0;
+      padding:12px 16px;
+      background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
+      font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+      color:rgba(255,255,255,.7);
+      font-family:var(--font-mono);
+    }
+
+    /* ===== RESULTS ===== */
+    .results-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:48px;
+    }
+    @media(max-width:640px){ .results-grid{ grid-template-columns:1fr; } }
+    .result-card {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:var(--r-lg); padding:36px 32px;
+      text-align:center; position:relative; overflow:hidden;
+      display:flex; flex-direction:column; align-items:center;
+    }
+    .result-card::before {
+      content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+      width:60%; height:2px;
+      background:linear-gradient(to right, transparent, var(--accent-violet), transparent);
+    }
+    .result-number {
+      display:inline-block;
+      font-size:clamp(48px,6vw,72px);
+      font-weight:900; line-height:1;
+      color:var(--text-primary);
+      letter-spacing:-.03em; margin-bottom:12px;
+    }
+    .result-number--highlight {
+      background:var(--accent-lime); padding:4px 12px; border-radius:6px;
+    }
+    .result-label {
+      font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.07em;
+      color:var(--text-muted);
+      font-family:var(--font-mono);
+    }
+    .result-sub { font-size:13px; color:var(--text-muted); margin-top:6px; }
+
+    /* ===== LESSONS ===== */
+    .lessons-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px; margin-top:40px;
+    }
+    .lesson-card {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:28px;
+    }
+    .lesson-card__num {
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--accent-violet); margin-bottom:12px;
+      font-family:var(--font-mono);
+    }
+    .lesson-card__title { font-size:17px; font-weight:700; margin-bottom:10px; }
+    .lesson-card__body { font-size:14px; color:var(--text-secondary); line-height:1.65; }
+
+    /* ===== SECTION CENTER ===== */
+    .section-heading-center {
+      text-align:center; padding:var(--section-py) 0;
+    }
+    .section-heading-center h2 {
+      font-size:clamp(28px,4.5vw,52px);
+      font-weight:900; letter-spacing:-.025em; margin-bottom:16px;
+    }
+    .section-heading-center p {
+      font-size:clamp(15px,2vw,18px);
+      color:var(--text-secondary); max-width:60ch; margin:0 auto;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider { height:1px; background:var(--border); }
+
+    /* ===== CTA / FOOTER ===== */
+    .footer-cta {
+      position:relative; overflow:hidden;
+      padding:var(--section-py) clamp(16px,4vw,40px);
+      text-align:center;
+      border-top:1px solid var(--border);
+    }
+    .footer-cta h2 {
+      font-size:clamp(28px,4vw,52px);
+      font-weight:900; letter-spacing:-.025em; margin-bottom:16px;
+    }
+    .footer-cta p { color:var(--text-secondary); max-width:50ch; margin:0 auto 32px; }
+    .btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:13px 28px;
+      background:var(--accent-violet); color:#fff;
+      border-radius:var(--r-sm);
+      font-size:15px; font-weight:600;
+      transition: background .2s, box-shadow .2s;
+      min-height:44px;
+    }
+    .btn:hover { background:var(--accent-violet-light); box-shadow:0 0 24px rgba(124,58,237,.35); color:#fff; }
+    .btn--outline {
+      background:transparent; border:1px solid var(--border-strong);
+      color:var(--text-secondary);
+    }
+    .btn--outline:hover { border-color:var(--accent-violet); color:var(--text-primary); box-shadow:none; }
+    .footer-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    footer {
+      background:var(--bg-secondary); border-top:1px solid var(--border);
+      padding:28px clamp(16px,4vw,40px); text-align:center;
+      font-size:13px; color:var(--text-muted);
+    }
+
+    /* ===== FULL-WIDTH IMAGE SECTION ===== */
+    .full-image-section { padding:0; overflow:hidden; }
+    .full-image-section .section-header {
+      padding:clamp(40px,6vw,72px) clamp(16px,4vw,40px) 24px;
+      max-width:var(--max-w); margin:0 auto;
+    }
+    .full-image-section .section-header h2 {
+      font-size:clamp(22px,3.5vw,36px); font-weight:900; letter-spacing:-.02em;
+    }
+
+    /* ===== SPACING HELPERS ===== */
+    .mt-8  { margin-top:8px; }
+    .mt-16 { margin-top:16px; }
+    .mt-24 { margin-top:24px; }
+    .mt-40 { margin-top:40px; }
+    .mt-48 { margin-top:48px; }
+
+    /* ===== ACCESSIBILITY ===== */
+    :focus-visible { outline:3px solid var(--accent-violet); outline-offset:3px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border-width:0; }
+    @media(prefers-reduced-motion:reduce){
+      *, *::before, *::after { animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav" role="navigation" aria-label="Page navigation">
+    <a href="#" class="nav__back" aria-label="Back to portfolio">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      Portfolio
+    </a>
+    <span class="nav__title">Case Study</span>
+  </nav>
+
+  <!-- ===== SECTION DOTS ===== -->
+  <nav class="section-dots" aria-label="Section navigation">
+    <div class="dot active" data-target="hero" title="Hero"></div>
+    <div class="dot" data-target="challenge" title="Challenge"></div>
+    <div class="dot" data-target="discovery" title="Discovery"></div>
+    <div class="dot" data-target="research" title="Research"></div>
+    <div class="dot" data-target="architecture" title="Architecture"></div>
+    <div class="dot" data-target="branding" title="Branding"></div>
+    <div class="dot" data-target="ui" title="UI Design"></div>
+    <div class="dot" data-target="results" title="Results"></div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero__content">
+      <div class="hero__eyebrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Developer Experience · Enterprise SaaS · 0 → v1.0
+      </div>
+      <h1 class="hero__title" id="hero-title">
+        Code Discovery<br>Platform
+      </h1>
+      <p class="hero__lead">
+        The platform had no design foundation — no department, no processes, no brand, no UI system.
+        I built all of it from scratch and shipped the first release on schedule.
+      </p>
+      <div class="hero__meta">
+        <div class="meta-item">
+          <div class="meta-item__label">Role</div>
+          <div class="meta-item__value">Lead Product Designer</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">Scope</div>
+          <div class="meta-item__value">0 → First Release</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">Domain</div>
+          <div class="meta-item__value">Developer Tools · Enterprise</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">Outcome</div>
+          <div class="meta-item__value">Released on schedule</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HERO IMAGE ===== -->
+  <div class="hero-image-strip">
+    <div class="hero-image-wrap">
+      <img src="./assets/img/code-discovery-hero-image@2x.png" alt="Code Discovery Platform — hero UI screenshot showing the main search interface" loading="eager">
+    </div>
+  </div>
+
+  <!-- ===== METRICS STRIP ===== -->
+  <div class="metrics-strip" role="region" aria-label="Key project metrics">
+    <div class="container">
+      <div class="metric-cell">
+        <span class="metric-value">6 wks</span>
+        <span class="metric-label">Brief to First Release</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value">11</span>
+        <span class="metric-label">Deliverables Shipped</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value">3</span>
+        <span class="metric-label">Product Modules Mapped</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value">40+</span>
+        <span class="metric-label">User Stories Created</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value">5</span>
+        <span class="metric-label">Personas Defined</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHALLENGE ===== -->
+  <section class="section" id="challenge" aria-labelledby="challenge-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            The Challenge
+          </span>
+          <h2 id="challenge-title">A new product with no design foundation, no team, and a hard launch deadline.</h2>
+          <p>The Code Discovery Platform was heading to market with a bold vision: become the go-to search tool for enterprise development teams. The problem was structural — no design department existed, no processes were in place, and the product had no brand, no UI system, and no validated user model.</p>
+          <p>I stepped in as Lead Product Designer with a single mandate: establish everything needed to ship a credible first release.</p>
+
+          <div class="callout">
+            <div class="callout__label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              Core Insight
+            </div>
+            <p>The technical product was ready. The design layer — strategy, research, brand, UI — was completely missing. Building it in 6 weeks required sequencing every decision precisely.</p>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;">
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-sm); padding:20px;">
+              <div style="font-size:28px; font-weight:900; color:var(--accent-violet); margin-bottom:4px;">0</div>
+              <div style="font-size:13px; color:var(--text-muted); font-weight:500;">Design processes before I arrived</div>
+            </div>
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-sm); padding:20px;">
+              <div style="font-size:28px; font-weight:900; color:var(--accent-violet); margin-bottom:4px;">v1.0</div>
+              <div style="font-size:13px; color:var(--text-muted); font-weight:500;">Target: full release in 6 weeks</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+            My Responsibilities
+          </span>
+          <div class="cards-grid" style="grid-template-columns:1fr; gap:12px; margin-top:16px;">
+            <div class="card">
+              <div class="card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </div>
+              <div class="card__title">Design Department Setup</div>
+              <div class="card__body">Established processes, frameworks, and collaboration models from zero.</div>
+            </div>
+            <div class="card">
+              <div class="card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+              <div class="card__title">Discovery &amp; Research</div>
+              <div class="card__body">Personas, use cases, user stories, product ecosystem mapping.</div>
+            </div>
+            <div class="card">
+              <div class="card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              </div>
+              <div class="card__title">UI Execution</div>
+              <div class="card__body">Web UI concept, widget (dark theme), prototype, dev-ready handoff, design system.</div>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Discovery Frameworks</span>
+            <span class="tag">UX Research</span>
+            <span class="tag">Branding</span>
+            <span class="tag">Product Strategy</span>
+            <span class="tag">UI Design</span>
+            <span class="tag">Design Systems</span>
+            <span class="tag">Roadmapping</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== DISCOVERY FRAMEWORK ===== -->
+  <section class="section section--alt" id="discovery" aria-labelledby="discovery-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="image-side">
+          <img src="./assets/img/discovery-framework@2x.png" alt="Discovery framework diagram — knowledge mapping, dependencies, and team synchronization structure" loading="lazy">
+        </div>
+        <div class="text-content" style="padding-top:8px;">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+            Discovery Framework
+          </span>
+          <h2 id="discovery-title">I audited everything first — then built a shared knowledge architecture.</h2>
+          <p>Before any design work began, I audited every material the team had produced alongside available open-source references. The knowledge was scattered, contradictory, and unsequenced.</p>
+          <p>I organized it into a structured discovery framework: a visible map of what was known, what was unknown, and what decisions depended on what.</p>
+
+          <div class="callout">
+            <div class="callout__label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Why This Mattered
+            </div>
+            <p>Without a shared framework, every team member held a different version of the product in their head. Misalignment this deep creates rework later — I identified it in week one and resolved it before any UI work started.</p>
+          </div>
+
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Discovery deliverables">
+              <li>Discovery framework document</li>
+              <li>Product roadmaps (v1 and beyond)</li>
+              <li>Service mapping for core workflows</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROCESS STEPS ===== -->
+  <section class="section section--dark" aria-label="Design process sequence">
+    <div class="container">
+      <span class="section-label" style="color:var(--accent-violet-light);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        How I Sequenced The Work
+      </span>
+      <h2 style="font-size:clamp(22px,3vw,36px); font-weight:900; letter-spacing:-.02em; margin-bottom:8px; color:var(--text-light);">Six phases, executed in strict dependency order.</h2>
+
+      <div class="process-steps" role="list">
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 01</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+          <div class="process-step__title">Audit</div>
+          <div class="process-step__desc">All existing materials reviewed and classified</div>
+        </div>
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 02</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="process-step__title">Personas</div>
+          <div class="process-step__desc">5 user archetypes defined with workshops</div>
+        </div>
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 03</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="process-step__title">Use Cases</div>
+          <div class="process-step__desc">40+ use cases mapped and categorized</div>
+        </div>
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 04</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+          <div class="process-step__title">Architecture</div>
+          <div class="process-step__desc">Product ecosystem and viable version mapped</div>
+        </div>
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 05</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+          <div class="process-step__title">Branding</div>
+          <div class="process-step__desc">Visual language, palette, and tone defined</div>
+        </div>
+        <div class="process-step" role="listitem">
+          <div class="process-step__num">Phase 06</div>
+          <div class="process-step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg></div>
+          <div class="process-step__title">UI Execution</div>
+          <div class="process-step__desc">Web + widget, prototype, dev-ready, design system</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== PERSONAS ===== -->
+  <section class="section" id="research" aria-labelledby="personas-title">
+    <div class="container">
+      <div class="two-col two-col--reverse">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Personas
+          </span>
+          <h2 id="personas-title">I ran a stakeholder workshop that produced 5 validated user archetypes.</h2>
+          <p>Product and marketing teams had different assumptions about who the users were. I ran a structured workshop with stakeholders to surface and reconcile those assumptions, then mapped them against real developer behavior patterns.</p>
+          <p>The output was dual: UX personas that drove interface decisions, and marketing personas that shaped positioning and messaging.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Persona deliverables">
+              <li>5 UX personas with behavioral maps</li>
+              <li>Marketing personas for positioning</li>
+              <li>Stakeholder workshop facilitation guide</li>
+            </ul>
+          </div>
+        </div>
+        <div class="image-side">
+          <img src="./assets/img/personas@2x.png" alt="Persona profiles — 5 developer archetypes including tech lead, senior dev, and QA engineer" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== USE CASES ===== -->
+  <section class="section section--alt" aria-labelledby="usecases-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="image-side">
+          <img src="./assets/img/use%20cases@2x.png" alt="Use cases map — comprehensive matrix of developer tasks and platform interactions" loading="lazy">
+        </div>
+        <div class="text-content" style="padding-top:8px;">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Use Cases
+          </span>
+          <h2 id="usecases-title">I mapped 40+ use cases, categorized for cross-functional team handoff.</h2>
+          <p>I identified and captured a comprehensive set of use cases through collaborative sessions with engineering, product, and domain leads. Every case was tied to a specific persona and a measurable task outcome.</p>
+          <p>The categorized list served as a shared reference that kept design, development, and QA aligned — eliminating the ambiguity that typically causes scope drift mid-sprint.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Use case deliverables">
+              <li>40+ use cases by persona and workflow</li>
+              <li>Categorized reference list for cross-functional teams</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== USER STORIES ===== -->
+  <section class="section" aria-labelledby="stories-title">
+    <div class="container">
+      <div class="two-col two-col--reverse">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            User Stories
+          </span>
+          <h2 id="stories-title">I translated use cases into actionable user stories using affinity mapping.</h2>
+          <p>I converted each use case into concise, stakeholder-reviewed user stories and used affinity mapping to group them into logical functional clusters.</p>
+          <p>The resulting structure gave the development team a clear view of feature scope and dependencies — organized by user need, not by technical convenience.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="User story deliverables">
+              <li>User stories tied to personas and use cases</li>
+              <li>Affinity maps by functional cluster</li>
+            </ul>
+          </div>
+        </div>
+        <div class="image-side">
+          <img src="./assets/img/user-stories@2x.png" alt="User stories board — organized by affinity map clusters and functional priority" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== INITIATIVES ===== -->
+  <section class="section section--alt" aria-labelledby="initiatives-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="image-side">
+          <img src="./assets/img/initiatives@2x.png" alt="Initiatives and functionality groups — prioritized list of product capabilities for v1 release" loading="lazy">
+        </div>
+        <div class="text-content" style="padding-top:8px;">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Initiatives &amp; Functionality
+          </span>
+          <h2 id="initiatives-title">I defined initiative groups and functionality priorities to anchor the v1 scope.</h2>
+          <p>From user stories, I synthesized the product's initiative structure — a set of clearly bounded capability groups that mapped directly to development sprints.</p>
+          <p>Each group carried prioritization metadata: which persona it served, which use cases it addressed, and its dependency relationships. This eliminated ambiguity when the team had to decide what to cut for the first release.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Initiatives deliverables">
+              <li>Initiative lists and functional groups</li>
+              <li>Prioritized functionality per release stage</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== PRODUCT ECOSYSTEM ===== -->
+  <section class="section" id="architecture" aria-labelledby="ecosystem-title">
+    <div class="container">
+      <div class="two-col two-col--reverse">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+            Products Ecosystem
+          </span>
+          <h2 id="ecosystem-title">I mapped the full product ecosystem to understand cross-product dependencies before designing anything.</h2>
+          <p>The platform wasn't a single product — it was an ecosystem of interconnected modules. I mapped each subproduct with dedicated mind maps and analyzed how they interacted with each other and with different user types.</p>
+          <p>This mapping revealed critical UI decisions that would have been impossible to make correctly without understanding the full system — specifically around the Library, Community, and Dependencies modules.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Ecosystem deliverables">
+              <li>Mind maps for all 3 core subproducts</li>
+              <li>Cross-product interaction diagrams</li>
+            </ul>
+          </div>
+        </div>
+        <div class="image-side">
+          <img src="./assets/img/product-ecosystem@2x.png" alt="Product ecosystem map — mind map showing relationships between Library, Community, and Dependencies modules" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== VIABLE VERSION + RELEASE MAP ===== -->
+  <section class="section section--alt" aria-labelledby="viable-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="image-side">
+          <img src="./assets/img/viable-version@2x.png" alt="Viable version map — detailed feature scoping for the minimum shippable product" loading="lazy">
+        </div>
+        <div class="text-content" style="padding-top:8px;">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="16.5" x2="7.5" y1="9.4" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+            Viable Version &amp; Release Map
+          </span>
+          <h2 id="viable-title">I scoped the viable version in detail, then cut a precise release map for v1.</h2>
+          <p>Once the full product vision was mapped, I built a detailed viable version — analyzing user feedback signals, testing assumptions against the ecosystem map, and defining the minimum cohesive feature set for a meaningful launch.</p>
+          <p>From the viable version, I extracted the release map: a prioritized cut of features confirmed for v1, with rationale. This became the contract between design, product, and engineering.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Release scope deliverables">
+              <li>Viable version mind map with prioritization metadata</li>
+              <li>v1 release scope definition</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Release Map Image -->
+      <div class="mt-48">
+        <span class="section-label" style="margin-bottom:20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Release Map
+        </span>
+        <div class="image-side">
+          <img src="./assets/img/release-map@2x.png" alt="Release map — functionality confirmed for v1 launch, sequenced by dependency order" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Execution Plan Image -->
+      <div class="mt-48">
+        <span class="section-label" style="margin-bottom:20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          Execution Plan
+        </span>
+        <div class="image-side">
+          <img src="./assets/img/execution-plan@2x.png" alt="Execution plan — consecutive product release timeline with delivery milestones" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== BRANDING ===== -->
+  <section class="section" id="branding" aria-labelledby="branding-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+            Branding
+          </span>
+          <h2 id="branding-title">I led a branding workshop that produced a complete visual identity from scratch.</h2>
+          <p>Working closely with key stakeholders, I facilitated a branding workshop to define the brand from the ground up — not just visual style, but the underlying strategic identity: who the product is for, what it communicates, and how it sounds.</p>
+          <p>The output was a coherent visual language that aligned the product's technical positioning with a design identity developers would trust on first contact.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Branding deliverables">
+              <li>Visual language guidelines</li>
+              <li>Color palette with accessibility compliance</li>
+              <li>Typography system</li>
+              <li>Tone of voice documentation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="image-side">
+          <img src="./assets/img/branding@2x.png" alt="Branding system — color palette, typography, and visual language for Code Discovery Platform" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== UI WEB ===== -->
+  <section class="section section--alt" id="ui" aria-labelledby="ui-web-title">
+    <div class="container">
+      <div class="two-col two-col--reverse">
+        <div class="text-content">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            UI Design / Web
+          </span>
+          <h2 id="ui-web-title">I built the full web UI concept — prototype, dev-ready specs, and initial design system.</h2>
+          <p>With all strategic foundations in place, I designed the web UI concept for the platform. Every decision was grounded in the research outputs: persona needs, confirmed use cases, and the product ecosystem structure.</p>
+          <p>I delivered a complete interactive prototype, dev-ready specification materials, and a brief design system — giving the engineering team everything needed to implement accurately on the first pass.</p>
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Web UI deliverables">
+              <li>UI concept for web (complete screen set)</li>
+              <li>Interactive Figma prototype</li>
+              <li>Dev-ready specification materials</li>
+              <li>Design system — brief version</li>
+            </ul>
+          </div>
+        </div>
+        <div class="image-side">
+          <img src="./assets/img/ui-web-design@2x.png" alt="Web UI design — main interface screens for Code Discovery Platform" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CORE SCREENS ===== -->
+  <section class="section section--dark" aria-labelledby="screens-title">
+    <div class="container">
+      <span class="section-label" style="color:var(--accent-violet-light);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        Core Screens
+      </span>
+      <h2 id="screens-title" style="font-size:clamp(22px,3.5vw,40px); font-weight:900; letter-spacing:-.02em; margin-bottom:8px; color:var(--text-light);">Library · Community · Dependencies</h2>
+      <p style="color:var(--text-light-secondary); max-width:60ch; margin-bottom:40px;">Three core modules of the platform, each designed as a distinct interaction mode with a shared visual system.</p>
+
+      <div class="screens-grid" role="list">
+        <div class="screen-cell" role="listitem">
+          <img src="./assets/img/library.png" alt="Library module — code package search and discovery interface" loading="lazy">
+          <div class="screen-cell__label">Library</div>
+        </div>
+        <div class="screen-cell" role="listitem">
+          <img src="./assets/img/community.png" alt="Community module — developer community and collaboration hub" loading="lazy">
+          <div class="screen-cell__label">Community</div>
+        </div>
+        <div class="screen-cell" role="listitem">
+          <img src="./assets/img/dependencies.png" alt="Dependencies module — package dependency tree visualization" loading="lazy">
+          <div class="screen-cell__label">Dependencies</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== UI WIDGET ===== -->
+  <section class="section" aria-labelledby="widget-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="image-side">
+          <img src="./assets/img/ui-wizard@2x.png" alt="Widget UI design — dark theme code search widget with multiple interaction states" loading="lazy">
+        </div>
+        <div class="text-content" style="padding-top:8px;">
+          <span class="section-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+            UI Design / Widget
+          </span>
+          <h2 id="widget-title">I designed the widget — the most critical user touchpoint — with dark theme and full state coverage.</h2>
+          <p>The widget was the entry point most developers would encounter first — embedded in their IDE or browser context. It required its own dedicated design pass: dark theme by requirement, multiple interaction states, and tight integration with the web platform's data model.</p>
+          <p>I delivered a complete state matrix (idle, searching, loading, results, empty, error), an interactive prototype, and dev-ready handoff materials.</p>
+
+          <div class="callout">
+            <div class="callout__label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Design Decision
+            </div>
+            <p>Dark theme wasn't cosmetic — developer tools that live inside dark IDEs must match the ambient color environment or they create eye strain. This was a functional constraint, not a style preference.</p>
+          </div>
+
+          <div class="deliverables">
+            <div class="deliverables__title">Deliverables</div>
+            <ul class="deliverables__list" aria-label="Widget deliverables">
+              <li>Widget UI — dark theme, all states</li>
+              <li>Interactive prototype</li>
+              <li>Dev-ready handoff materials</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== RESULTS ===== -->
+  <section class="section section--alt" id="results" aria-labelledby="results-title">
+    <div class="container">
+      <div class="section-heading-center">
+        <span class="section-label" style="display:inline-flex; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+          The Results
+        </span>
+        <h2 id="results-title">From zero to shipped — on schedule, across every layer.</h2>
+        <p>The first release launched on time. The design department was fully operational. The team had a framework they could extend independently going forward.</p>
+      </div>
+
+      <div class="results-grid" role="list">
+        <div class="result-card" role="listitem">
+          <span class="result-number">11</span>
+          <span class="result-label">Deliverables Shipped</span>
+          <span class="result-sub">Personas, use cases, stories, branding, UI, design system</span>
+        </div>
+        <div class="result-card" role="listitem">
+          <span class="result-number">6 wks</span>
+          <span class="result-label">Brief to First Release</span>
+          <span class="result-sub">Complete design foundation built and shipped</span>
+        </div>
+        <div class="result-card" role="listitem">
+          <span class="result-number">3×</span>
+          <span class="result-label">Products Covered</span>
+          <span class="result-sub">Design system spans Library, Community, Dependencies</span>
+        </div>
+      </div>
+
+      <!-- Achievement cards -->
+      <div class="cards-grid mt-48">
+        <div class="card">
+          <div class="card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="card__title">Design Department Established</div>
+          <div class="card__body">Fully operational design function with processes, contribution model, and tooling — built in parallel with product delivery.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="card__title">Multi-Product Design System</div>
+          <div class="card__body">Design system brief covering all 3 platform modules — allowing future work to proceed without renegotiating fundamentals.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="card__title">Product Vision Aligned</div>
+          <div class="card__body">Discovery framework and execution plan synchronized product, engineering, and design on a shared roadmap — preventing scope drift.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== LESSONS LEARNED ===== -->
+  <section class="section" id="lessons" aria-labelledby="lessons-title">
+    <div class="container">
+      <span class="section-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+        Lessons Learned
+      </span>
+      <h2 id="lessons-title" style="font-size:clamp(24px,4vw,44px); font-weight:900; letter-spacing:-.02em; margin-bottom:40px;">Three things I'd repeat on every 0→1 product engagement.</h2>
+
+      <div class="lessons-grid">
+        <div class="lesson-card">
+          <div class="lesson-card__num">Lesson 01</div>
+          <div class="lesson-card__title">Knowledge alignment is the first design deliverable.</div>
+          <div class="lesson-card__body">Before a single wireframe, I spent time mapping what the team actually knew — and discovered that different people held different mental models of the same product. Resolving that first saved weeks of rework later.</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-card__num">Lesson 02</div>
+          <div class="lesson-card__title">Frameworks compound. Research built now pays dividends for all future releases.</div>
+          <div class="lesson-card__body">The personas, use cases, and functional maps built for v1 didn't expire. They became the reference architecture that every subsequent sprint planned against. Investing time in foundations is never waste — it's infrastructure.</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-card__num">Lesson 03</div>
+          <div class="lesson-card__title">Dark theme for developer tools is a functional constraint, not aesthetics.</div>
+          <div class="lesson-card__body">Designing the widget in dark theme from the start — rather than adapting a light theme — produced a far better result. Developer tools live inside dark contexts. Design should start there, not retrofit to it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER CTA ===== -->
+  <section class="footer-cta" id="cta" aria-labelledby="cta-title">
+    <h2 id="cta-title">Want this kind of design foundation for your product?</h2>
+    <p>I build design systems, UX research pipelines, and product UI for teams that need to move fast without breaking things.</p>
+    <div class="footer-btns">
+      <a href="mailto:mailtotheroman@gmail.com" class="btn" aria-label="Contact Roman by email">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Get in Touch
+      </a>
+      <a href="#" class="btn btn--outline">View More Work</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Roman Kryzhanovskyi. Case study content reflects personal contributions and professional experience.</p>
+  </footer>
+
+  <!-- ===== VANILLA JS — DOT NAV ONLY ===== -->
+  <script>
+    (function(){
+      const dots = document.querySelectorAll('.dot[data-target]');
+      const sections = [];
+      dots.forEach(d => {
+        const el = document.getElementById(d.dataset.target);
+        if(el) sections.push({dot:d, el:el});
+      });
+      function update(){
+        let current = sections[0];
+        const scrollY = window.scrollY + window.innerHeight / 3;
+        sections.forEach(s => { if(s.el.offsetTop <= scrollY) current = s; });
+        dots.forEach(d => d.classList.remove('active'));
+        if(current) current.dot.classList.add('active');
+      }
+      dots.forEach(d => {
+        d.addEventListener('click', () => {
+          const el = document.getElementById(d.dataset.target);
+          if(el) el.scrollIntoView({behavior:'smooth'});
+        });
+      });
+      window.addEventListener('scroll', update, {passive:true});
+      update();
+    })();
+  </script>
+
+</body>
+</html>

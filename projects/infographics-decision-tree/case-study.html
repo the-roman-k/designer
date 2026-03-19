@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visualization Decision System — Roman Kryzhanovskyi | Portfolio</title>
+  <meta name="description" content="A decision-support tool for dashboard teams: 16 visualization families, 144 chart patterns, 4-step decision flow. Case study by Roman Kryzhanovskyi.">
+  <meta name="keywords" content="data visualization, chart selection, dashboard design, observability, UX design, information architecture, decision framework">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Visualization Decision System — Roman Kryzhanovskyi">
+  <meta property="og:description" content="16 visualization families. 144 chart patterns. 4-step decision flow. A decision-support tool built for observability and analytics teams.">
+  <meta property="og:image" content="./assets/img/mac-book-preview.png">
+  <meta property="og:type" content="article">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Visualization Decision System — Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="16 families, 144 patterns, 4 steps. A guided chart selection system for high-load dashboards.">
+  <meta name="twitter:image" content="./assets/img/mac-book-preview.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="[portfolio-url]/visualization-decision-system">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "Visualization Decision System",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi",
+      "jobTitle": "AI-First Design Engineer"
+    },
+    "description": "A decision-support tool for teams designing high-load dashboards in observability, monitoring, and analytics. Covers 16 visualization families and 144 selectable patterns with a guided 4-step decision flow.",
+    "keywords": "data visualization, dashboard design, UX design, information architecture, observability, decision framework",
+    "genre": "UX Design Case Study",
+    "about": "Visualization decision system for high-load dashboards"
+  }
+  </script>
+
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES — LIGHT THEME
+    ============================================================ */
+    :root {
+      --bg: #EAEAEA;
+      --text-primary: #050505;
+      --text-muted: #666666;
+      --accent: #CCFF00;
+      --border: rgba(5, 5, 5, 0.10);
+      --card-bg: #FFFFFF;
+      --dark-bg: #050505;
+      --dark-text: #F9FAFB;
+      --section-padding: 96px 0;
+      --section-padding-compact: 72px 0;
+    }
+
+    /* ============================================================
+       RESET + BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ============================================================
+       LAYOUT CONTAINERS
+    ============================================================ */
+    .container {
+      width: 80%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .container--wide {
+      width: 90%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+    ============================================================ */
+    h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    .section-label {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 0;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .hero__content {
+      padding: 80px 0 48px;
+    }
+
+    .hero-eyebrow {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      margin-bottom: 24px;
+    }
+
+    .hero-title .char {
+      display: inline-block;
+    }
+
+    .hero-title .char-space {
+      display: inline;
+    }
+
+    .hero-hook {
+      font-style: italic;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .hero-lead {
+      font-size: 1.1rem;
+      max-width: 580px;
+      color: var(--text-primary);
+      margin-bottom: 40px;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 0;
+    }
+
+    .hero-meta__item {}
+
+    .hero-meta__key {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .hero-meta__val {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .hero-image {
+      width: 80%;
+      max-width: 1280px;
+      margin: 56px auto 0;
+    }
+
+    .hero-image img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ============================================================
+       METRICS STRIP
+    ============================================================ */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 48px 0;
+    }
+
+    .metric-cell {
+      padding: 24px 32px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .metric-cell:last-child { border-right: none; }
+
+    .metric-value {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--text-primary);
+    }
+
+    .metric-value--highlight {
+      background: var(--accent);
+      color: var(--text-primary);
+      padding: 2px 8px;
+    }
+
+    .metric-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       SECTIONS
+    ============================================================ */
+    section {
+      padding: var(--section-padding);
+    }
+
+    /* ============================================================
+       TWO-COLUMN LAYOUTS
+    ============================================================ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .two-col--55-45 {
+      grid-template-columns: 55fr 45fr;
+    }
+
+    .two-col--reverse .two-col__media { order: -1; }
+
+    /* ============================================================
+       CALLOUT BLOCKS
+    ============================================================ */
+    .insight-block {
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      background: var(--card-bg);
+      border-radius: 4px;
+      margin: 32px 0;
+    }
+
+    .insight-block__label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .insight-block p {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0;
+    }
+
+    .decision-card {
+      border: 1.5px solid var(--text-primary);
+      padding: 20px 24px;
+      background: var(--card-bg);
+      border-radius: 4px;
+      margin: 32px 0;
+    }
+
+    .decision-card__label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .decision-card p {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0;
+    }
+
+    /* ============================================================
+       DELIVERABLES LIST
+    ============================================================ */
+    .deliverables-list {
+      list-style: none;
+      margin-top: 24px;
+      padding: 16px 24px;
+      background: var(--card-bg);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .deliverables-list__label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .deliverables-list li {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .deliverables-list li:last-child { border-bottom: none; }
+
+    .deliverables-list li::before {
+      content: '·';
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       DIAGRAM WRAP
+    ============================================================ */
+    .diagram-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      margin: 48px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      role: region;
+    }
+
+    .diagram-wrap svg {
+      min-width: 800px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .diagram-caption {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    /* ============================================================
+       IMAGE COMPONENTS
+    ============================================================ */
+    .cs-img--full {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .cs-img--full img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* ============================================================
+       GALLERY (D02)
+    ============================================================ */
+    .cs-gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .cs-gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+      cursor: pointer;
+      will-change: transform;
+      position: relative;
+      z-index: 0;
+      transition: z-index 0s;
+    }
+
+    .cs-gallery img:hover {
+      z-index: 2;
+    }
+
+    /* ============================================================
+       RESPONSIBILITIES (CHALLENGE)
+    ============================================================ */
+    .responsibilities-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .resp-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .resp-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .resp-card svg {
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 5px 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       PROCESS STEPS — DARK SECTION
+    ============================================================ */
+    .section--dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    .section--dark h2 {
+      color: var(--dark-text);
+    }
+
+    .section--dark .section-label {
+      color: var(--accent);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .process-step__card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 32px 24px;
+    }
+
+    .process-step__number {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .process-step__icon {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--dark-text);
+    }
+
+    .process-step__title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 8px;
+    }
+
+    .process-step__desc {
+      font-size: 0.875rem;
+      color: rgba(249, 250, 251, 0.65);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       RESULTS SECTION
+    ============================================================ */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 48px 0;
+    }
+
+    .result-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px;
+      background: var(--card-bg);
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .result-number {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .result-number--highlight {
+      background: var(--accent);
+      color: var(--text-primary);
+      padding: 4px 12px;
+    }
+
+    .result-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .result-sub {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .achievement-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .achievement-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .achievement-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .results-narrative {
+      max-width: 720px;
+      margin: 32px auto 0;
+      text-align: center;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       LESSONS
+    ============================================================ */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .lesson-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+    }
+
+    .lesson-card__num {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--text-primary);
+      display: inline-block;
+      padding: 2px 8px;
+      margin-bottom: 20px;
+    }
+
+    .lesson-card__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .lesson-card__body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       AI LAYER
+    ============================================================ */
+    .ai-intro {
+      max-width: 640px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    .ai-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .ai-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .tool-tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--text-primary);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .ai-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .ai-split {
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    /* ============================================================
+       CTA
+    ============================================================ */
+    #s-cta {
+      padding: 120px 0;
+      text-align: center;
+    }
+
+    #s-cta .container {
+      max-width: 720px;
+    }
+
+    #s-cta h2 {
+      margin-bottom: 24px;
+    }
+
+    #s-cta p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .cta-actions {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      border: 2px solid var(--text-primary);
+    }
+
+    .btn:hover { opacity: 0.75; }
+
+    .btn--primary {
+      background: var(--text-primary);
+      color: var(--dark-text);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .footer-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       DOT NAV
+    ============================================================ */
+    .dot-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .dot-nav__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(5, 5, 5, 0.25);
+      display: block;
+      position: relative;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot-nav__dot:hover,
+    .dot-nav__dot.is-active {
+      background: var(--accent);
+      outline: 1px solid var(--text-primary);
+    }
+
+    .dot-nav__dot:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 3px;
+    }
+
+    .dot-nav__tooltip {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--text-primary);
+      color: var(--dark-text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 8px;
+      border-radius: 3px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .dot-nav__dot:hover .dot-nav__tooltip { opacity: 1; }
+
+    @media (max-width: 1100px) {
+      .dot-nav { display: none; }
+    }
+
+    /* ============================================================
+       FOCUS STATES
+    ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 3px;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .two-col,
+      .two-col--55-45 {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .two-col--reverse .two-col__media { order: 0; }
+
+      .hero-meta { grid-template-columns: repeat(2, 1fr); }
+
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .cs-gallery { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: 92%; }
+      .container--wide { width: 96%; }
+      .hero-image { width: 92%; }
+
+      section { padding: 64px 0; }
+
+      .hero-meta { grid-template-columns: 1fr 1fr; }
+
+      .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+      .metric-cell { border-right: none; border-bottom: 1px solid var(--border); }
+      .metric-cell:nth-child(2n) { border-right: none; }
+
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .achievement-grid { grid-template-columns: 1fr; }
+
+      .cs-gallery { grid-template-columns: repeat(2, 1fr); }
+
+      .process-steps { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../../shared/project-header.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       DOT NAVIGATION
+  ============================================================ -->
+  <nav aria-label="Page sections" class="dot-nav">
+    <a href="#s-hero" class="dot-nav__dot is-active" aria-label="Hero section">
+      <span class="dot-nav__tooltip">Hero</span>
+    </a>
+    <a href="#s-challenge" class="dot-nav__dot" aria-label="Challenge section">
+      <span class="dot-nav__tooltip">Challenge</span>
+    </a>
+    <a href="#s-d01" class="dot-nav__dot" aria-label="Research section">
+      <span class="dot-nav__tooltip">Research</span>
+    </a>
+    <a href="#s-d02" class="dot-nav__dot" aria-label="Taxonomy section">
+      <span class="dot-nav__tooltip">Taxonomy</span>
+    </a>
+    <a href="#s-d03" class="dot-nav__dot" aria-label="Framework section">
+      <span class="dot-nav__tooltip">Framework</span>
+    </a>
+    <a href="#s-d04" class="dot-nav__dot" aria-label="Interaction section">
+      <span class="dot-nav__tooltip">Interaction</span>
+    </a>
+    <a href="#s-d05" class="dot-nav__dot" aria-label="Governance section">
+      <span class="dot-nav__tooltip">Governance</span>
+    </a>
+    <a href="#s-process" class="dot-nav__dot" aria-label="Process section">
+      <span class="dot-nav__tooltip">Process</span>
+    </a>
+    <a href="#s-results" class="dot-nav__dot" aria-label="Impact section">
+      <span class="dot-nav__tooltip">Impact</span>
+    </a>
+    <a href="#s-lessons" class="dot-nav__dot" aria-label="Lessons section">
+      <span class="dot-nav__tooltip">Lessons</span>
+    </a>
+    <a href="#s-ai" class="dot-nav__dot" aria-label="AI Layer section">
+      <span class="dot-nav__tooltip">AI Layer</span>
+    </a>
+    <a href="#s-cta" class="dot-nav__dot" aria-label="Contact section">
+      <span class="dot-nav__tooltip">Contact</span>
+    </a>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section id="s-hero" aria-label="Hero" class="hero">
+      <div class="hero__content">
+        <div class="container">
+          <span class="hero-eyebrow">Lead UX Designer · Observability &amp; Analytics · Self-Initiated R&amp;D</span>
+          <h1 class="hero-title">Visualization<br>Decision System</h1>
+          <p class="hero-hook">"I did not just design charts. I designed the decision infrastructure behind better charts."</p>
+          <p class="hero-lead">This is a decision-support tool for teams designing high-load dashboards in observability, monitoring, and analytics. It turns chart selection — an open-ended, cognitively expensive debate — into a guided 4-step decision flow that covers 16 visualization families and 144 selectable patterns.</p>
+          <div class="hero-meta">
+            <div class="hero-meta__item">
+              <p class="hero-meta__key">Role</p>
+              <p class="hero-meta__val">Lead UX Designer + Information Architect</p>
+            </div>
+            <div class="hero-meta__item">
+              <p class="hero-meta__key">Domain</p>
+              <p class="hero-meta__val">Observability, Analytics, High-Load Dashboards</p>
+            </div>
+            <div class="hero-meta__item">
+              <p class="hero-meta__key">Timeline</p>
+              <p class="hero-meta__val">Self-Initiated R&amp;D</p>
+            </div>
+            <div class="hero-meta__item">
+              <p class="hero-meta__key">Outcome</p>
+              <p class="hero-meta__val">16 families, 144 patterns, 4-step decision flow</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img
+          src="./assets/img/mac-book-preview.png"
+          srcset="./assets/img/mac-book-preview.png 1x, ./assets/img/mac-book-preview@2x.png 2x"
+          alt="Visualization Decision System interface shown in MacBook mockup"
+          loading="eager"
+          width="1440"
+          height="810"
+        >
+      </div>
+    </section>
+
+    <!-- METRICS STRIP -->
+    <div class="metrics-strip" aria-label="Project metrics">
+      <div class="metric-cell">
+        <span class="metric-value" data-count-to="16">16</span>
+        <span class="metric-label">Visualization Families</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value metric-value--highlight" data-count-to="144">144</span>
+        <span class="metric-label">Selectable Chart Patterns</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value" data-count-to="4">4</span>
+        <span class="metric-label">Decision Steps</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-value" data-count-to="4">4</span>
+        <span class="metric-label">Embedded Operating Rules</span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CHALLENGE
+    ============================================================ -->
+    <section id="s-challenge" aria-label="The Challenge">
+      <div class="container">
+        <div class="two-col two-col--55-45">
+          <div class="two-col__text">
+            <span class="section-label" aria-hidden="true">01 // The Challenge</span>
+            <h2>Teams had charts. They didn't have a way to choose the right one.</h2>
+            <p>Dashboard teams in observability, monitoring, and analytics face a specific kind of cognitive load: they need to select visualization patterns that are correct not just visually, but for the <strong>data shape</strong>, the <strong>user intent</strong>, the <strong>temporal context</strong>, and the <strong>operational stakes</strong>. Every decision they make affects whether their users can detect risk, interpret change, and act fast — or get slowed down by a <em>misleading chart</em>.</p>
+            <p>The resources available to help with that decision were scattered. Books, articles, library documentation, opinionated framework guides — each helpful in isolation, each partial. Teams had access to hundreds of chart examples but <strong>no structured decision logic</strong> to navigate them.</p>
+            <p>An analyst designing a monitoring dashboard had narrowed down three candidate chart types — but none of the available references addressed how temporal resolution, data density, and comparison goals interact. The decision ended up being subjective, and the first version needed rework after the first real-world test.</p>
+            <div class="insight-block">
+              <p class="insight-block__label" aria-hidden="true">Core Insight</p>
+              <p>The problem was not a lack of chart options. It was a <strong>lack of decision logic</strong>. And the consequence wasn't aesthetic — it was <em>operational</em>.</p>
+            </div>
+          </div>
+          <div class="two-col__media">
+            <span class="responsibilities-label" aria-hidden="true">My Responsibilities</span>
+            <div class="resp-cards">
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Problem Framing + Systems Thinking
+              </div>
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Competitive Landscape Research
+              </div>
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                Taxonomy Architecture (16 families, 144 patterns)
+              </div>
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+                Decision Model Design (4-step flow)
+              </div>
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 9h.01"/><path d="M15 9h.01"/><path d="M9 15h.01"/><path d="M15 15h.01"/></svg>
+                Interaction Design + Prototyping
+              </div>
+              <div class="resp-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Cross-Functional Review
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Observability</span>
+              <span class="tag">Analytics</span>
+              <span class="tag">Information Architecture</span>
+              <span class="tag">Decision Design</span>
+              <span class="tag">Data Visualization</span>
+              <span class="tag">AI Research</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D01 — RESEARCH & PROBLEM FRAMING
+    ============================================================ -->
+    <section id="s-d01" aria-label="Research and Problem Framing">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">02 // Research &amp; Problem Framing</span>
+        <h2>I mapped the fragmented visualization landscape before designing anything</h2>
+        <p>The discovery phase was a competitive landscape review across the full spectrum of data visualization guidance — books, articles, framework documentation, library docs, opinionated references. I wasn't looking for chart examples: I was looking for <strong>structural gaps</strong> — which parts of the decision problem had no good answer anywhere, and where existing guidance broke down under real dashboard complexity.</p>
+        <p>What I found confirmed the systemic nature of the problem. Most references were helpful for isolated chart selection but failed at the reasoning layer: they explained <em>what a heatmap is</em>, not <em>when to choose</em> a heatmap over a scatter plot given a specific data density and time window.</p>
+        <div class="insight-block">
+          <p class="insight-block__label" aria-hidden="true">Why This Mattered</p>
+          <p>The right starting frame was not "what chart is missing from this collection?" It was <strong>"what decision model is missing from all of them?"</strong> That reframe shaped everything that followed.</p>
+        </div>
+        <ul class="deliverables-list" aria-label="Research deliverables">
+          <span class="deliverables-list__label" aria-hidden="true">Deliverables</span>
+          <li>Competitive landscape review (articles, books, framework docs, library documentation)</li>
+          <li>AI-assisted literature synthesis across multiple sources</li>
+          <li>Structural gap analysis: where existing guidance broke down under real dashboard complexity</li>
+          <li>Research positioning: visualization selection as a systems problem, not a reference problem</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D02 — TAXONOMY ARCHITECTURE
+    ============================================================ -->
+    <section id="s-d02" aria-label="Taxonomy Architecture">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">03 // Taxonomy Architecture</span>
+        <h2>I built the taxonomy from first principles, organized by decision intent</h2>
+        <p>Rather than adapting an existing chart library's organization, I reconstructed the taxonomy from scratch — grouping chart types by <em>what they're used for</em> rather than what they're called in a specific framework. The result was <strong>16 visualization families</strong> covering the full range of dashboard-relevant patterns: comparison, trend, distribution, relationship, part-to-whole, flow, geospatial, density, and more — each with its own set of selectable subtypes and edge cases.</p>
+        <p>The <strong>144 selectable patterns</strong> weren't just a count — they were a <em>coverage decision</em>. I conducted API feasibility analysis of chart behaviors across real data conditions to understand which patterns were reliable under high-load environments and which failed under density or time constraints. AI-assisted clustering helped identify overlaps and edge cases across reference sources that manual review would have missed.</p>
+        <div class="decision-card">
+          <p class="decision-card__label" aria-hidden="true">Design Decision</p>
+          <p>I organized the taxonomy by <strong>decision intent</strong>, not by library convention. This meant teams with different charting libraries and different codebases could still use the same taxonomy to reason about their choices — the framework was <em>tool-agnostic by design</em>.</p>
+        </div>
+        <ul class="deliverables-list" aria-label="Taxonomy deliverables">
+          <span class="deliverables-list__label" aria-hidden="true">Deliverables</span>
+          <li>Complete visualization taxonomy: 16 families, 144 selectable chart patterns and data views</li>
+          <li>Taxonomy organized by decision intent (not library naming convention)</li>
+          <li>Pattern coverage map: which chart types work under which density, temporal, and variable conditions</li>
+          <li>"Use Carefully" family: risky/misleading patterns explicitly labeled and explained</li>
+        </ul>
+      </div>
+      <div class="cs-gallery container--wide" role="region" aria-label="All 16 visualization families">
+        <img src="./assets/img/infographics-grouped-type-01.png" srcset="./assets/img/infographics-grouped-type-01.png 1x, ./assets/img/infographics-grouped-type-01@2x.png 2x" alt="Visualization family 1 — Comparison chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-02.png" srcset="./assets/img/infographics-grouped-type-02.png 1x, ./assets/img/infographics-grouped-type-02@2x.png 2x" alt="Visualization family 2 — Trend chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-03.png" srcset="./assets/img/infographics-grouped-type-03.png 1x, ./assets/img/infographics-grouped-type-03@2x.png 2x" alt="Visualization family 3 — Distribution chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-04.png" srcset="./assets/img/infographics-grouped-type-04.png 1x, ./assets/img/infographics-grouped-type-04@2x.png 2x" alt="Visualization family 4 — Relationship chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-05.png" srcset="./assets/img/infographics-grouped-type-05.png 1x, ./assets/img/infographics-grouped-type-05@2x.png 2x" alt="Visualization family 5 — Part-to-Whole chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-06.png" srcset="./assets/img/infographics-grouped-type-06.png 1x, ./assets/img/infographics-grouped-type-06@2x.png 2x" alt="Visualization family 6 — Flow chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-07.png" srcset="./assets/img/infographics-grouped-type-07.png 1x, ./assets/img/infographics-grouped-type-07@2x.png 2x" alt="Visualization family 7 — Geospatial chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-08.png" srcset="./assets/img/infographics-grouped-type-08.png 1x, ./assets/img/infographics-grouped-type-08@2x.png 2x" alt="Visualization family 8 — Density chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-09.png" srcset="./assets/img/infographics-grouped-type-09.png 1x, ./assets/img/infographics-grouped-type-09@2x.png 2x" alt="Visualization family 9 — Deviation chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-10.png" srcset="./assets/img/infographics-grouped-type-10.png 1x, ./assets/img/infographics-grouped-type-10@2x.png 2x" alt="Visualization family 10 — Ranking chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-11.png" srcset="./assets/img/infographics-grouped-type-11.png 1x, ./assets/img/infographics-grouped-type-11@2x.png 2x" alt="Visualization family 11 — Magnitude chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-12.png" srcset="./assets/img/infographics-grouped-type-12.png 1x, ./assets/img/infographics-grouped-type-12@2x.png 2x" alt="Visualization family 12 — Correlation chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-13.png" srcset="./assets/img/infographics-grouped-type-13.png 1x, ./assets/img/infographics-grouped-type-13@2x.png 2x" alt="Visualization family 13 — Time-series chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-14.png" srcset="./assets/img/infographics-grouped-type-14.png 1x, ./assets/img/infographics-grouped-type-14@2x.png 2x" alt="Visualization family 14 — Network chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-15.png" srcset="./assets/img/infographics-grouped-type-15.png 1x, ./assets/img/infographics-grouped-type-15@2x.png 2x" alt="Visualization family 15 — Hierarchical chart patterns" loading="lazy">
+        <img src="./assets/img/infographics-grouped-type-16.png" srcset="./assets/img/infographics-grouped-type-16.png 1x, ./assets/img/infographics-grouped-type-16@2x.png 2x" alt="Visualization family 16 — Use Carefully patterns (misleading chart types)" loading="lazy">
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D03 — DECISION FRAMEWORK DESIGN
+    ============================================================ -->
+    <section id="s-d03" aria-label="Decision Framework Design">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">04 // Decision Framework Design</span>
+        <h2>I chose four universal variables that work across every dashboard context</h2>
+
+        <!-- SVG Diagram — Decision Framework Flow -->
+        <div class="diagram-wrap" role="img" aria-label="4-step decision framework: Goal, Temporal Context, Variables Count, Data Volume leading to chart recommendation">
+          <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <title>4-Step Decision Framework</title>
+            <desc>Four universal variables that narrow chart selection from 144 patterns to a single defensible recommendation: Goal, Temporal Context, Variables Count, Data Volume.</desc>
+            <defs>
+              <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#050505"/>
+              </marker>
+            </defs>
+            <rect width="880" height="260" fill="#FFFFFF" rx="0"/>
+            <text x="44" y="36" font-family="'Space Mono', monospace" font-size="10" fill="#666666" letter-spacing="0.08em">DECISION FLOW</text>
+            <!-- Step 1: Goal -->
+            <rect x="28" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <text x="102" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 01</text>
+            <line x1="48" y1="90" x2="156" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+            <text x="102" y="118" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Goal</text>
+            <text x="102" y="140" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What do you</text>
+            <text x="102" y="156" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">want to show?</text>
+            <!-- Arrow 1 -->
+            <line x1="180" y1="120" x2="204" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- Step 2: Temporal Context -->
+            <rect x="208" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <text x="282" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 02</text>
+            <line x1="228" y1="90" x2="336" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+            <text x="282" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Temporal</text>
+            <text x="282" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Context</text>
+            <text x="282" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What is the</text>
+            <text x="282" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">time context?</text>
+            <!-- Arrow 2 -->
+            <line x1="360" y1="120" x2="384" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- Step 3: Variables Count -->
+            <rect x="388" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <text x="462" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 03</text>
+            <line x1="408" y1="90" x2="516" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+            <text x="462" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Variables</text>
+            <text x="462" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Count</text>
+            <text x="462" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">How many data</text>
+            <text x="462" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">dimensions?</text>
+            <!-- Arrow 3 -->
+            <line x1="540" y1="120" x2="564" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- Step 4: Data Volume -->
+            <rect x="568" y="52" width="148" height="136" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"/>
+            <text x="642" y="80" font-family="'Space Mono', monospace" font-size="10" fill="#050505" text-anchor="middle" letter-spacing="0.06em">STEP 04</text>
+            <line x1="588" y1="90" x2="696" y2="90" stroke="#050505" stroke-width="0.75" opacity="0.2"/>
+            <text x="642" y="112" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Data</text>
+            <text x="642" y="130" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle">Volume</text>
+            <text x="642" y="152" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">What density</text>
+            <text x="642" y="168" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">will users see?</text>
+            <!-- Arrow 4 to recommendation -->
+            <line x1="720" y1="120" x2="744" y2="120" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- Recommendation box — lime highlight -->
+            <rect x="748" y="36" width="108" height="168" rx="4" fill="#CCFF00" stroke="#050505" stroke-width="1.5"/>
+            <text x="802" y="66" font-family="'Space Mono', monospace" font-size="9" fill="#050505" text-anchor="middle" letter-spacing="0.06em">OUTPUT</text>
+            <text x="802" y="100" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">Recom-</text>
+            <text x="802" y="118" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">menda-</text>
+            <text x="802" y="136" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#050505" text-anchor="middle">tion</text>
+            <text x="802" y="162" font-family="'Inter', sans-serif" font-size="10" fill="#050505" text-anchor="middle">+ reasoning</text>
+            <text x="802" y="178" font-family="'Inter', sans-serif" font-size="10" fill="#050505" text-anchor="middle">path</text>
+            <!-- Caption -->
+            <text x="440" y="226" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle">4 universal variables · 144 patterns → 1 defensible chart choice</text>
+            <text x="440" y="247" font-family="'Space Mono', monospace" font-size="9" fill="#050505" text-anchor="middle" letter-spacing="0.04em">4 embedded operating rules prevent common errors in high-load contexts</text>
+          </svg>
+        </div>
+
+        <div class="two-col">
+          <div class="two-col__text">
+            <p>The decision model needed to work for every type of dashboard, every charting library, and every team composition — designers, engineers, analysts, and PMs. After mapping the full space of possible decision variables, I selected four that were <strong>universal, teachable, and cross-functional</strong>: <em>What do you want to show? What is the temporal context? How many variables are involved? What data volume will users inspect?</em> These four narrow the choice space from 144 patterns to a defensible recommendation in a single flow.</p>
+            <p>The 4-step model was not just a filter — it was a <strong>shared vocabulary</strong>. When design and engineering could frame a visualization decision through the same four questions, the conversation became structured and fast instead of opinionated and slow. The decision tree also encodes <strong>four operating rules</strong> that prevent common errors in high-load contexts: <em>aggregate first, one visual one primary question, sampling for dense views, interactions only when they add value</em>.</p>
+            <div class="decision-card">
+              <p class="decision-card__label" aria-hidden="true">Design Decision</p>
+              <p>I chose <strong>universality over specificity</strong>. Variables tied to a specific domain or framework would have produced a sharper tool for a narrower audience — four universal variables produced a tool that works across observability, analytics, and operational contexts simultaneously.</p>
+            </div>
+            <ul class="deliverables-list" aria-label="Decision framework deliverables">
+              <span class="deliverables-list__label" aria-hidden="true">Deliverables</span>
+              <li>4-step decision framework (Goal → Temporal context → Variables → Data volume)</li>
+              <li>4 embedded operating rules / heuristics</li>
+              <li>Decision tree model converting visualization theory into actionable workflow</li>
+              <li>Universal decision variables: legible to designers, engineers, analysts, and PMs</li>
+            </ul>
+          </div>
+          <div class="two-col__media">
+            <div class="cs-img--full">
+              <img
+                src="./assets/img/decision-tree.png"
+                srcset="./assets/img/decision-tree.png 1x, ./assets/img/decision-tree@2x.png 2x"
+                alt="Decision tree diagram showing 4-step visualization selection framework"
+                loading="lazy"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D04 — INTERACTION DESIGN
+    ============================================================ -->
+    <section id="s-d04" aria-label="Interaction Design">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">05 // Interaction Design</span>
+        <h2>I designed a three-layer product that recommends first, lets you explore second</h2>
+
+        <!-- SVG Diagram — Product Architecture -->
+        <div class="diagram-wrap" role="img" aria-label="Three-layer product architecture: Taxonomy Board, Decision Tree, and Recommendation panel">
+          <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <title>Three-Layer Product Architecture</title>
+            <desc>The product is structured in three layers: Taxonomy Board for expert browsing, Decision Tree for guided selection, and Recommendation/Preview for defensible chart output.</desc>
+            <defs>
+              <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#050505"></polygon>
+              </marker>
+            </defs>
+            <rect width="900" height="320" fill="#FFFFFF"></rect>
+            <text x="32" y="34" font-family="'Space Mono', monospace" font-size="10" fill="#666666" letter-spacing="0.08em">PRODUCT ARCHITECTURE — THREE LAYERS</text>
+            <!-- Layer 1: Taxonomy Board -->
+            <rect x="24" y="52" width="232" height="220" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="1.5"></rect>
+            <rect x="24" y="52" width="232" height="40" rx="4" fill="#050505"></rect>
+            <rect x="24" y="72" width="232" height="20" fill="#050505"></rect>
+            <text x="140" y="77" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.06em">LAYER 01</text>
+            <text x="140" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle" y="110">Taxonomy Board</text>
+            <rect x="40" y="122" width="200" height="22" rx="3" fill="#F5F5F5" stroke="#D0D0D0" stroke-width="1"></rect>
+            <text x="52" y="137" font-family="'Inter', sans-serif" font-size="10" fill="#666666">Comparison</text>
+            <rect x="40" y="150" width="200" height="22" rx="3" fill="#F5F5F5" stroke="#D0D0D0" stroke-width="1"></rect>
+            <text x="52" y="165" font-family="'Inter', sans-serif" font-size="10" fill="#666666">Trend &amp; Time Series</text>
+            <rect x="40" y="178" width="200" height="22" rx="3" fill="#F5F5F5" stroke="#D0D0D0" stroke-width="1"></rect>
+            <text x="52" y="193" font-family="'Inter', sans-serif" font-size="10" fill="#666666">Distribution</text>
+            <rect x="40" y="206" width="200" height="22" rx="3" fill="#F5F5F5" stroke="#D0D0D0" stroke-width="1"></rect>
+            <text x="52" y="221" font-family="'Inter', sans-serif" font-size="10" fill="#666666">Relationship</text>
+            <text x="140" y="252" font-family="'Space Mono', monospace" font-size="9" fill="#050505" text-anchor="middle" letter-spacing="0.04em">+ 12 more families</text>
+            <text x="140" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle" y="290">Expert browsing</text>
+            <!-- Bidirectional arrow L1 ↔ L2 -->
+            <line x1="258" y1="149" x2="290" y2="149" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"></line>
+            <line x1="290" y1="163" x2="258" y2="163" stroke="#050505" stroke-width="1.5" marker-end="url(#arr)"></line>
+            <!-- Layer 2: Decision Tree -->
+            <rect x="296" y="44" width="272" height="236" rx="4" fill="#FFFFFF" stroke="#050505" stroke-width="2"></rect>
+            <rect x="296" y="44" width="272" height="40" rx="4" fill="#050505"></rect>
+            <rect x="296" y="64" width="272" height="20" fill="#050505"></rect>
+            <text x="432" y="69" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.06em">LAYER 02 — PRIMARY</text>
+            <text x="432" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle" y="106">Decision Tree</text>
+            <rect x="316" y="116" width="232" height="28" rx="3" fill="#F5F5F5" stroke="#050505" stroke-width="1"></rect>
+            <text x="340" y="135" font-family="'Inter', sans-serif" font-size="11" fill="#050505" font-weight="600">01 — Goal</text>
+            <rect x="316" y="154" width="232" height="28" rx="3" fill="#F5F5F5" stroke="#050505" stroke-width="1"></rect>
+            <text x="340" y="173" font-family="'Inter', sans-serif" font-size="11" fill="#050505" font-weight="600">02 — Temporal Context</text>
+            <rect x="316" y="192" width="232" height="28" rx="3" fill="#F5F5F5" stroke="#050505" stroke-width="1"></rect>
+            <text x="340" y="211" font-family="'Inter', sans-serif" font-size="11" fill="#050505" font-weight="600">03 — Variables Count</text>
+            <rect x="316" y="230" width="232" height="28" rx="3" fill="#CCFF00" stroke="#050505" stroke-width="1.5"></rect>
+            <text x="340" y="249" font-family="'Inter', sans-serif" font-size="11" fill="#050505" font-weight="600">04 — Data Volume</text>
+            <text x="432" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle" y="300">Guided recommendation</text>
+            <!-- Arrow L2 → L3 -->
+            <line x1="572" y1="155" x2="600" y2="155" stroke="#050505" stroke-width="2" marker-end="url(#arr)"></line>
+            <!-- Layer 3: Recommendation -->
+            <rect x="604" y="52" width="272" height="220" rx="4" fill="#CCFF00" stroke="#050505" stroke-width="1.5"></rect>
+            <rect x="604" y="52" width="272" height="40" rx="4" fill="#050505"></rect>
+            <rect x="604" y="72" width="272" height="20" fill="#050505"></rect>
+            <text x="740" y="77" font-family="'Space Mono', monospace" font-size="10" fill="#CCFF00" text-anchor="middle" letter-spacing="0.06em">LAYER 03 — OUTPUT</text>
+            <text x="740" font-family="'Inter', sans-serif" font-size="15" font-weight="700" fill="#050505" text-anchor="middle" y="112">Recommendation</text>
+            <rect x="624" y="122" width="232" height="40" rx="3" fill="#050505"></rect>
+            <text x="740" y="139" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#CCFF00" text-anchor="middle">→ Heatmap</text>
+            <text x="740" y="155" font-family="'Space Mono', monospace" font-size="9" fill="#CCFF00" text-anchor="middle">RECOMMENDED PATTERN</text>
+            <text x="640" y="185" font-family="'Inter', sans-serif" font-size="10" fill="#050505">Why it fits:</text>
+            <text x="640" y="200" font-family="'Inter', sans-serif" font-size="10" fill="#333333">High density + 2 variables</text>
+            <text x="640" y="215" font-family="'Inter', sans-serif" font-size="10" fill="#333333">→ heatmap over scatter</text>
+            <rect x="624" y="228" width="232" height="28" rx="3" fill="#050505" opacity="0.08" stroke="#050505" stroke-width="1"></rect>
+            <text x="740" y="247" font-family="'Inter', sans-serif" font-size="11" fill="#050505" text-anchor="middle">Live preview</text>
+            <text x="740" font-family="'Inter', sans-serif" font-size="11" fill="#050505" text-anchor="middle" y="292">Defensible reasoning chain</text>
+            <!-- Caption -->
+            <text x="450" font-family="'Inter', sans-serif" font-size="11" fill="#666666" text-anchor="middle" y="320">Recommend first, browse second — cognitive load reduced without removing professional control</text>
+          </svg>
+        </div>
+
+        <div class="two-col">
+          <div class="two-col__text">
+            <p>The central product decision was architectural: rather than a browsable gallery that users search manually, the default experience is a <strong>recommendation</strong>. The decision tree drives the user toward a specific chart pattern with an explanation of <em>why it fits</em> — and the taxonomy board remains available for expert exploration when the recommendation needs validation or comparison. This structure reduces cognitive load without removing <strong>professional control</strong>.</p>
+            <p>The recommendation layer does more than output a chart name. It explains the <strong>reasoning path</strong> — which decision variable triggered which filter, and why the recommended pattern fits the specific combination of goal, time, variables, and volume. <em>Live preview</em> lets the user see the recommended chart in context, making the tool useful not just for individual decisions but for cross-functional alignment sessions where teams need to discuss and validate choices in real time.</p>
+            <div class="insight-block">
+              <p class="insight-block__label" aria-hidden="true">Why This Mattered</p>
+              <p>Most teams already had a chart library. What they lacked was a way to make the selection decision faster and more defensible. The recommendation layer addressed exactly that — it gave teams a <strong>defensible reasoning chain</strong>, not just a visual.</p>
+            </div>
+            <ul class="deliverables-list" aria-label="Interaction design deliverables">
+              <span class="deliverables-list__label" aria-hidden="true">Deliverables</span>
+              <li>Three-layer product architecture: taxonomy board (left) + decision tree (center) + recommendation/preview (right)</li>
+              <li>"Recommend first, browse second" interaction model</li>
+              <li>Recommendation with reasoning path (explains why each pattern fits the specific combination)</li>
+              <li>Live preview layer: validates recommendation in context before implementation</li>
+              <li>Working interactive prototype</li>
+            </ul>
+          </div>
+          <div class="two-col__media">
+            <div class="cs-img--full">
+              <img
+                src="./assets/img/interface.png"
+                srcset="./assets/img/interface.png 1x, ./assets/img/interface@2x.png 2x"
+                alt="Full product interface — taxonomy board, decision tree, and recommendation panel"
+                loading="lazy"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D05 — GOVERNANCE LAYER
+    ============================================================ -->
+    <section id="s-d05" aria-label="Governance Layer">
+      <div class="container">
+        <div class="two-col two-col--reverse">
+          <div class="two-col__media">
+            <div class="cs-img--full">
+              <img
+                src="./assets/img/result-chart.png"
+                srcset="./assets/img/result-chart.png 1x, ./assets/img/result-chart@2x.png 2x"
+                alt="Chart recommendation output showing governance layer in action"
+                loading="lazy"
+              >
+            </div>
+          </div>
+          <div class="two-col__text">
+            <span class="section-label" aria-hidden="true">06 // Governance Layer</span>
+            <h2>I included the unsafe patterns instead of pretending they don't exist</h2>
+            <p>Many data visualization resources omit misleading chart types — pie charts for non-part-to-whole data, 3D charts that distort magnitude, dual-axis charts that create false correlations. I made the opposite decision: the "Use Carefully" family is <strong>explicitly part of the system</strong>, not excluded from it. Ignoring them doesn't prevent misuse — it just removes the governance layer that would help teams recognize and avoid the mistake.</p>
+            <p>The governance layer extends to four operating rules embedded in the system: aggregate first, one visual one primary question, use sampling for dense views, enable interactions only when they genuinely add value. These aren't style preferences — they're structural constraints that prevent a class of visualization failures common in high-load environments. Teams that adopt the system get the heuristics alongside the taxonomy.</p>
+            <div class="decision-card">
+              <p class="decision-card__label" aria-hidden="true">Design Decision</p>
+              <p>A decision tool without governance is just <em>a gallery with extra steps</em>. The governance layer is what makes this a <strong>professional tool</strong> rather than an inspiration board.</p>
+            </div>
+            <ul class="deliverables-list" aria-label="Governance layer deliverables">
+              <span class="deliverables-list__label" aria-hidden="true">Deliverables</span>
+              <li>"Use Carefully" pattern family: misleading/risky chart types with explicit explanation of failure modes</li>
+              <li>4 operating rules / embedded heuristics: aggregate first, one visual one question, sampling for dense views, interactions only when needed</li>
+              <li>Governance documentation: when each rule applies and what failure it prevents</li>
+              <li>System framing: visualization selection as a product decision requiring guardrails, not aesthetic judgment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PROCESS STEPS — DARK SECTION
+    ============================================================ -->
+    <section id="s-process" aria-label="Process Steps" class="section--dark">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">07 // Process</span>
+        <h2>Six phases from fragmented landscape to decision infrastructure</h2>
+        <div class="process-steps">
+          <!-- Phase 01 -->
+          <div class="process-step__card">
+            <span class="process-step__number">01</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <h3 class="process-step__title">Research &amp; Landscape Mapping</h3>
+            <p class="process-step__desc">Surveyed the full data visualization guidance landscape to identify structural gaps in existing decision frameworks.</p>
+          </div>
+          <!-- Phase 02 -->
+          <div class="process-step__card">
+            <span class="process-step__number">02</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+            <h3 class="process-step__title">AI-Assisted Synthesis</h3>
+            <p class="process-step__desc">Used AI tools to cluster chart patterns, compare overlapping guidance, and accelerate coverage across fragmented sources.</p>
+          </div>
+          <!-- Phase 03 -->
+          <div class="process-step__card">
+            <span class="process-step__number">03</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+            <h3 class="process-step__title">Taxonomy Construction</h3>
+            <p class="process-step__desc">Built 16 visualization families and 144 patterns from first principles — organized by decision intent, not library convention.</p>
+          </div>
+          <!-- Phase 04 -->
+          <div class="process-step__card">
+            <span class="process-step__number">04</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            <h3 class="process-step__title">Decision Model Design</h3>
+            <p class="process-step__desc">Defined 4 universal decision variables and designed the recommendation flow that converts them into a guided chart selection.</p>
+          </div>
+          <!-- Phase 05 -->
+          <div class="process-step__card">
+            <span class="process-step__number">05</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="9" x2="9" y1="9" y2="21"/><line x1="15" x2="15" y1="9" y2="21"/></svg>
+            <h3 class="process-step__title">Interaction Design &amp; Prototyping</h3>
+            <p class="process-step__desc">Designed the three-layer product architecture and built a working interactive prototype with live preview capability.</p>
+          </div>
+          <!-- Phase 06 -->
+          <div class="process-step__card">
+            <span class="process-step__number">06</span>
+            <svg class="process-step__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <h3 class="process-step__title">Cross-Functional Review</h3>
+            <p class="process-step__desc">Validated decision logic and recommendations with designers and frontend engineers to confirm practical defensibility.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RESULTS
+    ============================================================ -->
+    <section id="s-results" aria-label="Results and Impact" style="text-align: center;">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">08 // Impact</span>
+        <h2>From open-ended debate to guided decision infrastructure</h2>
+        <div class="results-grid">
+          <div class="result-card">
+            <span class="result-number" data-count-to="16">16</span>
+            <span class="result-label">Visualization Families</span>
+            <span class="result-sub">Complete taxonomy coverage</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number result-number--highlight" data-count-to="144">144</span>
+            <span class="result-label">Selectable Chart Patterns</span>
+            <span class="result-sub">and data views</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number" data-count-to="4">4</span>
+            <span class="result-label">Step Decision Flow</span>
+            <span class="result-sub">Goal → Temporal → Variables → Volume</span>
+          </div>
+          <div class="result-card">
+            <span class="result-number" data-count-to="4">4</span>
+            <span class="result-label">Embedded Operating Rules</span>
+            <span class="result-sub">Governance heuristics built in</span>
+          </div>
+        </div>
+        <div class="achievement-grid" style="text-align: left;">
+          <div class="achievement-card">
+            <h3>Fragmented Guidance → Single Decision System</h3>
+            <p>What had been scattered across dozens of books, articles, library docs, and framework references is now a <strong>single operational system</strong>. Teams no longer need to cross-reference multiple sources to reach a defensible chart decision.</p>
+          </div>
+          <div class="achievement-card">
+            <h3>Open-Ended Debate → Repeatable Workflow</h3>
+            <p>Visualization selection moved from subjective, inconsistent team conversations to a structured 4-step flow that produces the <strong>same reasoning path regardless of who runs it</strong>. Decision quality doesn't depend on the most experienced person in the room.</p>
+          </div>
+          <div class="achievement-card">
+            <h3>Shared Language Across Roles</h3>
+            <p>Designers, engineers, analysts, and PMs can now discuss visualization choices through the same four variables — <em>Goal, Temporal context, Variables count, Data volume</em>. Cross-functional alignment conversations got faster and more concrete.</p>
+          </div>
+          <div class="achievement-card">
+            <h3>Governance Built In</h3>
+            <p>The "Use Carefully" family and 4 operating rules give teams <strong>explicit guardrails</strong> against the most common misleading visualization choices in high-load environments. The system <em>teaches</em> as it recommends.</p>
+          </div>
+        </div>
+        <p class="results-narrative">The metrics describe a knowledge compression: 16 families and 144 patterns is the full breadth of the decision space, navigable in 4 steps. But the more significant outcome is structural — chart selection stopped being a <em>judgment call</em> and started being a <strong>workflow</strong>. In high-load environments where visualization mistakes have operational consequences, the difference between a subjective debate and a guided decision system is the difference between a <em>risk</em> and a <strong>process</strong>.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LESSONS
+    ============================================================ -->
+    <section id="s-lessons" aria-label="Lessons">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">09 // Lessons</span>
+        <h2>Three things this project taught me</h2>
+        <div class="lessons-grid">
+          <div class="lesson-card">
+            <span class="lesson-card__num">01</span>
+            <h3 class="lesson-card__title">The problem is never the chart. It's the decision behind it.</h3>
+            <p class="lesson-card__body">Teams that struggle with data visualization rarely have the wrong chart library or the wrong examples in front of them — they have the <em>wrong frame</em> for the decision. Reframing the problem from "which chart?" to <strong>"what decision am I trying to support?"</strong> is the move that makes everything else tractable. The strongest systems thinking I do is at the level of problem framing, <em>before any screen exists</em>.</p>
+          </div>
+          <div class="lesson-card">
+            <span class="lesson-card__num">02</span>
+            <h3 class="lesson-card__title">Tools that govern are more valuable than tools that inspire.</h3>
+            <p class="lesson-card__body">Inspiration resources produce better aesthetics — governance systems produce <strong>fewer mistakes</strong>. In high-stakes environments — observability, analytics, operational products — reducing the risk of a wrong decision is often more valuable than surfacing a good option. Designing for <strong>governance</strong> rather than inspiration was the framing that made this tool <em>commercially relevant</em> instead of just professionally interesting.</p>
+          </div>
+          <div class="lesson-card">
+            <span class="lesson-card__num">03</span>
+            <h3 class="lesson-card__title">Universal beats specialized when the decision space is large.</h3>
+            <p class="lesson-card__body">I could have built a more specialized tool — tuned for one domain, one charting library, one team structure. Instead I optimized for <strong>universality</strong>: four variables that work across every context. When you design decision infrastructure, the <em>reach</em> of the framework matters more than the precision of any single recommendation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         AI LAYER
+    ============================================================ -->
+    <section id="s-ai" aria-label="AI Layer">
+      <div class="container">
+        <span class="section-label" aria-hidden="true">10 // AI Layer</span>
+        <h2>AI accelerated research coverage. The decision architecture was mine.</h2>
+        <p class="ai-intro">This project used AI as a <strong>research amplifier</strong> — not to make design decisions, but to expand coverage across a fragmented knowledge landscape faster than manual research could. The taxonomy, the decision model, and the governance layer were built from <em>my judgment</em>.</p>
+        <div class="ai-cards">
+          <div class="ai-card">
+            <span class="tool-tag">AI-Assisted Literature Scanning</span>
+            <p><strong>Task:</strong> Scanned and synthesized data visualization guidance across books, articles, framework documentation, and reference material.</p>
+            <p><strong>Outcome:</strong> Faster coverage of a large, fragmented landscape — surfaced patterns and gaps that manual review would have taken significantly longer to map.</p>
+            <p class="ai-split">Human/AI split: I directed the research scope and evaluated all synthesis for quality and relevance; AI accelerated the scanning and comparison.</p>
+          </div>
+          <div class="ai-card">
+            <span class="tool-tag">AI-Assisted Pattern Clustering</span>
+            <p><strong>Task:</strong> Clustered chart patterns and edge cases across multiple overlapping sources to identify taxonomy structure.</p>
+            <p><strong>Outcome:</strong> Identified where resources disagreed, where categories were missing, and where chart types were mislabeled in common references.</p>
+            <p class="ai-split">Human/AI split: Clustering was AI-assisted; all taxonomy structure decisions — what counts as a family, how families are grouped — were mine.</p>
+          </div>
+          <div class="ai-card">
+            <span class="tool-tag">AI-Assisted Source Comparison</span>
+            <p><strong>Task:</strong> Compared overlapping and conflicting guidance from multiple data visualization references.</p>
+            <p><strong>Outcome:</strong> Identified structural gaps — areas where the literature had no consensus and I had to make an original architectural decision.</p>
+            <p class="ai-split">Human/AI split: AI surfaced the conflicts; I resolved them through the taxonomy and decision model design.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA
+    ============================================================ -->
+    <section id="s-cta" aria-label="Contact">
+      <div class="container">
+        <h2>I design decision systems for data-heavy products</h2>
+        <p>Turning fragmented expert knowledge into <strong>structured decision infrastructure</strong> that teams can use reliably — that's the kind of design work I do. Analytics, observability, operational dashboards, or any product where data interpretation drives user action.</p>
+        <p>If the cost of a wrong decision in your product is <strong>measurable</strong>, let's talk.</p>
+        <div class="cta-actions">
+          <a href="mailto:mailtotheroman@gmail.com" class="btn btn--primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Get in touch
+          </a>
+          <a href="#s-hero" class="btn btn--ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+            Back to top
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="container">
+      <p class="footer-copyright">&copy; 2026 Roman Kryzhanovskyi. All rights reserved.</p>
+      <p class="footer-name">Roman Kryzhanovskyi</p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       GSAP 3.12+ + ScrollTrigger
+  ============================================================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    // ============================================================
+    // REDUCED MOTION CHECK
+    // ============================================================
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ============================================================
+    // DOT NAV — ACTIVE STATE
+    // ============================================================
+    (function() {
+      const dots = document.querySelectorAll('.dot-nav__dot');
+      const sections = ['s-hero','s-challenge','s-d01','s-d02','s-d03','s-d04','s-d05','s-process','s-results','s-lessons','s-ai','s-cta'];
+
+      function updateActiveDot() {
+        let current = sections[0];
+        for (const id of sections) {
+          const el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+            current = id;
+          }
+        }
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('is-active', sections[i] === current);
+          dot.setAttribute('aria-current', sections[i] === current ? 'true' : 'false');
+        });
+      }
+
+      window.addEventListener('scroll', updateActiveDot, { passive: true });
+      updateActiveDot();
+    })();
+
+    // ============================================================
+    // GSAP ANIMATIONS (only if motion is allowed)
+    // ============================================================
+    if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero entrance
+      gsap.from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.7, delay: 0.2 });
+
+      // Typewriter effect for hero title
+      (function () {
+        var title = document.querySelector('.hero-title');
+        if (!title) return;
+
+        // Split text nodes into character spans, preserve <br>
+        var html = '';
+        title.childNodes.forEach(function (node) {
+          if (node.nodeType === 3) { // text node
+            node.textContent.split('').forEach(function (ch) {
+              if (ch === ' ') {
+                html += '<span class="char-space">&nbsp;</span>';
+              } else {
+                html += '<span class="char">' + ch + '</span>';
+              }
+            });
+          } else if (node.nodeName === 'BR') {
+            html += '<br>';
+          } else {
+            html += node.outerHTML;
+          }
+        });
+        title.innerHTML = html;
+
+        var chars = title.querySelectorAll('.char, .char-space');
+
+        // Hide all chars initially (via JS so they're visible if GSAP fails)
+        gsap.set(chars, { opacity: 0 });
+
+        // Type characters one by one
+        gsap.to(chars, {
+          opacity: 1,
+          duration: 0.03,
+          stagger: 0.04,
+          delay: 1.0,
+          ease: 'none'
+        });
+      })();
+
+      gsap.from('.hero-hook',    { opacity: 0, y: 20, duration: 0.7, delay: 2.4 });
+      gsap.from('.hero-lead',    { opacity: 0, y: 20, duration: 0.7, delay: 2.6 });
+      gsap.from('.hero-meta',    { opacity: 0, y: 20, duration: 0.7, delay: 2.8 });
+      gsap.from('.hero-image',   { opacity: 0, y: 40, duration: 1.0, delay: 3.0 });
+
+      // Metrics counter animation (gsap.to — start from 0)
+      document.querySelectorAll('[data-count-to]').forEach(el => {
+        const target = parseInt(el.getAttribute('data-count-to'), 10);
+        const obj = { val: 0 };
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            gsap.to(obj, {
+              val: target,
+              duration: 1.5,
+              ease: 'power2.out',
+              onUpdate: () => { el.textContent = Math.round(obj.val); }
+            });
+          }
+        });
+      });
+
+      // Section headings fade in
+      document.querySelectorAll('h2, h3').forEach(el => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          opacity: 0,
+          y: 16,
+          duration: 0.6
+        });
+      });
+
+      // Insight / decision callout blocks
+      document.querySelectorAll('.insight-block, .decision-card').forEach(el => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+          opacity: 0,
+          x: -16,
+          duration: 0.5
+        });
+      });
+
+      // Process step cards stagger
+      gsap.from('.process-step__card', {
+        scrollTrigger: { trigger: '.process-steps', start: 'top 85%', once: true },
+        opacity: 0,
+        y: 24,
+        stagger: 0.1,
+        duration: 0.5
+      });
+
+      // Result cards stagger
+      gsap.from('.result-card', {
+        scrollTrigger: { trigger: '.results-grid', start: 'top 85%', once: true },
+        opacity: 0,
+        y: 24,
+        stagger: 0.1,
+        duration: 0.5
+      });
+
+      // Achievement cards stagger
+      gsap.from('.achievement-card', {
+        scrollTrigger: { trigger: '.achievement-grid', start: 'top 85%', once: true },
+        opacity: 0,
+        y: 24,
+        stagger: 0.1,
+        duration: 0.5
+      });
+
+      // Lesson cards stagger
+      gsap.from('.lesson-card', {
+        scrollTrigger: { trigger: '.lessons-grid', start: 'top 85%', once: true },
+        opacity: 0,
+        y: 24,
+        stagger: 0.12,
+        duration: 0.5
+      });
+
+      // AI cards stagger
+      gsap.from('.ai-card', {
+        scrollTrigger: { trigger: '.ai-cards', start: 'top 85%', once: true },
+        opacity: 0,
+        y: 24,
+        stagger: 0.1,
+        duration: 0.5
+      });
+
+      // Gallery images stagger
+      gsap.from('.cs-gallery img', {
+        scrollTrigger: { trigger: '.cs-gallery', start: 'top 85%', once: true },
+        opacity: 0,
+        scale: 0.97,
+        stagger: 0.04,
+        duration: 0.5
+      });
+
+      // Gallery images hover — scale + random rotation
+      document.querySelectorAll('.cs-gallery img').forEach(function(img) {
+        img.addEventListener('mouseenter', function() {
+          var angle = (Math.random() > 0.5 ? 1 : -1) * (4 + Math.random() * 4);
+          gsap.to(img, { scale: 1.18, rotation: angle, duration: 0.35, ease: 'back.out(1.7)' });
+        });
+        img.addEventListener('mouseleave', function() {
+          gsap.to(img, { scale: 1, rotation: 0, duration: 0.3, ease: 'power2.out' });
+        });
+      });
+
+      // Diagram wrap fade in
+      document.querySelectorAll('.diagram-wrap').forEach(el => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          opacity: 0,
+          y: 20,
+          duration: 0.7
+        });
+      });
+
+      // Resp cards stagger
+      gsap.from('.resp-card', {
+        scrollTrigger: { trigger: '.resp-cards', start: 'top 85%', once: true },
+        opacity: 0,
+        x: 16,
+        stagger: 0.08,
+        duration: 0.4
+      });
+    }
+  </script>
+
+</body>
+</html>

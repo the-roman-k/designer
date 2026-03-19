@@ -1,0 +1,346 @@
+/* ═══════════════════════════════════════════════════════
+   Shared Navigation — nav.css
+   Portfolio: Roman Kryzhanovskyi
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Skip Link ─────────────────────────────────────── */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 16px;
+  z-index: 10000;
+  padding: 12px 24px;
+  background: var(--color-accent, #CCFF00);
+  color: var(--color-bg, #0A0A0A);
+  font-family: var(--font-primary, 'DM Sans', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 8px 8px;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 2px;
+}
+
+/* ── Nav Wrapper ───────────────────────────────────── */
+.nav-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  padding: 0 clamp(20px, 4vw, 48px);
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.nav-wrapper.nav-hidden {
+  transform: translateY(-100%);
+}
+
+/* ── Nav Inner ─────────────────────────────────────── */
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--container-max, 1280px);
+  margin: 0 auto;
+  height: 64px;
+}
+
+/* ── Logo / Name ───────────────────────────────────── */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--color-text, #fff);
+  font-family: var(--font-serif, 'Instrument Serif', serif);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  transition: opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  opacity: 0.8;
+}
+
+.nav-logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.nav-logo:focus-visible {
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Availability dot next to name */
+.nav-logo .availability-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent, #CCFF00);
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ── Desktop Nav Links ─────────────────────────────── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: var(--color-text-secondary, #888);
+  font-family: var(--font-primary, 'DM Sans', sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent, #CCFF00);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover {
+  color: var(--color-text, #fff);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.nav-link--active {
+  color: var(--color-text, #fff);
+}
+
+.nav-link--cta {
+  color: var(--color-bg, #0A0A0A);
+  background: var(--color-accent, #CCFF00);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.nav-link--cta::after {
+  display: none;
+}
+
+.nav-link--cta:hover {
+  color: var(--color-bg, #0A0A0A);
+  background: #e0ff4d;
+  transform: translateY(-1px);
+}
+
+/* ── Hamburger Button ──────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 9100;
+}
+
+.nav-hamburger:focus-visible {
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.nav-hamburger-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 24px;
+  height: 24px;
+}
+
+.nav-hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-text, #fff);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ── Mobile Menu Panel ─────────────────────────────── */
+.nav-mobile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 9050;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.nav-mobile-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-mobile-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-mobile-link {
+  display: block;
+  color: var(--color-text, #fff);
+  font-family: var(--font-serif, 'Instrument Serif', serif);
+  font-size: clamp(28px, 6vw, 44px);
+  font-weight: 400;
+  text-decoration: none;
+  padding: 12px 24px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  letter-spacing: -0.02em;
+}
+
+.nav-mobile-link:hover {
+  color: var(--color-accent, #CCFF00);
+  transform: translateX(8px);
+}
+
+.nav-mobile-link:focus-visible {
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.nav-mobile-cta {
+  display: inline-block;
+  margin-top: 32px;
+  color: var(--color-bg, #0A0A0A);
+  background: var(--color-accent, #CCFF00);
+  font-family: var(--font-primary, 'DM Sans', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 16px 40px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.nav-mobile-cta:hover {
+  background: #e0ff4d;
+  transform: translateY(-2px);
+}
+
+.nav-mobile-cta:focus-visible {
+  outline: 2px solid var(--color-text, #fff);
+  outline-offset: 4px;
+  border-radius: 100px;
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+}
+
+/* ── Reduced Motion ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .nav-wrapper {
+    transition: none;
+  }
+
+  .nav-link::after {
+    transition: none;
+  }
+
+  .nav-mobile-panel {
+    transition: none;
+  }
+
+  .nav-mobile-link {
+    transition: none;
+  }
+
+  .availability-dot {
+    animation: none;
+  }
+}
+
+/* ── Dot Pulse Animation ───────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(204, 255, 0, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(204, 255, 0, 0); }
+}
+
+/* ── Body lock when mobile menu open ───────────────── */
+body.nav-menu-open {
+  overflow: hidden;
+}

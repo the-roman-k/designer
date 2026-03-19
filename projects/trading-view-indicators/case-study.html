@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Primary Meta Tags -->
+  <title>TradingView Indicators — AI-Powered Signal Architecture for Trading | Roman Kryzhanovskyi</title>
+  <meta name="description" content="I designed and shipped a complete suite of TradingView indicators and strategies for stock and crypto trading — combining deep signal research with AI-assisted Pine Script engineering to turn market noise into actionable trading decisions.">
+  <meta name="keywords" content="TradingView, Pine Script, trading indicators, buy sell signals, ATR, crypto trading, stock trading, AI trading, design engineering">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <meta name="copyright" content="&copy; 2026 Roman Kryzhanovskyi">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://roman.design/case-studies/trading-view-indicators">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/trading-view-indicators">
+  <meta property="og:title" content="TradingView Indicators — AI-Powered Signal Architecture | Roman Kryzhanovskyi">
+  <meta property="og:description" content="A complete suite of TradingView indicators and strategies combining deep signal research with AI-assisted Pine Script engineering.">
+  <meta property="og:image" content="https://roman.design/case-studies/trading-view-indicators/assets/img/trading-view-indicators@2x.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TradingView profile showing published indicators and strategies">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi — Portfolio">
+  <meta property="article:author" content="Roman Kryzhanovskyi">
+  <meta property="article:published_time" content="2026-03-16">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TradingView Indicators — AI-Powered Signal Architecture | Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="Complete suite of trading indicators: Buy/Sell Bot, ATR Stop Loss, X Strategy, and more — all AI-assisted.">
+  <meta name="twitter:image" content="https://roman.design/case-studies/trading-view-indicators/assets/img/trading-view-indicators@2x.png">
+  <meta name="twitter:image:alt" content="TradingView indicators profile">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "TradingView Indicators — AI-Powered Signal Architecture for Trading",
+    "description": "I designed and shipped a complete suite of TradingView indicators and strategies for stock and crypto trading.",
+    "image": "https://roman.design/case-studies/trading-view-indicators/assets/img/trading-view-indicators@2x.png",
+    "author": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design", "jobTitle": "AI-First Design Engineer" },
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "keywords": "TradingView, Pine Script, trading indicators, AI trading, design engineering",
+    "url": "https://roman.design/case-studies/trading-view-indicators",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://roman.design/case-studies/trading-view-indicators" }
+  }
+  </script>
+
+  <!-- Fonts: Shopify Editions style uses clean geometric sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP 3.12 + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       SHOPIFY EDITIONS SUMMER '23 — STYLE TRANSLATION
+       Aurora gradients · Glassmorphism · Massive type · Dark
+       ══════════════════════════════════════════════════════════ */
+
+    :root {
+      /* ── CORE PALETTE ── */
+      --bg:            #000000;
+      --bg-elevated:   #0A0A0A;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --bg-glass:      rgba(255,255,255,0.06);
+
+      /* Shopify Editions accent system: green + purple + teal aurora */
+      --green:         #96BF47;
+      --green-bright:  #B4FF39;
+      --green-neon:    #00FF88;
+      --purple:        #7B61FF;
+      --purple-soft:   #A78BFA;
+      --teal:          #00D4AA;
+      --cyan:          #22D3EE;
+
+      /* TradingView-specific trading colors */
+      --tv-blue:       #2962FF;
+      --trade-green:   #26A69A;
+      --trade-red:     #EF5350;
+
+      /* Text */
+      --text-1:        #FFFFFF;
+      --text-2:        rgba(255,255,255,0.70);
+      --text-3:        rgba(255,255,255,0.40);
+
+      /* Borders */
+      --border:        rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.15);
+
+      /* Typography */
+      --font-display:  'Inter', -apple-system, system-ui, sans-serif;
+      --font-body:     'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono:     'JetBrains Mono', monospace;
+
+      /* Spacing */
+      --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+      --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px;
+      --s-12: 96px; --s-16: 128px; --s-20: 160px;
+
+      /* Radii */
+      --r-sm: 8px; --r-md: 16px; --r-lg: 24px; --r-xl: 32px;
+
+      /* Glass effect */
+      --glass-bg:     rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-blur:   20px;
+
+      /* Motion */
+      --ease:  cubic-bezier(.16,1,.3,1);
+      --ease2: cubic-bezier(.4,0,.2,1);
+      --dur:   300ms;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-1);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    ::selection { background: var(--green-bright); color: #000000; }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: var(--text-1); text-decoration: none; transition: color var(--dur) var(--ease2); }
+    a:hover { color: var(--green-bright); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--green-bright); outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+
+    /* ── SKIP LINK ── */
+    .skip-link { position: absolute; top: -60px; left: 0; background: var(--green-bright); color: #000; padding: 12px 24px; z-index: 9999; font-family: var(--font-mono); font-size: 13px; font-weight: 700; text-decoration: none; border-radius: 0 0 var(--r-sm) 0; }
+    .skip-link:focus { top: 0; }
+
+    /* ── AURORA BACKGROUND SYSTEM ── */
+    .aurora {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .aurora__orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.25;
+      animation: float 20s ease-in-out infinite;
+    }
+    .aurora__orb--green {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--green-neon), transparent 70%);
+      top: -10%; left: 20%;
+      animation-delay: 0s;
+    }
+    .aurora__orb--purple {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--purple), transparent 70%);
+      top: 30%; right: -5%;
+      animation-delay: -7s;
+    }
+    .aurora__orb--teal {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--teal), transparent 70%);
+      bottom: 10%; left: 10%;
+      animation-delay: -14s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* ── LAYOUT ── */
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+    .container--wide { width: 95%; max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+    .section { padding: var(--s-16) 0; position: relative; }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    /* ── DOT NAV (Shopify-style minimal) ── */
+    .dot-nav { position: fixed; right: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 100; list-style: none; }
+    .nav-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: none; cursor: pointer;
+      transition: all var(--dur) var(--ease);
+      position: relative; padding: 0;
+    }
+    .nav-dot.active { background: var(--green-bright); box-shadow: 0 0 12px var(--green-bright); }
+    .nav-dot:hover { background: rgba(255,255,255,0.5); }
+    .nav-dot::after {
+      content: attr(data-label);
+      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+      color: var(--text-2); white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+      background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 6px;
+      backdrop-filter: blur(10px);
+    }
+    .nav-dot:hover::after { opacity: 1; }
+    @media (max-width: 1100px) { .dot-nav { display: none; } }
+
+    /* ── MASSIVE TYPOGRAPHY (Shopify Editions signature) ── */
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--text-1);
+      margin-bottom: var(--s-4);
+    }
+    h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: var(--text-1);
+      margin-bottom: var(--s-2);
+    }
+    p {
+      font-size: 1.0625rem;
+      line-height: 1.75;
+      color: var(--text-2);
+      margin-bottom: var(--s-2);
+    }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── SECTION LABEL (edition-style pill) ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 12px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--green-bright); font-weight: 500;
+      background: rgba(150,191,71,0.08);
+      border: 1px solid rgba(150,191,71,0.15);
+      padding: 6px 16px; border-radius: 100px;
+      margin-bottom: var(--s-4);
+    }
+
+    /* ── HERO (Editions-style: massive text + aurora bg) ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: var(--s-16) 0 var(--s-10);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(150,191,71,0.12), transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 80% 20%, rgba(123,97,255,0.08), transparent 50%);
+      pointer-events: none; z-index: 0;
+    }
+    .hero__eyebrow {
+      font-family: var(--font-mono); font-size: 13px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--green-bright); margin-bottom: var(--s-4);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hero__eyebrow::before {
+      content: ''; width: 24px; height: 1px;
+      background: var(--green-bright); display: block;
+    }
+    .hero__title { margin-bottom: var(--s-3); position: relative; z-index: 1; }
+    .hero__title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--green-bright), var(--teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero__hook {
+      font-size: 1.25rem; color: var(--text-3);
+      margin-bottom: var(--s-5); max-width: 600px;
+      line-height: 1.5; font-style: italic;
+    }
+    .hero__lead { max-width: 640px; font-size: 1.125rem; margin-bottom: var(--s-6); }
+    .hero__meta {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3);
+      margin-bottom: var(--s-8);
+    }
+    .hero__meta-cell {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: var(--s-3);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-md);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+    .hero__meta-label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .hero__meta-value { font-weight: 700; font-size: .95rem; color: var(--text-1); }
+    @media (max-width: 640px) { .hero__meta { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── METRICS STRIP (Shopify number showcase) ── */
+    .metrics-strip { padding: var(--s-10) 0; position: relative; }
+    .metrics-strip::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(150,191,71,0.04) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .metrics-strip__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
+    .metric-cell {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: var(--s-5) var(--s-3);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2), background var(--dur) var(--ease2);
+    }
+    .metric-cell:hover { border-color: rgba(150,191,71,0.2); background: rgba(255,255,255,0.06); }
+    .metric-value {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      line-height: 1; display: block;
+      background: linear-gradient(135deg, var(--text-1), var(--green-bright));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-value--highlight {
+      background: linear-gradient(135deg, var(--green-bright), var(--teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text-3); margin-top: var(--s-2); display: block;
+    }
+    @media (max-width: 640px) { .metrics-strip__grid { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── GLASS CARD (Shopify Editions signature) ── */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-5);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2), transform var(--dur) var(--ease);
+    }
+    .glass-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+
+    /* ── TWO COLUMN ── */
+    .two-col { display: grid; grid-template-columns: 55% 42%; gap: var(--s-8); align-items: start; }
+    .two-col--reverse { grid-template-columns: 42% 55%; }
+    .two-col--reverse .two-col__media { order: -1; }
+    @media (max-width: 860px) { .two-col, .two-col--reverse { grid-template-columns: 1fr; } .two-col--reverse .two-col__media { order: 0; } }
+
+    /* ── TAG ROW (Shopify pill tags) ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-4); }
+    .tag {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .04em; text-transform: uppercase;
+      color: var(--text-3);
+      padding: 6px 14px; border-radius: 100px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      transition: border-color var(--dur) var(--ease2), color var(--dur) var(--ease2);
+    }
+    .tag:hover { border-color: rgba(150,191,71,0.3); color: var(--green-bright); }
+
+    /* ── CARDS GRID ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-3); margin-top: var(--s-5); }
+    .cards-grid--2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .cards-grid--3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2), transform var(--dur) var(--ease);
+    }
+    .card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .card__icon { width: 36px; height: 36px; margin-bottom: var(--s-2); color: var(--green-bright); }
+    .card__title { font-weight: 700; font-size: .95rem; color: var(--text-1); margin-bottom: var(--s-1); }
+    .card__body { font-size: .9rem; color: var(--text-3); line-height: 1.6; }
+
+    /* ── PERSONA CARDS (with aurora accent line) ── */
+    .persona-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      position: relative; overflow: hidden;
+      transition: border-color var(--dur) var(--ease2);
+    }
+    .persona-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green-bright), var(--purple), var(--teal));
+    }
+    .persona-card:hover { border-color: rgba(255,255,255,0.15); }
+    .persona-card__name { font-weight: 900; font-size: 1rem; color: var(--text-1); margin-bottom: 2px; }
+    .persona-card__role {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--green-bright); margin-bottom: var(--s-2); display: block;
+    }
+    .persona-card__goal { font-size: .9rem; color: var(--text-2); line-height: 1.55; margin-bottom: var(--s-2); }
+    .persona-card__pain { font-size: .85rem; color: var(--text-3); line-height: 1.55; font-style: italic; }
+
+    /* ── INSIGHT / CALLOUT BLOCKS ── */
+    .insight-block {
+      background: var(--glass-bg);
+      border-left: 2px solid var(--green-bright);
+      border-radius: 0 var(--r-md) var(--r-md) 0;
+      padding: var(--s-4) var(--s-5);
+      margin-top: var(--s-5);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+    .insight-block__label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--green-bright); margin-bottom: var(--s-1);
+    }
+    .insight-block__text { font-size: 1.0625rem; font-weight: 500; color: var(--text-1); line-height: 1.6; }
+
+    .callout--decision {
+      background: linear-gradient(135deg, rgba(150,191,71,0.10), rgba(0,212,170,0.06));
+      border: 1px solid rgba(150,191,71,0.15);
+      border-radius: var(--r-md);
+      padding: var(--s-4) var(--s-5); margin-top: var(--s-5);
+    }
+    .callout--decision .callout__label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--green-bright); margin-bottom: var(--s-1); font-weight: 600;
+    }
+    .callout--decision .callout__text { font-size: 1rem; font-weight: 500; color: var(--text-1); line-height: 1.6; }
+
+    .callout--why {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-md);
+      padding: var(--s-4) var(--s-5); margin-top: var(--s-5);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+    .callout--why .callout__label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: var(--s-1);
+    }
+    .callout--why .callout__text { font-size: 1rem; color: var(--text-2); line-height: 1.6; }
+
+    /* ── DELIVERABLES LIST ── */
+    .deliverables-list { list-style: none; margin-top: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); }
+    .deliverables-list li { display: flex; align-items: flex-start; gap: 14px; font-size: .95rem; color: var(--text-2); line-height: 1.55; }
+    .deliverables-list li::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green-bright); margin-top: 8px; flex-shrink: 0;
+      box-shadow: 0 0 8px var(--green-bright);
+    }
+    .deliverables-list__label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-3); margin-top: var(--s-5); margin-bottom: var(--s-1); display: block;
+    }
+
+    /* ── FIGURE / IMAGES ── */
+    .cs-figure { margin: var(--s-6) 0; }
+    .cs-figure figcaption {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-3); margin-top: var(--s-2);
+    }
+    .cs-figure img {
+      border-radius: var(--r-lg); width: 100%;
+      border: 1px solid var(--border);
+    }
+
+    /* ── DIAGRAM WRAP ── */
+    .diagram-wrap {
+      overflow-x: auto; margin: var(--s-6) 0; -webkit-overflow-scrolling: touch;
+      background: var(--glass-bg); border-radius: var(--r-xl);
+      padding: var(--s-5);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+    .diagram-wrap svg { min-width: 600px; width: 100%; height: auto; display: block; }
+    .diagram-wrap figcaption {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-3); margin-top: var(--s-3); text-align: center;
+    }
+
+    /* ── PROCESS STEPS (Shopify grid with glow numbers) ── */
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: var(--s-3); }
+    .process-step__card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2), transform var(--dur) var(--ease);
+    }
+    .process-step__card:hover { border-color: rgba(150,191,71,0.2); transform: translateY(-2px); }
+    .process-step__number {
+      font-family: var(--font-mono); font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--green-bright), var(--teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--s-2); display: block; line-height: 1;
+    }
+    .process-step__icon { width: 20px; height: 20px; margin-bottom: var(--s-1); color: var(--text-3); }
+    .process-step__title { font-weight: 700; font-size: .9rem; color: var(--text-1); margin-bottom: 6px; }
+    .process-step__desc { font-size: .82rem; color: var(--text-3); line-height: 1.5; }
+
+    /* ── RESULTS (Big gradient numbers) ── */
+    .results-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--s-4); margin-bottom: var(--s-8); }
+    .result-card {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-xl);
+      padding: var(--s-6) var(--s-3);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2), transform var(--dur) var(--ease);
+    }
+    .result-card:hover { border-color: rgba(150,191,71,0.2); transform: translateY(-3px); }
+    .result-number {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(2.5rem,5vw,4rem); line-height: 1;
+      background: linear-gradient(135deg, var(--text-1), rgba(255,255,255,0.6));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block; margin-bottom: var(--s-1);
+    }
+    .result-number--highlight {
+      background: linear-gradient(135deg, var(--green-bright), var(--teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .result-label { font-weight: 700; font-size: .9rem; color: var(--text-1); display: block; margin-bottom: 4px; }
+    .result-sub { font-size: .8rem; color: var(--text-3); display: block; line-height: 1.4; font-family: var(--font-mono); }
+    @media (max-width: 860px) { .results-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 480px) { .results-grid { grid-template-columns: 1fr; } }
+
+    /* ── LESSONS (glass cards with gradient accent) ── */
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: var(--s-4); }
+    .lesson-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-xl);
+      padding: var(--s-6);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      position: relative; overflow: hidden;
+      transition: border-color var(--dur) var(--ease2), transform var(--dur) var(--ease);
+    }
+    .lesson-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .lesson-card__num {
+      font-family: var(--font-mono); font-size: 2.5rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--green-bright), var(--purple-soft));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--s-3); display: block; line-height: 1;
+    }
+    .lesson-card__title { font-weight: 700; font-size: 1rem; color: var(--text-1); margin-bottom: var(--s-2); line-height: 1.35; }
+    .lesson-card__body { font-size: .9rem; color: var(--text-3); line-height: 1.65; }
+
+    /* ── TOOL CARDS (AI Layer) ── */
+    .tool-tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-bottom: var(--s-6); }
+    .tool-tag {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .04em; text-transform: uppercase;
+      background: rgba(150,191,71,0.06); color: var(--green-bright);
+      padding: 6px 16px; border-radius: 100px;
+      border: 1px solid rgba(150,191,71,0.12);
+    }
+    .tool-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-5);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--dur) var(--ease2);
+    }
+    .tool-card:hover { border-color: rgba(255,255,255,0.15); }
+    .tool-card__name { font-weight: 900; font-size: 1rem; color: var(--text-1); margin-bottom: var(--s-2); }
+    .tool-card__task { font-size: .9rem; color: var(--text-2); margin-bottom: var(--s-2); line-height: 1.55; }
+    .tool-card__outcome { font-size: .9rem; color: var(--text-3); font-style: italic; margin-bottom: var(--s-2); line-height: 1.55; }
+    .tool-card__split {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .03em; color: var(--text-3);
+      border-top: 1px solid var(--border); padding-top: var(--s-2); margin-top: var(--s-2);
+    }
+
+    /* ── SCOPE CARDS ── */
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); margin-top: var(--s-6); }
+    .scope-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-5);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+    .scope-card--next { border-left: 2px solid var(--green-bright); }
+    .scope-card--limit { border-left: 2px solid var(--text-3); }
+    .scope-card__title { font-weight: 700; font-size: .9rem; margin-bottom: var(--s-2); color: var(--text-1); }
+    @media (max-width: 640px) { .scope-grid { grid-template-columns: 1fr; } }
+
+    /* ── BUTTONS (Shopify Editions: green gradient pill) ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: 13px;
+      letter-spacing: .04em; text-transform: uppercase; font-weight: 600;
+      padding: 16px 32px; border-radius: 100px;
+      text-decoration: none;
+      transition: all var(--dur) var(--ease);
+    }
+    .btn--primary {
+      background: linear-gradient(135deg, var(--green-bright), var(--teal));
+      color: #000000;
+    }
+    .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(180,255,57,0.25); color: #000; }
+    .btn--ghost {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-2);
+    }
+    .btn--ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--text-1); }
+
+    /* ── CTA SECTION (aurora glow) ── */
+    .cta-section { position: relative; overflow: hidden; }
+    .cta-section::before {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse, rgba(150,191,71,0.15), rgba(123,97,255,0.08), transparent 70%);
+      pointer-events: none; filter: blur(60px);
+    }
+
+    /* ── FOOTER ── */
+    footer { padding: var(--s-5) 0; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer__text {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .04em; text-transform: uppercase;
+      color: var(--text-3); text-align: center;
+    }
+
+    /* ── SECTION AURORA GLOW (per-section ambient light) ── */
+    .section--glow-green { position: relative; }
+    .section--glow-green::before {
+      content: ''; position: absolute; top: -200px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(150,191,71,0.06), transparent 70%);
+      pointer-events: none; filter: blur(80px);
+    }
+    .section--glow-purple { position: relative; }
+    .section--glow-purple::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(123,97,255,0.06), transparent 70%);
+      pointer-events: none; filter: blur(80px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Aurora background orbs -->
+  <div class="aurora" aria-hidden="true">
+    <div class="aurora__orb aurora__orb--green"></div>
+    <div class="aurora__orb aurora__orb--purple"></div>
+    <div class="aurora__orb aurora__orb--teal"></div>
+  </div>
+
+  <a class="skip-link" href="#s-hero">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Page sections">
+    <button class="nav-dot active" data-section="s-hero" data-label="Hero" aria-label="Navigate to Hero" onclick="document.getElementById('s-hero').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-challenge" data-label="Challenge" aria-label="Navigate to Challenge" onclick="document.getElementById('s-challenge').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d1" data-label="Research" aria-label="Navigate to Research" onclick="document.getElementById('s-d1').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d2" data-label="Buy/Sell Bot" aria-label="Navigate to Buy/Sell Bot" onclick="document.getElementById('s-d2').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d3" data-label="ATR Indicator" aria-label="Navigate to ATR Indicator" onclick="document.getElementById('s-d3').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d4" data-label="X Strategy" aria-label="Navigate to X Strategy" onclick="document.getElementById('s-d4').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d5" data-label="Full Suite" aria-label="Navigate to Full Suite" onclick="document.getElementById('s-d5').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-process" data-label="Process" aria-label="Navigate to Process" onclick="document.getElementById('s-process').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-results" data-label="Results" aria-label="Navigate to Results" onclick="document.getElementById('s-results').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-lessons" data-label="Lessons" aria-label="Navigate to Lessons" onclick="document.getElementById('s-lessons').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-ai" data-label="AI Layer" aria-label="Navigate to AI Layer" onclick="document.getElementById('s-ai').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-cta" data-label="CTA" aria-label="Navigate to CTA" onclick="document.getElementById('s-cta').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <main>
+
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <section class="section hero" id="s-hero" aria-labelledby="hero-title">
+    <div class="container">
+      <p class="hero__eyebrow">Pine Script Engineering &middot; Signal Architecture &middot; AI-Assisted Build</p>
+      <h1 class="hero__title" id="hero-title">TradingView <em>Indicators</em></h1>
+      <p class="hero__hook">I applied design thinking to financial signal architecture&mdash;turning market noise into structured, testable trading decisions.</p>
+      <p class="hero__lead">A complete suite of TradingView indicators and strategies for stock and crypto trading. I combined deep research into direct and indirect trend signals with AI-assisted Pine Script engineering to create published, publicly available tools.</p>
+      <div class="hero__meta" role="list" aria-label="Project details">
+        <div class="hero__meta-cell" role="listitem"><span class="hero__meta-label">Role</span><span class="hero__meta-value">Design Engineer + Signal Architect</span></div>
+        <div class="hero__meta-cell" role="listitem"><span class="hero__meta-label">Platform</span><span class="hero__meta-value">TradingView &middot; Pine Script</span></div>
+        <div class="hero__meta-cell" role="listitem"><span class="hero__meta-label">Format</span><span class="hero__meta-value">Solo &middot; Self-Initiated</span></div>
+        <div class="hero__meta-cell" role="listitem"><span class="hero__meta-label">Published</span><span class="hero__meta-value">Live on TradingView</span></div>
+      </div>
+    </div>
+    <div class="container--wide">
+      <figure class="cs-figure">
+        <img src="./assets/img/trading-view-indicators.png" alt="TradingView profile page showing published indicators including Roman Accumulation/Distribution, Smart RSI Overbought/Oversold, Roman SMMA Indicator, and Trend Cycle Indicator" width="1200" height="630" loading="eager" srcset="./assets/img/trading-view-indicators.png 1x, ./assets/img/trading-view-indicators@2x.png 2x">
+        <figcaption>Published TradingView profile &mdash; welsewool &mdash; indicators available to the trading community</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── METRICS STRIP ── -->
+  <section class="metrics-strip" id="s-metrics" aria-label="Key metrics">
+    <div class="container--wide">
+      <div class="metrics-strip__grid">
+        <div class="metric-cell"><span class="metric-value metric-value--highlight">4+</span><span class="metric-label">Published Indicators</span></div>
+        <div class="metric-cell"><span class="metric-value">3</span><span class="metric-label">Signal Types</span></div>
+        <div class="metric-cell"><span class="metric-value">2</span><span class="metric-label">Markets Covered</span></div>
+        <div class="metric-cell"><span class="metric-value">100%</span><span class="metric-label">AI-Assisted Code</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CHALLENGE ─────────────────────────────────────────── -->
+  <section class="section section--glow-green" id="s-challenge" aria-labelledby="challenge-title">
+    <div class="container">
+      <div class="section-label">The Challenge</div>
+      <h2 id="challenge-title">I Found Traders Drowning in Noise Instead of Acting on Structure</h2>
+
+      <p>Retail traders in stock and crypto markets share a common pattern: they watch dozens of overlapping indicators, read conflicting signals, and make emotional decisions under time pressure. The problem is not lack of data&mdash;it is lack of structured, actionable signal architecture.</p>
+
+      <p>Most available indicators solve one narrow problem (trend, momentum, volatility) but never combine direct and indirect signals into a decision framework. Traders end up building ad-hoc setups that break across market conditions.</p>
+
+      <div class="insight-block">
+        <div class="insight-block__label">Core Scenario</div>
+        <div class="insight-block__text">A crypto swing trader watches 6 separate indicators on a BTC/USDT chart. RSI says overbought, MACD shows momentum, but the trend is still bullish. Without a system that synthesizes these signals, every trade is a judgment call&mdash;and judgment degrades under stress.</div>
+      </div>
+
+      <!-- PERSONAS -->
+      <h3 style="margin-top: var(--s-8); margin-bottom: var(--s-4);">User Personas I Designed For</h3>
+      <div class="cards-grid--3 cards-grid">
+        <div class="persona-card">
+          <div class="persona-card__name">Alex &mdash; Swing Trader</div>
+          <span class="persona-card__role">Crypto &middot; 2-14 day holds</span>
+          <div class="persona-card__goal">Needs clear entry/exit signals that work across volatile crypto pairs without constant chart monitoring.</div>
+          <div class="persona-card__pain">&ldquo;I spend more time reading charts than trading. By the time I decide, the move is already over.&rdquo;</div>
+        </div>
+        <div class="persona-card">
+          <div class="persona-card__name">Maria &mdash; Day Trader</div>
+          <span class="persona-card__role">Stocks &middot; Intraday positions</span>
+          <div class="persona-card__goal">Needs fast, visual buy/sell signals with risk management (stop loss) built directly into the chart overlay.</div>
+          <div class="persona-card__pain">&ldquo;I trust my indicators individually, but they never agree. I need a system, not a collection.&rdquo;</div>
+        </div>
+        <div class="persona-card">
+          <div class="persona-card__name">Dmitri &mdash; Technical Analyst</div>
+          <span class="persona-card__role">Multi-asset &middot; Strategy backtester</span>
+          <div class="persona-card__goal">Needs a comprehensive strategy with multiple sub-indicators that can be backtested as a unified system on TradingView.</div>
+          <div class="persona-card__pain">&ldquo;Custom indicators are expensive or poorly documented. I want something I can study and adapt.&rdquo;</div>
+        </div>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">Signal Architecture</span>
+        <span class="tag">Pine Script</span>
+        <span class="tag">UX for Data</span>
+        <span class="tag">AI-Assisted Build</span>
+        <span class="tag">Solo &middot; End-to-End</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 1: RESEARCH & SIGNAL MAPPING ─────────────────────── -->
+  <section class="section section--glow-purple" id="s-d1" aria-labelledby="d1-title">
+    <div class="container">
+      <div class="section-label">Deliverable 01</div>
+      <h2 id="d1-title">I Mapped the Signal Landscape Before Writing a Single Line of Code</h2>
+
+      <p>I started with deep research into trading signal categories: trend-following (MA, EMA, SMMA), momentum (RSI, MACD, Stochastic), volatility (ATR, Bollinger Bands), and volume-based (Accumulation/Distribution). The goal was not to build another indicator&mdash;but to understand which signal combinations create reliable decision frameworks.</p>
+
+      <div class="diagram-wrap" role="img" aria-label="Signal architecture diagram showing four signal layers">
+        <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg">
+          <!-- Trend Layer -->
+          <rect x="5" y="10" width="200" height="130" rx="16" fill="rgba(41,98,255,0.08)" stroke="rgba(41,98,255,0.2)" stroke-width="1"/>
+          <text x="105" y="38" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#2962FF">TREND LAYER</text>
+          <text x="105" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">EMA &middot; SMMA &middot; SMA</text>
+          <text x="105" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">Trend Cycle</text>
+          <text x="105" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(255,255,255,0.3)">Direction + Strength</text>
+
+          <!-- Momentum Layer -->
+          <rect x="230" y="10" width="200" height="130" rx="16" fill="rgba(0,212,170,0.08)" stroke="rgba(0,212,170,0.2)" stroke-width="1"/>
+          <text x="330" y="38" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#00D4AA">MOMENTUM LAYER</text>
+          <text x="330" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">RSI &middot; Stochastic</text>
+          <text x="330" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">Overbought/Oversold</text>
+          <text x="330" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(255,255,255,0.3)">Timing + Exhaustion</text>
+
+          <!-- Volatility Layer -->
+          <rect x="455" y="10" width="200" height="130" rx="16" fill="rgba(239,83,80,0.08)" stroke="rgba(239,83,80,0.2)" stroke-width="1"/>
+          <text x="555" y="38" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#EF5350">VOLATILITY LAYER</text>
+          <text x="555" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">ATR &middot; Bollinger</text>
+          <text x="555" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">Stop Loss Ranges</text>
+          <text x="555" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(255,255,255,0.3)">Risk + Position Sizing</text>
+
+          <!-- Volume Layer -->
+          <rect x="680" y="10" width="210" height="130" rx="16" fill="rgba(180,255,57,0.06)" stroke="rgba(180,255,57,0.15)" stroke-width="1"/>
+          <text x="785" y="38" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#B4FF39">VOLUME LAYER</text>
+          <text x="785" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">Accumulation/Distribution</text>
+          <text x="785" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">Money Flow</text>
+          <text x="785" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(255,255,255,0.3)">Confirmation + Divergence</text>
+        </svg>
+        <figcaption>Four-layer signal architecture &mdash; each indicator I built targets one or more layers</figcaption>
+      </div>
+
+      <p>This research phase produced a signal taxonomy that became the foundation for every indicator. Instead of building tools in isolation, I designed a system where each indicator covers a specific layer&mdash;and the X Strategy combines them all.</p>
+
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list">
+        <li>Signal taxonomy across 4 layers: trend, momentum, volatility, volume</li>
+        <li>Competitive audit of 20+ existing TradingView community indicators</li>
+        <li>3 user personas with distinct trading styles and signal needs</li>
+        <li>Jobs-to-be-done framework: &ldquo;Help me see structure in market noise so I can act decisively&rdquo;</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 2: BUY/SELL BOT ─────────────────────── -->
+  <section class="section section--glow-green" id="s-d2" aria-labelledby="d2-title">
+    <div class="container">
+      <div class="section-label">Deliverable 02</div>
+      <h2 id="d2-title">I Designed the Buy/Sell Bot to Replace Judgment With Visual Signals</h2>
+
+      <div class="two-col">
+        <div class="two-col__text">
+          <p>The first indicator I shipped was a Buy/Sell signal bot that automates the most common trading decision: when to enter and when to exit. Using AI, I researched signal combinations and generated Pine Script code that synthesizes multiple trend-change signals into clear visual markers.</p>
+
+          <p>The bot overlays directly on the price chart&mdash;green triangles for buy signals, red for sell. No separate panel, no interpretation needed&mdash;the signal is the interface.</p>
+
+          <div class="callout--decision">
+            <div class="callout__label">Design Decision</div>
+            <div class="callout__text">I chose chart-overlay signals instead of a separate oscillator panel. Traders scan price action first&mdash;signals that live on the chart reduce cognitive load and decision latency.</div>
+          </div>
+
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list">
+            <li>Pine Script indicator with automated BUY/SELL signal generation</li>
+            <li>Strategy variant built on top of the indicator for backtesting</li>
+            <li>AI-assisted data research to identify optimal signal parameters</li>
+            <li>Published indicator description and usage documentation</li>
+          </ul>
+        </div>
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img src="./assets/img/buy-sell-bot.png" alt="TradingView chart showing Buy/Sell Bot indicator with green buy and red sell signal markers overlaid on a price chart, alongside Pine Script code editor" width="600" height="400" loading="lazy" srcset="./assets/img/buy-sell-bot.png 1x, ./assets/img/buy-sell-bot@2x.png 2x">
+            <figcaption>Buy/Sell Bot &mdash; signal overlay on price chart + Pine Script source</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 3: ATR INDICATOR ─────────────────── -->
+  <section class="section section--glow-purple" id="s-d3" aria-labelledby="d3-title">
+    <div class="container">
+      <div class="section-label">Deliverable 03</div>
+      <h2 id="d3-title">I Built the ATR Stop Loss Indicator to Make Risk Management Visual</h2>
+
+      <div class="two-col two-col--reverse">
+        <div class="two-col__text">
+          <p>Most traders know they need stop losses but struggle to place them correctly. I created an Average True Range indicator that converts abstract volatility data into concrete stop loss lines directly on the chart.</p>
+
+          <p>The indicator calculates ATR-based stop loss ranges using configurable smoothing methods (SMA, EMA, WMA) so traders can see exactly where their risk boundary sits relative to current price action.</p>
+
+          <div class="callout--why">
+            <div class="callout__label">Why ATR Matters</div>
+            <div class="callout__text">Fixed-percentage stop losses ignore market volatility. ATR-based stops adapt to current conditions&mdash;wider in volatile markets, tighter in calm ones. This is risk management as information design: making the invisible (volatility) visible and actionable.</div>
+          </div>
+
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list">
+            <li>Pine Script ATR Stop Loss indicator with configurable smoothing (SMA, EMA, WMA)</li>
+            <li>Visual stop loss line overlaid directly on price chart</li>
+            <li>AI-assisted research into optimal ATR periods for different asset classes</li>
+            <li>Published documentation with setup guidance for traders</li>
+          </ul>
+        </div>
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img src="./assets/img/atr-indicator.png" alt="TradingView chart showing ATR Stop Loss indicator with red stop loss range displayed on a candlestick chart, alongside Pine Script code" width="600" height="400" loading="lazy" srcset="./assets/img/atr-indicator.png 1x, ./assets/img/atr-indicator@2x.png 2x">
+            <figcaption>ATR Stop Loss &mdash; volatility-based risk boundary visible on chart</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 4: X STRATEGY ──────────────── -->
+  <section class="section section--glow-green" id="s-d4" aria-labelledby="d4-title">
+    <div class="container">
+      <div class="section-label">Deliverable 04</div>
+      <h2 id="d4-title">I Designed X Strategy as a Unified Decision System, Not Another Indicator</h2>
+
+      <div class="two-col">
+        <div class="two-col__text">
+          <p>X Strategy is the most comprehensive tool in the suite. It combines multiple indicators into a single unified strategy that shows current trends, ranges, important levels, entry/exit signals, and recommendations&mdash;all on one chart.</p>
+
+          <p>Instead of asking traders to interpret 6 separate indicators, X Strategy synthesizes direct and indirect signals into a coherent decision layer. This is information architecture applied to financial data.</p>
+
+          <div class="callout--decision">
+            <div class="callout__label">Architecture Decision</div>
+            <div class="callout__text">I rejected building one more standalone indicator. Instead, I designed X Strategy as a meta-system&mdash;a strategy container that orchestrates sub-indicators into a single testable, backtestable decision framework.</div>
+          </div>
+
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list">
+            <li>Comprehensive Pine Script strategy combining trend, momentum, volatility, and volume signals</li>
+            <li>Multi-indicator code architecture with internal signal orchestration</li>
+            <li>Strategy testing guidelines for backtesting across market conditions</li>
+            <li>AI-assisted parameter optimization and edge-case testing</li>
+          </ul>
+        </div>
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img src="./assets/img/x-strategy.png" alt="TradingView chart showing X Strategy with multiple overlaid indicators including trend lines, support/resistance levels, oscillators, and signal markers alongside Pine Script code" width="600" height="400" loading="lazy" srcset="./assets/img/x-strategy.png 1x, ./assets/img/x-strategy@2x.png 2x">
+            <figcaption>X Strategy &mdash; unified decision system combining all signal layers</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 5: FULL INDICATOR SUITE ──────────────── -->
+  <section class="section section--glow-purple" id="s-d5" aria-labelledby="d5-title">
+    <div class="container">
+      <div class="section-label">Deliverable 05</div>
+      <h2 id="d5-title">I Shipped a Full Suite Covering Every Major Trading Scenario</h2>
+
+      <p>Beyond the three flagship tools, I created a wide range of additional indicators and strategies for dedicated tasks and use cases. The goal was systematic coverage: every common trading environment and scenario should have an appropriate setup available.</p>
+
+      <figure class="cs-figure" style="margin-top: var(--s-4);">
+        <img src="./assets/img/other-indicators.png" alt="Collection of TradingView charts showing various indicators across different market conditions and timeframes" width="1200" height="500" loading="lazy" srcset="./assets/img/other-indicators.png 1x, ./assets/img/other-indicators@2x.png 2x">
+        <figcaption>Full indicator suite &mdash; dedicated tools for specific trading scenarios and environments</figcaption>
+      </figure>
+
+      <div class="cards-grid" style="margin-top: var(--s-6);">
+        <div class="card">
+          <div class="card__icon" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="card__title">Roman Accumulation/Distribution</div>
+          <div class="card__body">Volume-based indicator detecting institutional buying and selling pressure before price moves confirm the trend.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
+          <div class="card__title">Smart RSI Overbought/Oversold</div>
+          <div class="card__body">Enhanced RSI with smart thresholds that adapt to market conditions&mdash;reducing false signals in trending markets.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="card__title">Roman SMMA (60, 100, 200)</div>
+          <div class="card__body">Triple Smoothed Moving Average system showing short, medium, and long-term trend alignment on a single overlay.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="card__title">Trend Cycle Indicator v3.0</div>
+          <div class="card__body">Cycle detection system identifying market phases&mdash;accumulation, markup, distribution, markdown&mdash;for timing position entries.</div>
+        </div>
+      </div>
+
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list">
+        <li>4+ additional published Pine Script indicators on TradingView</li>
+        <li>Coverage across trend, momentum, volatility, and volume signal types</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── PROCESS STEPS ───────────────────────────────────── -->
+  <section class="section" id="s-process" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-label">Process</div>
+      <h2 id="process-title">From Market Research to Published Trading Tools</h2>
+
+      <div class="process-steps">
+        <div class="process-step__card">
+          <span class="process-step__number">01</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <div class="process-step__title">Signal Research</div>
+          <div class="process-step__desc">Deep dive into trading signal theory&mdash;trend, momentum, volatility, volume indicators and their combinations.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">02</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="process-step__title">User Modeling</div>
+          <div class="process-step__desc">Defined personas: swing traders, day traders, and technical analysts with distinct signal needs.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">03</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          <div class="process-step__title">Architecture Design</div>
+          <div class="process-step__desc">Designed the 4-layer signal taxonomy and decided which indicators to build for each layer.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">04</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="process-step__title">AI-Assisted Coding</div>
+          <div class="process-step__desc">Used AI for Pine Script generation, parameter tuning, and edge case testing across market conditions.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">05</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div class="process-step__title">Strategy Testing</div>
+          <div class="process-step__desc">Backtested strategies on historical data across stocks and crypto to validate signal reliability.</div>
+        </div>
+        <div class="process-step__card">
+          <span class="process-step__number">06</span>
+          <div class="process-step__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="process-step__title">Publish + Document</div>
+          <div class="process-step__desc">Published indicators on TradingView with descriptions, usage guides, and testing guidelines.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ─────────────────────────────────────────── -->
+  <section class="section section--glow-green" id="s-results" aria-labelledby="results-title">
+    <div class="container">
+      <div class="section-label">Results</div>
+      <h2 id="results-title">I Shipped a Signal System That Turns Market Noise Into Trading Structure</h2>
+
+      <div class="results-grid">
+        <div class="result-card"><span class="result-number result-number--highlight">4+</span><span class="result-label">Published Indicators</span><span class="result-sub">Live on TradingView</span></div>
+        <div class="result-card"><span class="result-number">3</span><span class="result-label">Signal Categories</span><span class="result-sub">Entry &middot; Risk &middot; Strategy</span></div>
+        <div class="result-card"><span class="result-number">2</span><span class="result-label">Markets</span><span class="result-sub">Stocks + Crypto</span></div>
+        <div class="result-card"><span class="result-number">1</span><span class="result-label">Unified Strategy</span><span class="result-sub">X Strategy: all layers combined</span></div>
+      </div>
+
+      <p>The suite replaced fragmented indicator setups with a structured signal architecture. Each tool serves a specific decision layer, and X Strategy unifies them into one backtestable system&mdash;turning scattered chart analysis into a repeatable trading process.</p>
+
+      <div class="insight-block">
+        <div class="insight-block__label">What This Proves</div>
+        <div class="insight-block__text">Design thinking works beyond interfaces. The same methodology&mdash;user research, information architecture, system design, iterative testing&mdash;applied to financial signal architecture produces tools that are more structured, more usable, and more testable than ad-hoc indicator collections.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LESSONS ─────────────────────────────────────────── -->
+  <section class="section section--glow-purple" id="s-lessons" aria-labelledby="lessons-title">
+    <div class="container">
+      <div class="section-label">Lessons</div>
+      <h2 id="lessons-title">What Building Trading Tools Taught Me About Information Design</h2>
+
+      <div class="lessons-grid">
+        <div class="lesson-card">
+          <span class="lesson-card__num">01</span>
+          <div class="lesson-card__title">Information architecture applies to any data domain, not just screens</div>
+          <div class="lesson-card__body">Organizing trading signals into a 4-layer taxonomy was the same skill as organizing a product navigation. The medium changes; the methodology is identical.</div>
+        </div>
+        <div class="lesson-card">
+          <span class="lesson-card__num">02</span>
+          <div class="lesson-card__title">The best decision tools reduce choices, not add options</div>
+          <div class="lesson-card__body">Traders don't need more indicators. They need fewer, better-combined signals. X Strategy's value is synthesis&mdash;removing the interpretation burden from the user.</div>
+        </div>
+        <div class="lesson-card">
+          <span class="lesson-card__num">03</span>
+          <div class="lesson-card__title">AI accelerates domain expertise when you bring the right questions</div>
+          <div class="lesson-card__body">AI generated Pine Script code and tested parameters, but the value came from knowing which signal combinations to explore. Domain framing is the human layer; code generation is the AI layer.</div>
+        </div>
+      </div>
+
+      <div class="scope-grid">
+        <div class="scope-card scope-card--next">
+          <div class="scope-card__title">What I'd Ship Next</div>
+          <p class="card__body">Multi-timeframe signal confirmation across daily and weekly charts. Alert system integration for automated notifications on signal triggers.</p>
+        </div>
+        <div class="scope-card scope-card--limit">
+          <div class="scope-card__title">Current Limitations</div>
+          <p class="card__body">No mobile-optimized signal layout for TradingView mobile. Strategy backtesting is limited to TradingView's native engine parameters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI LAYER ────────────────────────────────────────── -->
+  <section class="section" id="s-ai" aria-labelledby="ai-title">
+    <div class="container">
+      <div class="section-label">AI Layer</div>
+      <h2 id="ai-title">I Used AI for Every Stage: Research, Code, Testing, Documentation</h2>
+
+      <p>This project demonstrates AI as a full-stack build accelerator. AI was involved in signal research, Pine Script code generation, parameter testing across market conditions, and writing indicator descriptions for the TradingView community.</p>
+
+      <div class="tool-tag-row">
+        <span class="tool-tag">AI Data Research</span>
+        <span class="tool-tag">Pine Script Generation</span>
+        <span class="tool-tag">Strategy Backtesting</span>
+        <span class="tool-tag">TradingView Platform</span>
+        <span class="tool-tag">Signal Architecture</span>
+      </div>
+
+      <div class="cards-grid--2 cards-grid">
+        <div class="tool-card">
+          <div class="tool-card__name">AI-Assisted Signal Research</div>
+          <div class="tool-card__task">Deep research into trading signal combinations, parameter ranges, and edge cases across stock and crypto markets.</div>
+          <div class="tool-card__outcome">Compressed months of manual signal research into focused, structured data exploration&mdash;enabling faster iteration on indicator designs.</div>
+          <div class="tool-card__split">AI: data research + pattern analysis &middot; Human: signal architecture, strategy framing, quality validation</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card__name">AI-Powered Pine Script Engineering</div>
+          <div class="tool-card__task">Generated, tested, and refined Pine Script indicator and strategy code based on signal architecture specifications.</div>
+          <div class="tool-card__outcome">Enabled rapid prototyping of complex multi-indicator strategies without deep Pine Script expertise as a prerequisite.</div>
+          <div class="tool-card__split">AI: code generation + testing + iteration &middot; Human: requirements, signal logic design, UX decisions, final validation</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────────────────── -->
+  <section class="section cta-section" id="s-cta" aria-labelledby="cta-title">
+    <div class="container" style="text-align:center; padding: var(--s-16) var(--s-3);">
+      <h2 id="cta-title" style="max-width: 700px; margin: 0 auto var(--s-4);">If I Can Apply Design Thinking to Financial Signal Architecture, Imagine What I Can Structure for Your Product</h2>
+      <p style="max-width: 540px; margin: 0 auto var(--s-6); color: var(--text-3);">Design is a method, not a medium. I apply it to interfaces, data systems, AI products, and anything that benefits from structured thinking.</p>
+      <div style="display: flex; gap: var(--s-2); justify-content: center; flex-wrap: wrap;">
+        <a href="mailto:mailtotheroman@gmail.com" class="btn btn--primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Start a conversation
+        </a>
+        <a href="https://roman.design" class="btn btn--ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          See more work
+        </a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p class="footer__text">&copy; 2026 Roman Kryzhanovskyi &middot; AI-First Design Engineer</p>
+    </div>
+  </footer>
+
+  <!-- ── GSAP SCROLL ANIMATIONS ── -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* Staggered reveal for each section */
+    gsap.utils.toArray('.section').forEach(function(section) {
+      gsap.from(section.querySelectorAll('h2, p, .card, .persona-card, .insight-block, .callout--decision, .callout--why, .deliverables-list, .diagram-wrap, .cs-figure, .tool-card, .lesson-card, .result-card, .scope-card, .glass-card, .tag-row'), {
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        y: 40, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out'
+      });
+    });
+
+    /* Metrics scale-in */
+    gsap.utils.toArray('.metric-value').forEach(function(el) {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        scale: 0.7, opacity: 0, duration: 0.6, ease: 'back.out(1.7)'
+      });
+    });
+
+    /* Process cards stagger */
+    gsap.from('.process-step__card', {
+      scrollTrigger: { trigger: '.process-steps', start: 'top 75%', once: true },
+      y: 50, opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out'
+    });
+
+    /* Section labels slide in */
+    gsap.utils.toArray('.section-label').forEach(function(label) {
+      gsap.from(label, {
+        scrollTrigger: { trigger: label, start: 'top 88%', once: true },
+        x: -20, opacity: 0, duration: 0.5, ease: 'power2.out'
+      });
+    });
+
+    /* Dot nav active state */
+    var dots = document.querySelectorAll('.nav-dot');
+    dots.forEach(function(dot) {
+      var sectionId = dot.getAttribute('data-section');
+      var targetSection = document.getElementById(sectionId);
+      if (!targetSection) return;
+      ScrollTrigger.create({
+        trigger: targetSection, start: 'top center', end: 'bottom center',
+        onEnter: function() { dots.forEach(function(d) { d.classList.remove('active'); }); dot.classList.add('active'); },
+        onEnterBack: function() { dots.forEach(function(d) { d.classList.remove('active'); }); dot.classList.add('active'); }
+      });
+    });
+  });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#EAEAEA">
+
+  <!-- Primary Meta Tags -->
+  <title>Miro MCP Server — AI Design Infrastructure | Roman Kryzhanovskyi</title>
+  <meta name="description" content="Custom MCP server connecting AI IDEs to Miro — shipped 6 months before Miro's own beta. Design process, architecture decisions, and outcomes.">
+  <meta name="keywords" content="Miro MCP Server, MCP protocol, AI design infrastructure, design engineering, Miro API, Claude Code, Antigravity IDE">
+  <meta name="author" content="Roman Kryzhanovskyi">
+  <meta name="copyright" content="© 2026 Roman Kryzhanovskyi">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://roman.design/case-studies/miro-mcp-server">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roman.design/case-studies/miro-mcp-server">
+  <meta property="og:title" content="Miro MCP Server — AI Design Infrastructure | Roman Kryzhanovskyi">
+  <meta property="og:description" content="Custom MCP server connecting AI IDEs to Miro — shipped 6 months before Miro's own beta. Design process, architecture decisions, and outcomes.">
+  <meta property="og:image" content="https://roman.design/case-studies/miro-mcp-server/assets/img/miro.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Miro board showing a design process diagram generated through the MCP server">
+  <meta property="og:site_name" content="Roman Kryzhanovskyi — Portfolio">
+  <meta property="article:author" content="Roman Kryzhanovskyi">
+  <meta property="article:published_time" content="2026-03-16">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Miro MCP Server — AI Design Infrastructure | Roman Kryzhanovskyi">
+  <meta name="twitter:description" content="Custom MCP server connecting AI IDEs to Miro — shipped 6 months before Miro's own beta.">
+  <meta name="twitter:image" content="https://roman.design/case-studies/miro-mcp-server/assets/img/miro.png">
+  <meta name="twitter:image:alt" content="Miro board output generated through the custom MCP server">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Miro MCP Server — AI Design Infrastructure",
+    "description": "Custom MCP server connecting AI IDEs to Miro — shipped 6 months before Miro's own beta. Design process, architecture decisions, and outcomes.",
+    "image": "https://roman.design/case-studies/miro-mcp-server/assets/img/miro.png",
+    "author": {
+      "@type": "Person",
+      "name": "Roman Kryzhanovskyi",
+      "url": "https://roman.design",
+      "jobTitle": "AI-First Design Engineer"
+    },
+    "publisher": { "@type": "Person", "name": "Roman Kryzhanovskyi", "url": "https://roman.design" },
+    "datePublished": "2026-03-16",
+    "dateModified": "2026-03-16",
+    "keywords": "Miro MCP Server, MCP protocol, AI design infrastructure, design engineering, Miro API",
+    "url": "https://roman.design/case-studies/miro-mcp-server",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://roman.design/case-studies/miro-mcp-server" }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --bg-primary:    #EAEAEA;
+      --bg-secondary:  #F5F5F5;
+      --bg-card:       #FFFFFF;
+      --bg-card-hover: #F9FAFB;
+      --bg-dark:       #050505;
+
+      --accent-lime:     #CCFF00;
+      --accent-lime-dim: rgba(204,255,0,0.12);
+
+      --text-primary:   #050505;
+      --text-secondary: #1A1A1A;
+      --text-muted:     #555555;
+
+      --border:        rgba(0,0,0,0.10);
+      --border-strong: rgba(0,0,0,0.22);
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'Space Mono', monospace;
+
+      --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+      --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px; --s-12: 96px;
+
+      --r-sm: 6px; --r-md: 12px; --r-lg: 20px;
+
+      --shadow-card:  0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+
+      --ease: cubic-bezier(.4,0,.2,1);
+      --dur: 220ms;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: var(--accent-lime); color: var(--text-primary); }
+    img { display: block; max-width: 100%; height: auto; border-radius: var(--r-md); }
+    a { color: var(--text-primary); text-decoration: underline; transition: opacity var(--dur) var(--ease); }
+    a:hover { opacity: 0.7; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--accent-lime); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute; top: -40px; left: 0; background: var(--accent-lime);
+      color: var(--text-primary); padding: 8px 16px; z-index: 9999;
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      text-decoration: none; border-radius: 0 0 var(--r-sm) 0;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ── LAYOUT ── */
+    .container { width: 80%; max-width: 1280px; margin: 0 auto; padding: 0 var(--s-3); }
+    .container--wide { width: 90%; max-width: 1440px; margin: 0 auto; padding: 0 var(--s-3); }
+
+    .section { padding: var(--s-12) 0; border-bottom: 1px solid var(--border); }
+    .section--white { background: var(--bg-card); }
+    .section--dark { background: var(--bg-dark); color: #FFFFFF; border-bottom: none; }
+    .section--dark p, .section--dark h2, .section--dark h3 { color: #FFFFFF; }
+
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; font-weight: 900; color: var(--text-primary); }
+    h1 { font-size: clamp(3rem, 8vw, 7rem); letter-spacing: -0.04em; text-transform: uppercase; margin-bottom: var(--s-3); }
+    h2 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: var(--s-3); }
+    h3 { font-size: clamp(1rem, 2vw, 1.25rem); letter-spacing: -0.02em; margin-bottom: var(--s-2); font-weight: 700; }
+    h1 em, h2 em { font-style: normal; background: var(--accent-lime); color: var(--text-primary); padding: 0 .12em; }
+    p { color: var(--text-secondary); line-height: 1.75; margin-bottom: var(--s-2); font-size: 1.0625rem; }
+    p:last-child { margin-bottom: 0; }
+    .section--dark p { color: rgba(255,255,255,0.75); }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-muted);
+      margin-bottom: var(--s-3);
+    }
+    .section-label::before { content: ''; width: 20px; height: 1px; background: var(--text-muted); display: block; }
+    .section--dark .section-label { color: rgba(255,255,255,0.45); }
+    .section--dark .section-label::before { background: rgba(255,255,255,0.3); }
+
+    /* ── DOT NAV ── */
+    .dot-nav {
+      position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; z-index: 100;
+      list-style: none;
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 1.5px solid var(--text-primary); background: transparent;
+      cursor: pointer; transition: background var(--dur) var(--ease);
+      position: relative;
+    }
+    .nav-dot.active, .nav-dot:hover { background: var(--text-primary); }
+    .nav-dot::after {
+      content: attr(data-label); position: absolute; right: 18px; top: 50%;
+      transform: translateY(-50%); font-family: var(--font-mono); font-size: .65rem;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--text-primary);
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+    }
+    .nav-dot:hover::after { opacity: 1; }
+    @media (max-width: 1100px) { .dot-nav { display: none; } }
+
+    /* ── HERO ── */
+    .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--s-10) 0 var(--s-8); }
+    .hero__eyebrow { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-3); }
+    .hero__title { margin-bottom: var(--s-2); }
+    .hero__hook { font-style: italic; font-size: 1.25rem; color: var(--text-muted); margin-bottom: var(--s-3); line-height: 1.4; }
+    .hero__lead { max-width: 600px; font-size: 1.125rem; margin-bottom: var(--s-5); }
+    .hero__meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); margin-bottom: var(--s-6); }
+    .hero__meta-cell { display: flex; flex-direction: column; gap: 4px; }
+    .hero__meta-label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    .hero__meta-value { font-weight: 700; font-size: .95rem; color: var(--text-primary); }
+    .hero__img {
+      margin-bottom: 0; border-radius: var(--r-lg); width: 100%;
+      box-shadow:
+        0 77.706px 55.982px 0 rgba(0, 0, 0, 0.06),
+        0 41.546px 29.931px 0 rgba(0, 0, 0, 0.045),
+        0 23.29px 16.779px 0 rgba(0, 0, 0, 0.035),
+        0 12.369px 8.911px 0 rgba(0, 0, 0, 0.03),
+        0 5.147px 3.708px 0 rgba(0, 0, 0, 0.02);
+    }
+    @media (max-width: 640px) { .hero__meta { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── METRICS STRIP ── */
+    .metrics-strip { padding: var(--s-6) 0; border-bottom: 1px solid var(--border); }
+    .metrics-strip__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+    .metric-cell { display: flex; flex-direction: column; align-items: center; text-align: center; padding: var(--s-3); }
+    .metric-value { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.5rem,5vw,4.5rem); line-height: 1; color: var(--text-primary); display: block; }
+    .metric-value--highlight { background: var(--accent-lime); color: var(--text-primary); padding: 0 .15em; }
+    .metric-label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-1); display: block; }
+    @media (max-width: 640px) { .metrics-strip__grid { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── TWO COLUMN ── */
+    .two-col { display: grid; grid-template-columns: 55% 42%; gap: var(--s-6); align-items: start; }
+    .two-col--reverse { grid-template-columns: 42% 55%; }
+    .two-col--reverse .two-col__media { order: -1; }
+    @media (max-width: 860px) { .two-col, .two-col--reverse { grid-template-columns: 1fr; } .two-col--reverse .two-col__media { order: 0; } }
+
+    /* ── TAG ROW ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-3); }
+    .tag { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--border-strong); color: var(--text-muted); padding: 4px 12px; border-radius: 100px; }
+
+    /* ── CARDS GRID ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--s-3); margin-top: var(--s-4); }
+    .cards-grid--2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--bg-card); border-radius: var(--r-md); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .card__icon { width: 32px; height: 32px; margin-bottom: var(--s-2); color: var(--text-muted); }
+    .card__title { font-weight: 700; font-size: .95rem; color: var(--text-primary); margin-bottom: var(--s-1); }
+    .card__body { font-size: .9rem; color: var(--text-muted); line-height: 1.55; }
+    .section--dark .card { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+    .section--dark .card__title { color: #FFFFFF; }
+    .section--dark .card__body { color: rgba(255,255,255,0.6); }
+
+    /* ── RESPONSIBILITY CARDS ── */
+    .resp-card { background: var(--bg-secondary); border-radius: var(--r-sm); padding: var(--s-2) var(--s-3); border-left: 3px solid var(--accent-lime); }
+    .resp-card__title { font-weight: 600; font-size: .9rem; color: var(--text-primary); }
+
+    /* ── INSIGHT / CALLOUT BLOCKS ── */
+    .insight-block { background: var(--bg-card); border-left: 3px solid var(--text-primary); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .insight-block__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-1); }
+    .insight-block__text { font-size: 1.0625rem; font-weight: 600; color: var(--text-primary); line-height: 1.55; }
+
+    .callout--decision { background: var(--accent-lime); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .callout--decision .callout__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-primary); margin-bottom: var(--s-1); font-weight: 700; opacity: 0.6; }
+    .callout--decision .callout__text { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.55; }
+
+    .callout--why { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin-top: var(--s-4); }
+    .callout--why .callout__label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--s-1); }
+    .callout--why .callout__text { font-size: 1rem; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── DELIVERABLES LIST ── */
+    .deliverables-list { list-style: none; margin-top: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); }
+    .deliverables-list li { display: flex; align-items: flex-start; gap: 12px; font-size: .95rem; color: var(--text-secondary); line-height: 1.5; }
+    .deliverables-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--text-primary); margin-top: 7px; flex-shrink: 0; }
+    .deliverables-list__label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-4); margin-bottom: var(--s-1); display: block; }
+
+    /* ── FIGURE / IMAGES ── */
+    .cs-figure { margin: var(--s-5) 0; }
+    .cs-figure figcaption { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-1); }
+    .cs-figure img { border-radius: var(--r-lg); width: 100%; }
+
+    /* ── DIAGRAM WRAP ── */
+    .diagram-wrap { overflow-x: auto; margin: var(--s-6) 0; -webkit-overflow-scrolling: touch; background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-4); box-shadow: var(--shadow-card); }
+    .diagram-wrap svg { min-width: 600px; width: 100%; height: auto; display: block; }
+    .diagram-wrap figcaption { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-top: var(--s-2); text-align: center; }
+
+    /* ── PROCESS STEPS (dark section — row layout) ── */
+    .process-steps { display: flex; flex-direction: column; gap: 0; margin-top: var(--s-6); }
+    .process-step__card {
+      display: flex; align-items: baseline; gap: var(--s-3);
+      padding: var(--s-2) 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .process-step__card:last-child { border-bottom: none; }
+    .process-step__number { font-family: var(--font-mono); font-size: .75rem; font-weight: 700; color: var(--accent-lime); flex-shrink: 0; width: 28px; }
+    .process-step__body { display: flex; align-items: baseline; gap: var(--s-2); flex: 1; min-width: 0; }
+    .process-step__title { font-weight: 700; font-size: .9rem; color: #FFFFFF; white-space: nowrap; flex-shrink: 0; }
+    .process-step__desc { font-size: .82rem; color: rgba(255,255,255,0.45); line-height: 1.4; }
+    @media (max-width: 640px) {
+      .process-step__body { flex-direction: column; gap: 2px; }
+    }
+    .section--dark .diagram-wrap { background: rgba(255,255,255,0.04); box-shadow: none; border: 1px solid rgba(255,255,255,0.08); }
+    .section--dark .diagram-wrap figcaption { color: rgba(255,255,255,0.4); }
+
+    /* ── PROCESS DIAGRAM (single-row, full-width, scrollable) ── */
+    .pd-scroll {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: var(--s-4) 0;
+      width: 100%;
+    }
+    .pd-scroll::-webkit-scrollbar { height: 4px; }
+    .pd-scroll::-webkit-scrollbar-track { background: transparent; }
+    .pd-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+    .pd__row {
+      display: flex; align-items: stretch; gap: 0;
+      width: max-content; padding: 0 var(--s-4);
+      margin: 0 auto;
+    }
+    .pd__card {
+      width: 160px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 6px; padding: 16px 18px;
+    }
+    .pd__card--lime { background: #CCFF00; border-color: #CCFF00; }
+    .pd__card--lime .pd__num, .pd__card--lime .pd__title, .pd__card--lime .pd__desc { color: #050505; }
+    .pd__card--outline { background: rgba(255,255,255,0.04); border-color: #CCFF00; }
+    .pd__card--outline .pd__num, .pd__card--outline .pd__desc { color: #CCFF00; }
+    .pd__num { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.4); margin: 0 0 8px; }
+    .pd__title { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: #FFFFFF; line-height: 1.35; margin: 0; }
+    .pd__desc { font-family: var(--font-display); font-size: 9px; color: rgba(255,255,255,0.45); margin: 8px 0 0; }
+    .pd__arrow {
+      width: 28px; flex-shrink: 0; display: flex; align-items: center;
+      justify-content: center; position: relative;
+    }
+    .pd__arrow::before {
+      content: ''; position: absolute; width: 100%; height: 1.5px;
+      background: rgba(255,255,255,0.3);
+    }
+    .pd__arrow::after {
+      content: ''; position: absolute; right: 0; width: 0; height: 0;
+      border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent;
+      border-left: 6px solid rgba(255,255,255,0.4);
+    }
+    .pd__legend { display: flex; gap: 24px; margin-top: var(--s-4); padding: 0 var(--s-4); width: max-content; margin-left: auto; margin-right: auto; }
+    .pd__legend-item { display: flex; align-items: center; gap: 8px; }
+    .pd__legend-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+    .pd__legend-text { font-family: var(--font-display); font-size: 10px; color: rgba(255,255,255,0.5); margin: 0; }
+
+    /* ── RESULTS ── */
+    .results-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--s-3); margin-bottom: var(--s-6); }
+    .result-card { display: flex; flex-direction: column; align-items: center; text-align: center; background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-5) var(--s-3); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .result-number { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.5rem,5vw,4rem); line-height: 1; color: var(--text-primary); display: block; margin-bottom: var(--s-1); }
+    .result-card--lime { background: var(--accent-lime); border-color: var(--accent-lime); }
+    .result-card--lime .result-number, .result-card--lime .result-label, .result-card--lime .result-sub { color: var(--text-primary); }
+    .result-label { font-weight: 700; font-size: .9rem; color: var(--text-primary); display: block; margin-bottom: 4px; }
+    .result-sub { font-size: .8rem; color: var(--text-muted); display: block; line-height: 1.4; font-family: var(--font-mono); }
+    @media (max-width: 860px) { .results-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 480px) { .results-grid { grid-template-columns: 1fr; } }
+
+    /* ── LESSONS ── */
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: var(--s-4); }
+    .lesson-card { background: var(--bg-card); border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .lesson-card__num { font-family: var(--font-mono); font-size: .8rem; font-weight: 700; color: var(--text-muted); margin-bottom: var(--s-2); display: block; }
+    .lesson-card__title { font-weight: 700; font-size: 1rem; color: var(--text-primary); margin-bottom: var(--s-2); line-height: 1.3; }
+    .lesson-card__body { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── TOOL CARDS (AI Layer) ── */
+    .tool-tag-row { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-bottom: var(--s-5); }
+    .tool-tag { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; background: var(--accent-lime); color: #050505; padding: 5px 14px; border-radius: 100px; border: 1px solid var(--accent-lime); font-weight: 700; }
+    .tool-card { background: var(--bg-card); border-radius: var(--r-md); padding: var(--s-4); box-shadow: var(--shadow-card); border: 1px solid var(--border); }
+    .tool-card__name { font-weight: 900; font-size: 1rem; color: var(--text-primary); margin-bottom: var(--s-1); }
+    .tool-card__task { font-size: .88rem; color: var(--text-secondary); margin-bottom: var(--s-1); line-height: 1.5; }
+    .tool-card__outcome { font-size: .88rem; color: var(--text-muted); font-style: italic; margin-bottom: var(--s-1); line-height: 1.5; }
+    .tool-card__split { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: var(--s-1); margin-top: var(--s-2); }
+
+    /* ── CTA / FOOTER ── */
+    .section--dark h2 { color: #FFFFFF; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent-lime); color: var(--accent-lime); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; padding: 14px 28px; border-radius: var(--r-sm); text-decoration: none; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+    .btn:hover { background: var(--accent-lime); color: var(--text-primary); }
+
+    footer { padding: var(--s-4) 0; border-top: 1px solid var(--border); }
+    .footer__text { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+
+    /* ── SECTION DIVIDER ── */
+    .section__divider { height: 1px; background: var(--border); margin: 0 var(--s-3); }
+  </style>
+  <script src="../../shared/project-header.js" defer></script>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#s-hero">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Page sections">
+    <button class="nav-dot" data-section="s-hero" data-label="Hero" aria-label="Navigate to Hero" onclick="document.getElementById('s-hero').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-challenge" data-label="Challenge" aria-label="Navigate to Challenge" onclick="document.getElementById('s-challenge').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d1" data-label="Opportunity" aria-label="Navigate to Opportunity Framing" onclick="document.getElementById('s-d1').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d2" data-label="Workflow" aria-label="Navigate to Workflow Audit" onclick="document.getElementById('s-d2').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-d3" data-label="Architecture" aria-label="Navigate to Capability Architecture" onclick="document.getElementById('s-d3').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-process" data-label="Process" aria-label="Navigate to Process" onclick="document.getElementById('s-process').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-results" data-label="Results" aria-label="Navigate to Results" onclick="document.getElementById('s-results').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-lessons" data-label="Lessons" aria-label="Navigate to Lessons" onclick="document.getElementById('s-lessons').scrollIntoView({behavior:'smooth'})"></button>
+    <button class="nav-dot" data-section="s-cta" data-label="CTA" aria-label="Navigate to CTA" onclick="document.getElementById('s-cta').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <main id="s-hero">
+
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <section class="section hero" id="s-hero" aria-labelledby="hero-title">
+    <div class="container">
+      <p class="hero__eyebrow">Product Design · Design Engineering · AI Infrastructure</p>
+      <h1 class="hero__title" id="hero-title">Miro MCP Server</h1>
+      <p class="hero__hook">I built the AI-to-Miro bridge before Miro had one.</p>
+      <p class="hero__lead">A custom MCP server that connects any AI IDE to Miro — letting designers create, organize, and retrieve board content through <strong>natural language</strong>. Designed and shipped <strong>June 2025</strong>, six months before Miro's own MCP beta.</p>
+      <div class="hero__meta" role="list" aria-label="Project details">
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Role</span>
+          <span class="hero__meta-value">Product Designer + Design Engineer</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Platform</span>
+          <span class="hero__meta-value">MCP + Miro API</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Timeline</span>
+          <span class="hero__meta-value">June 2025 → ongoing</span>
+        </div>
+        <div class="hero__meta-cell" role="listitem">
+          <span class="hero__meta-label">Outcome</span>
+          <span class="hero__meta-value">~80% workshop setup reduction</span>
+        </div>
+      </div>
+    </div>
+    <div class="container--wide" style="margin-top:var(--s-6)">
+      <figure class="cs-figure">
+        <img
+          src="./assets/img/miro.png"
+          srcset="./assets/img/miro@2x.png 2x"
+          alt="Miro board showing a design process diagram generated through the MCP server"
+          loading="eager"
+          decoding="async"
+          class="hero__img"
+        >
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── METRICS STRIP ──────────────────────────────── -->
+  <div class="metrics-strip">
+    <div class="container--wide">
+      <div class="metrics-strip__grid" role="list" aria-label="Key project metrics">
+        <div class="metric-cell" role="listitem">
+          <span class="metric-value"><span class="metric-value--highlight">~80%</span></span>
+          <span class="metric-label">Workshop Setup Reduction</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-value">&lt;1 min</span>
+          <span class="metric-label">Per Process Diagram</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-value">100+</span>
+          <span class="metric-label">Items in Single Bulk Operation</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-value">6 mo</span>
+          <span class="metric-label">Before Miro's Own MCP Beta</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHALLENGE ─────────────────────────────────── -->
+  <section class="section section--white" id="s-challenge" aria-labelledby="challenge-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="two-col__text">
+          <span class="section-label">// The Challenge</span>
+          <h2 id="challenge-title">AI could structure the thinking. Miro couldn't receive it.</h2>
+          <p>Miro sat at the center of high-leverage design work — discovery workshops, research synthesis, service blueprinting. LLMs were becoming genuinely useful for structuring information and generating frameworks. But <strong>the two worlds were completely disconnected</strong>: every AI-assisted workflow required a manual rebuild step inside Miro.</p>
+          <p>A researcher with AI-generated clustering ready to go still spent <strong>45 minutes</strong> rebuilding it sticky note by sticky note. The cause was structural: <strong>no AI-to-workspace bridge existed</strong> for visual collaboration.</p>
+          <div class="insight-block">
+            <p class="insight-block__label">Core Insight</p>
+            <p class="insight-block__text">The problem wasn't "Miro needs automation." It was that <strong>no infrastructure existed for AI to act inside the workspace</strong> where visual design work happens.</p>
+          </div>
+        </div>
+        <div class="two-col__media">
+          <h3 style="margin-bottom:var(--s-3);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:700;">My Responsibilities</h3>
+          <div style="display:flex;flex-direction:column;gap:var(--s-2);">
+            <div class="resp-card"><p class="resp-card__title">Product Framing + Strategy</p></div>
+            <div class="resp-card"><p class="resp-card__title">System Architecture Design</p></div>
+            <div class="resp-card"><p class="resp-card__title">Promptable Interaction Design</p></div>
+            <div class="resp-card"><p class="resp-card__title">MCP Server Implementation (Antigravity)</p></div>
+            <div class="resp-card"><p class="resp-card__title">Reliability Engineering</p></div>
+            <div class="resp-card"><p class="resp-card__title">Workflow Validation (Claude Code)</p></div>
+          </div>
+          <div class="tag-row" style="margin-top:var(--s-4);" role="list" aria-label="Skills used">
+            <span class="tag" role="listitem">MCP Protocol</span>
+            <span class="tag" role="listitem">Miro API</span>
+            <span class="tag" role="listitem">Claude Code</span>
+            <span class="tag" role="listitem">Antigravity</span>
+            <span class="tag" role="listitem">Workflow Design</span>
+            <span class="tag" role="listitem">Service Design</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 01: OPPORTUNITY FRAMING ────────── -->
+  <section class="section" id="s-d1" aria-labelledby="d1-title">
+    <div class="container">
+      <div class="two-col">
+        <div class="two-col__text">
+          <span class="section-label">01 // Opportunity Framing</span>
+          <h2 id="d1-title">I identified the gap six months before Miro did</h2>
+          <p>I framed this as <strong>design infrastructure</strong>, not a developer integration. The product concept was a four-layer system: IDE → MCP → LLM → Miro. That architecture transformed the project from a one-off integration into <em>infrastructure that outlasts any single AI client</em>.</p>
+          <div class="callout--decision">
+            <p class="callout__label">Design Decision</p>
+            <p class="callout__text"><strong>MCP as the interoperability layer</strong> instead of a single IDE. More upfront architecture — but the only path to a <strong>portable, professional tool</strong>.</p>
+          </div>
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list" aria-label="Opportunity Framing deliverables">
+            <li>4-layer system model: IDE → MCP → Miro API → Visual output</li>
+            <li>8 use case categories mapped — from discovery boards to service blueprinting</li>
+            <li>Positioning framework: design infrastructure, not API wrapper</li>
+          </ul>
+        </div>
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img
+              src="./assets/img/claude-code.png"
+              srcset="./assets/img/claude-code@2x.png 2x"
+              alt="Claude Code IDE showing an MCP command for creating a Miro discovery board"
+              loading="lazy"
+              decoding="async"
+              style="border-radius:var(--r-lg);"
+            >
+            <figcaption>Claude Code — orchestration + validation layer</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 02: WORKFLOW AUDIT ─────────────── -->
+  <section class="section section--white" id="s-d2" aria-labelledby="d2-title">
+    <div class="container">
+      <span class="section-label">02 // Workflow Audit</span>
+      <h2 id="d2-title">I mapped every friction point before writing a line of code</h2>
+      <p>I decomposed real Miro workflows into <strong>five operational categories</strong> and scenario-mapped four workflow types. The audit surfaced clear baselines: <strong>30–45 min</strong> for workshop setup, <strong>15–20 min</strong> per diagram. These numbers defined the gap the product needed to close.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s-3);margin-top:var(--s-4);padding:var(--s-4);background:var(--bg-secondary);border-radius:var(--r-md);">
+        <div style="text-align:center;">
+          <span style="font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--text-primary);display:block;">30–45 min</span>
+          <span style="font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);">Workshop board setup</span>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--text-primary);display:block;">15–20 min</span>
+          <span style="font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);">Per process diagram</span>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--text-primary);display:block;">5</span>
+          <span style="font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);">Operational categories mapped</span>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--text-primary);display:block;">4</span>
+          <span style="font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);">Workflow types scenario-mapped</span>
+        </div>
+      </div>
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list" aria-label="Workflow Audit deliverables">
+        <li>Task taxonomy — 5 operational categories (create, edit, retrieve, group, batch)</li>
+        <li>4 workflow types scenario-mapped</li>
+        <li>Quantified friction baselines as design targets</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 03: CAPABILITY ARCHITECTURE ────── -->
+  <section class="section" id="s-d3" aria-labelledby="d3-title">
+    <div class="container">
+      <div class="two-col two-col--reverse">
+        <div class="two-col__media">
+          <figure class="cs-figure">
+            <img
+              src="./assets/img/antigravity.png"
+              srcset="./assets/img/antigravity@2x.png 2x"
+              alt="Antigravity IDE displaying the MCP server implementation codebase"
+              loading="lazy"
+              decoding="async"
+              style="border-radius:var(--r-lg);"
+            >
+            <figcaption>Antigravity IDE — MCP server implementation environment</figcaption>
+          </figure>
+        </div>
+        <div class="two-col__text">
+          <span class="section-label">03 // Capability Architecture</span>
+          <h2 id="d3-title">Visual systems, not individual objects</h2>
+          <p>The core product decision: build for <strong>higher-order visual systems</strong> — complete board architecture, nested layouts, mind maps, connector logic, bulk operations — not basic CRUD. I ran <strong>API feasibility testing</strong> against every Miro endpoint to separate stable object types from fragile ones before committing to features.</p>
+          <div class="callout--decision">
+            <p class="callout__label">Design Decision</p>
+            <p class="callout__text">Basic CRUD was the floor, not the product. The <strong>capability taxonomy</strong> — which visual structures to support, in what order — shaped the entire interaction model.</p>
+          </div>
+          <span class="deliverables-list__label">Deliverables</span>
+          <ul class="deliverables-list" aria-label="Capability Architecture deliverables">
+            <li>Full capability taxonomy — 12+ object types including nested structures and bulk ops (100+ items)</li>
+            <li>API feasibility map — stable vs. fragile endpoints</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container--wide" style="margin-top:var(--s-6)">
+      <div class="diagram-wrap">
+        <figure role="figure" aria-label="4-layer system architecture diagram">
+          <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4-layer system architecture: Build, MCP Protocol, Miro API, Visual Output">
+            <title>Miro MCP Server — System Architecture</title>
+            <desc>Four-layer system model showing how Antigravity IDE connects through MCP Protocol to the Miro API to produce structured visual output</desc>
+            <rect width="900" height="200" fill="#EAEAEA" rx="8"/>
+            <text x="20" y="24" font-family="Space Mono, monospace" font-size="10" fill="#666666" letter-spacing="0.05em">SYSTEM ARCHITECTURE — 4-LAYER MODEL</text>
+            <rect x="20" y="36" width="170" height="130" rx="6" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+            <rect x="20" y="36" width="170" height="6" rx="3" fill="#2563EB"/>
+            <text x="30" y="62" font-family="Space Mono, monospace" font-size="9" fill="#2563EB" letter-spacing="0.04em">BUILD LAYER</text>
+            <text x="30" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">Antigravity</text>
+            <text x="30" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">MCP server</text>
+            <text x="30" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">implementation</text>
+            <text x="30" y="140" font-family="Inter, sans-serif" font-size="10" fill="#666666">+ Claude Code</text>
+            <text x="30" y="154" font-family="Inter, sans-serif" font-size="10" fill="#666666">validation</text>
+            <g>
+              <line x1="190" y1="101" x2="228" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+              <text x="197" y="94" font-family="Space Mono, monospace" font-size="8" fill="#666666">calls</text>
+            </g>
+            <rect x="234" y="36" width="170" height="130" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+            <rect x="234" y="36" width="170" height="6" rx="3" fill="#7C3AED"/>
+            <text x="244" y="62" font-family="Space Mono, monospace" font-size="9" fill="#7C3AED" letter-spacing="0.04em">MCP LAYER</text>
+            <text x="244" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">MCP Protocol</text>
+            <text x="244" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">Tool routing +</text>
+            <text x="244" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">intent translation</text>
+            <text x="244" y="140" font-family="Inter, sans-serif" font-size="10" fill="#666666">Any LLM as the</text>
+            <text x="244" y="154" font-family="Inter, sans-serif" font-size="10" fill="#666666">reasoning layer</text>
+            <g>
+              <line x1="404" y1="101" x2="442" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+              <text x="410" y="94" font-family="Space Mono, monospace" font-size="8" fill="#666666">routes</text>
+            </g>
+            <rect x="448" y="36" width="170" height="130" rx="6" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+            <rect x="448" y="36" width="170" height="6" rx="3" fill="#D97706"/>
+            <text x="458" y="62" font-family="Space Mono, monospace" font-size="9" fill="#D97706" letter-spacing="0.04em">API LAYER</text>
+            <text x="458" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#050505">Miro API</text>
+            <text x="458" y="104" font-family="Inter, sans-serif" font-size="11" fill="#444444">Board operations +</text>
+            <text x="458" y="118" font-family="Inter, sans-serif" font-size="11" fill="#444444">object management</text>
+            <text x="458" y="140" font-family="Inter, sans-serif" font-size="10" fill="#666666">Reliability layer +</text>
+            <text x="458" y="154" font-family="Inter, sans-serif" font-size="10" fill="#666666">fallback patterns</text>
+            <g>
+              <line x1="618" y1="101" x2="656" y2="101" stroke="#050505" stroke-width="1.5" marker-end="url(#arrowH)"/>
+              <text x="623" y="94" font-family="Space Mono, monospace" font-size="8" fill="#666666">creates</text>
+            </g>
+            <rect x="662" y="36" width="218" height="130" rx="6" fill="#050505" stroke="#050505" stroke-width="2"/>
+            <rect x="662" y="36" width="218" height="6" rx="3" fill="#CCFF00"/>
+            <text x="672" y="62" font-family="Space Mono, monospace" font-size="9" fill="#CCFF00" letter-spacing="0.04em">OUTPUT LAYER</text>
+            <text x="672" y="86" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Miro Board</text>
+            <text x="672" y="104" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">Structured visual</text>
+            <text x="672" y="118" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">artifacts — frames,</text>
+            <text x="672" y="136" font-family="Inter, sans-serif" font-size="11" fill="#CCCCCC">diagrams, workshops</text>
+            <text x="672" y="154" font-family="Inter, sans-serif" font-size="10" fill="#CCFF00">Presentation-ready</text>
+            <defs>
+              <marker id="arrowH" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#050505"/>
+              </marker>
+            </defs>
+          </svg>
+          <figcaption>4-layer system model: Build → MCP Protocol → Miro API → Visual Output</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 04: PROMPTABLE INTERACTION ─────── -->
+  <section class="section section--white" id="s-d4" aria-labelledby="d4-title">
+    <div class="container">
+      <span class="section-label">04 // Promptable Interaction Design</span>
+      <h2 id="d4-title">Designing the invisible layer: intent → board structure</h2>
+      <p>The hardest design work was shaping how LLMs interpret natural-language requests and translate them into predictable Miro actions. I applied design principles to <strong>MCP tool descriptions</strong> — naming, structure predictability, output readability — then validated them through prompt prototyping in <strong>Claude Code</strong>. The goal: an interaction model <strong>reliable enough for professional use</strong> without requiring prompt engineering from end users.</p>
+      <div class="callout--why">
+        <p class="callout__label">Why This Mattered</p>
+        <p class="callout__text">Most MCP implementations are built by engineers for engineers. This one was designed <strong>for designers and facilitators</strong> — tool descriptions work with how those users naturally describe visual work.</p>
+      </div>
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list" aria-label="Promptable Interaction Design deliverables">
+        <li>Complete MCP tool description system optimized for non-engineer use</li>
+        <li>Validated prompt library — tested across 8 core workflow scenarios</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── DELIVERABLE 05: RELIABILITY ENGINEERING ────── -->
+  <section class="section" id="s-d5" aria-labelledby="d5-title">
+    <div class="container">
+      <span class="section-label">05 // Reliability Engineering</span>
+      <h2 id="d5-title">Reliability over completeness</h2>
+      <p>Some Miro object types were unstable through the API. I chose <strong>reliability over coverage</strong> — validation layers, fallback patterns, sticky-note alternatives for fragile types. Every output was validated in <strong>live Miro boards</strong> for presentation quality, not just technical correctness.</p>
+      <div class="callout--decision">
+        <p class="callout__label">Design Decision</p>
+        <p class="callout__text"><strong>70% of object types with full reliability</strong> beats 100% with unpredictable failures. Professional tools produce output you can use <em>in front of clients</em>.</p>
+      </div>
+      <span class="deliverables-list__label">Deliverables</span>
+      <ul class="deliverables-list" aria-label="Reliability Engineering deliverables">
+        <li>Validation layer + fallback patterns for all Miro API calls</li>
+        <li>All generated artifacts confirmed presentation-ready in live boards</li>
+        <li>First working release: June 7, 2025</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── PROCESS STEPS ─────────────────────────────── -->
+  <section class="section section--dark" id="s-process" aria-labelledby="process-title">
+    <div class="container">
+      <span class="section-label">// Process</span>
+      <h2 id="process-title">Nine phases from observation to infrastructure</h2>
+    </div>
+
+    <!-- Process Diagram — single row, horizontally scrollable, full viewport width -->
+    <div class="pd-scroll" role="figure" aria-label="9-phase design process diagram">
+        <div class="pd__row">
+          <div class="pd__card">
+            <p class="pd__num">01</p>
+            <p class="pd__title">Opportunity<br>Framing</p>
+            <p class="pd__desc">Define the gap</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card">
+            <p class="pd__num">02</p>
+            <p class="pd__title">Workflow<br>Audit</p>
+            <p class="pd__desc">Map friction</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card">
+            <p class="pd__num">03</p>
+            <p class="pd__title">Use Case<br>Prioritization</p>
+            <p class="pd__desc">Focus scope</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card">
+            <p class="pd__num">04</p>
+            <p class="pd__title">Capability<br>Architecture</p>
+            <p class="pd__desc">Design system</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card pd__card--lime">
+            <p class="pd__num">05</p>
+            <p class="pd__title">Promptable<br>Interaction Design</p>
+            <p class="pd__desc">AI translation layer</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card pd__card--lime">
+            <p class="pd__num">06</p>
+            <p class="pd__title">API<br>Prototyping</p>
+            <p class="pd__desc">Build + Claude Code</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card">
+            <p class="pd__num">07</p>
+            <p class="pd__title">Reliability<br>Hardening</p>
+            <p class="pd__desc">Fallbacks + validation</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card">
+            <p class="pd__num">08</p>
+            <p class="pd__title">Visual<br>Validation</p>
+            <p class="pd__desc">Live board tests</p>
+          </div>
+          <span class="pd__arrow" aria-hidden="true"></span>
+          <div class="pd__card pd__card--outline">
+            <p class="pd__num">09</p>
+            <p class="pd__title">Cross-IDE<br>Positioning</p>
+            <p class="pd__desc">Infrastructure</p>
+          </div>
+        </div>
+        <div class="pd__legend" aria-hidden="true">
+          <div class="pd__legend-item">
+            <span class="pd__legend-swatch" style="background:#CCFF00;"></span>
+            <p class="pd__legend-text">AI-involved phase</p>
+          </div>
+          <div class="pd__legend-item">
+            <span class="pd__legend-swatch" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.3);"></span>
+            <p class="pd__legend-text">Design / engineering phase</p>
+          </div>
+        </div>
+    </div>
+
+    <div class="container">
+      <div class="process-steps" role="list" aria-label="Design process phases">
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">01</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Opportunity Framing</p>
+            <p class="process-step__desc">Identified the AI-to-Miro gap and framed the product as design infrastructure.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">02</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Workflow Audit</p>
+            <p class="process-step__desc">Mapped real UX and research workflows to quantify friction baselines.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">03</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Use Case Prioritization</p>
+            <p class="process-step__desc">Focused capability development on the 8 highest-value UX workflow scenarios.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">04</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Capability Architecture</p>
+            <p class="process-step__desc">Designed the full capability model around visual systems, ran API feasibility tests.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number" style="color:var(--accent-lime)">05</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Promptable Interaction</p>
+            <p class="process-step__desc">Shaped MCP tool descriptions so any LLM reliably translates natural language into Miro actions.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number" style="color:var(--accent-lime)">06</span>
+          <div class="process-step__body">
+            <p class="process-step__title">API Prototyping</p>
+            <p class="process-step__desc">Built the MCP server with Antigravity, validated tool behavior through Claude Code.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">07</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Reliability Hardening</p>
+            <p class="process-step__desc">Introduced validation layers, fallback patterns, and controlled parameters.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">08</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Visual Validation</p>
+            <p class="process-step__desc">Tested every generated structure type in live Miro boards for presentation quality.</p>
+          </div>
+        </div>
+        <div class="process-step__card" role="listitem">
+          <span class="process-step__number">09</span>
+          <div class="process-step__body">
+            <p class="process-step__title">Cross-IDE Positioning</p>
+            <p class="process-step__desc">Confirmed MCP portability; positioned the system as infrastructure, not a single-editor demo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ──────────────────────────────────────  -->
+  <section class="section section--white" id="s-results" aria-labelledby="results-title">
+    <div class="container">
+      <span class="section-label">// Impact</span>
+      <h2 id="results-title">From operational drag to promptable infrastructure</h2>
+
+      <div class="results-grid" role="list" aria-label="Key results">
+        <div class="result-card result-card--lime" role="listitem">
+          <span class="result-number">~80%</span>
+          <span class="result-label">Workshop Setup Reduction</span>
+          <span class="result-sub">30–45 min → 5–10 min</span>
+        </div>
+        <div class="result-card" role="listitem">
+          <span class="result-number">&lt;1 min</span>
+          <span class="result-label">Process Diagram Creation</span>
+          <span class="result-sub">vs. 15–20 min manually</span>
+        </div>
+        <div class="result-card" role="listitem">
+          <span class="result-number">100+</span>
+          <span class="result-label">Items Per Bulk Operation</span>
+          <span class="result-sub">Scale that wasn't possible before</span>
+        </div>
+        <div class="result-card" role="listitem">
+          <span class="result-number">6 mo</span>
+          <span class="result-label">Before Miro's MCP Beta</span>
+          <span class="result-sub">Shipped June 2025</span>
+        </div>
+      </div>
+
+      <div class="cards-grid cards-grid--2" role="list" aria-label="Achievement highlights">
+        <div class="card" role="listitem">
+          <p class="card__title">Workshop Facilitation Accelerated</p>
+          <p class="card__body">Workshop prep moved from <strong>30–45 minutes</strong> of manual Miro setup to <strong>5–10 minutes</strong> of prompted generation and review. Facilitators get a first-draft board fast enough to focus on <em>content rather than construction</em>.</p>
+        </div>
+        <div class="card" role="listitem">
+          <p class="card__title">Diagrams on Demand</p>
+          <p class="card__body">Process diagrams that previously required careful manual arrangement in Miro now <strong>generate on demand</strong> from a natural-language description. The speed matters most in workshops and real-time alignment sessions, where a 20-minute setup delay <em>breaks the room's momentum</em>.</p>
+        </div>
+        <div class="card" role="listitem">
+          <p class="card__title">Scale That Wasn't Possible Before</p>
+          <p class="card__body">Large-volume content handling moved from error-prone manual work to structured <strong>batch operations of 100+ items</strong> — making the system relevant for research-heavy synthesis workflows, not just individual diagramming.</p>
+        </div>
+        <div class="card" role="listitem">
+          <p class="card__title">Infrastructure, Not a Demo</p>
+          <p class="card__body">The system runs in <strong>any MCP-compatible IDE</strong> — validated in Claude Code, built with Antigravity, designed from the start to outlast any single AI client. That <em>portability</em> is what separates a working tool from a workflow that only works in one place.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── LESSONS ────────────────────────────────────── -->
+  <section class="section" id="s-lessons" aria-labelledby="lessons-title">
+    <div class="container">
+      <span class="section-label">// Lessons</span>
+      <h2 id="lessons-title">Three things this project taught me</h2>
+      <div class="lessons-grid" role="list" aria-label="Project lessons">
+        <div class="lesson-card" role="listitem">
+          <span class="lesson-card__num">01</span>
+          <p class="lesson-card__title">Framing is the product</p>
+          <p class="lesson-card__body">I could have positioned this as "an API wrapper for Miro." Instead, I positioned it as <strong>design infrastructure</strong> for discovery, workshops, and research operations. That framing change wasn't cosmetic — it made the project <em>commercially legible</em> to design teams, innovation labs, and agencies who would never search for an API wrapper but would immediately understand "AI-native design infrastructure." Product framing is design work.</p>
+        </div>
+        <div class="lesson-card" role="listitem">
+          <span class="lesson-card__num">02</span>
+          <p class="lesson-card__title">Reliability is a design decision</p>
+          <p class="lesson-card__body">The hardest design choices in this project weren't about what features to build. They were about which object types to support when the API couldn't guarantee stable results. Designing for <strong>trust</strong> in an AI-driven workflow meant choosing <strong>graceful degradation over completeness</strong> — a decision that made the difference between a demo and a tool people could use <em>in front of clients</em>.</p>
+        </div>
+        <div class="lesson-card" role="listitem">
+          <span class="lesson-card__num">03</span>
+          <p class="lesson-card__title">Anticipating infrastructure needs is a design leadership skill</p>
+          <p class="lesson-card__body">I shipped this <strong>six months before Miro</strong> announced its own MCP beta — not because I had inside information, but because the gap was <em>legible from first principles</em>. Understanding where design workflows are heading, identifying the infrastructure they'll need, and building it before the platform provides it: that's the skill that made this project worth doing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI LAYER ───────────────────────────────────── -->
+  <section class="section section--white" id="s-ai" aria-labelledby="ai-title">
+    <div class="container">
+      <span class="section-label">// AI Layer</span>
+      <h2 id="ai-title">I didn't use AI in this project. I built the layer that makes AI operational.</h2>
+      <p style="max-width:600px;margin-bottom:var(--s-5);">This project is unusual in the portfolio: AI was not a tool I reached for during the design process. <strong>AI <em>was</em> the design process.</strong> I built the bridge that makes AI operational inside Miro — the infrastructure that turns natural-language intent into structured visual artifacts.</p>
+
+      <div class="tool-tag-row" role="list" aria-label="AI tools and technologies">
+        <span class="tool-tag" role="listitem">Antigravity</span>
+        <span class="tool-tag" role="listitem">Claude Code</span>
+        <span class="tool-tag" role="listitem">MCP Protocol</span>
+        <span class="tool-tag" role="listitem">Miro API</span>
+      </div>
+
+      <div class="cards-grid cards-grid--2" role="list" aria-label="Tool details">
+        <div class="tool-card" role="listitem">
+          <p class="tool-card__name">Antigravity</p>
+          <p class="tool-card__task">Full MCP server implementation — wrote, tested, and iteratively refined the complete codebase.</p>
+          <p class="tool-card__outcome">Functional, cross-IDE MCP server with full board management and visual system capabilities.</p>
+          <p class="tool-card__split">Human/AI split: Antigravity as the implementation environment. All architectural decisions, capability design, interaction model, and reliability strategies were mine.</p>
+        </div>
+        <div class="tool-card" role="listitem">
+          <p class="tool-card__name">Claude Code</p>
+          <p class="tool-card__task">Prompt prototyping to validate MCP tool descriptions; live workflow validation across all 8 use case categories.</p>
+          <p class="tool-card__outcome">Confirmed that tool descriptions produced consistent, usable Miro structures under varied natural-language inputs.</p>
+          <p class="tool-card__split">Human/AI split: I issued the validation commands and evaluated the quality of generated board structures. Claude Code executed the MCP calls.</p>
+        </div>
+        <div class="tool-card" role="listitem">
+          <p class="tool-card__name">MCP Protocol</p>
+          <p class="tool-card__task">Architectural decision — adopted as the interoperability standard rather than building for a single editor.</p>
+          <p class="tool-card__outcome">System works in any MCP-compatible IDE. The protocol itself is what makes this infrastructure rather than a single-client tool.</p>
+          <p class="tool-card__split">Human/AI split: MCP is a protocol, not a model. I chose it as the architecture. Any LLM becomes the reasoning layer at runtime.</p>
+        </div>
+        <div class="tool-card" role="listitem">
+          <p class="tool-card__name">Miro API</p>
+          <p class="tool-card__task">Execution layer — all visual output produced through the Miro REST API.</p>
+          <p class="tool-card__outcome">Natural-language intent → MCP server → Miro API → structured board artifacts. The 4-layer pipeline works end-to-end.</p>
+          <p class="tool-card__split">Human/AI split: I designed the capability set and reliability constraints. The API executes the resulting board operations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ───────────────────────────────────────── -->
+  <section class="section section--dark" id="s-cta" aria-labelledby="cta-title" style="padding:var(--s-12) 0 120px;">
+    <div class="container" style="text-align:center;">
+      <h2 id="cta-title" style="color:#FFFFFF;">Need someone who builds the infrastructure, not just uses it?</h2>
+      <p style="max-width:580px;margin:var(--s-4) auto var(--s-6);color:rgba(255,255,255,0.7);">I identify workflow gaps, design the architecture, and <strong>ship it — before the platform does</strong>. If you're building AI-native design operations, need custom MCP integrations, or want to turn repetitive process work into <em>promptable infrastructure</em> — let's talk.</p>
+      <a href="mailto:mailtotheroman@gmail.com" class="btn" aria-label="Contact Roman Kryzhanovskyi">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        Get in touch
+      </a>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p class="footer__text">Personal project · Produced with AI assistance (Claude Code) · © 2026 Roman Kryzhanovskyi</p>
+    </div>
+  </footer>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    (function() {
+      /* Dot-Nav Active State */
+      const dots = document.querySelectorAll('.nav-dot');
+      const sections = document.querySelectorAll('section[id]');
+      if (dots.length && sections.length) {
+        const dotsMap = {};
+        dots.forEach((d, i) => { dotsMap[d.getAttribute('data-section')] = d; });
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              dots.forEach(d => d.classList.remove('active'));
+              const dot = dotsMap[entry.target.id];
+              if (dot) dot.classList.add('active');
+            }
+          });
+        }, { threshold: 0.35 });
+        sections.forEach(s => observer.observe(s));
+      }
+
+      /* Skip animations if reduced motion */
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) return;
+
+      /* Register ScrollTrigger */
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* Section fade-up entrance */
+      gsap.utils.toArray('section[id]').forEach(section => {
+        gsap.from(section, {
+          y: 40, opacity: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Card stagger entrance */
+      document.querySelectorAll('.cards-grid, .results-grid, .process-steps, .lessons-grid, .tool-card').forEach(grid => {
+        const items = grid.children || [grid];
+        gsap.from(items, {
+          y: 30, opacity: 0, duration: 0.55, stagger: 0.08, ease: 'power2.out',
+          scrollTrigger: { trigger: grid, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Two-col image slide-in */
+      gsap.utils.toArray('.two-col__media').forEach(media => {
+        const isReversed = !!media.closest('.two-col--reverse');
+        gsap.from(media, {
+          x: isReversed ? -50 : 50, opacity: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: media, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Diagram wrap reveal */
+      gsap.utils.toArray('.diagram-wrap').forEach(wrap => {
+        gsap.from(wrap, {
+          y: 30, opacity: 0, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: wrap, start: 'top 88%', once: true }
+        });
+      });
+
+      /* Metrics strip counters */
+      document.querySelectorAll('.metric-value, .result-number').forEach(el => {
+        const raw = el.textContent.trim();
+        const m = raw.match(/(\d+)/);
+        if (m && !raw.includes('<') && !raw.includes('mo') && !raw.includes('min')) {
+          const n = parseInt(m[1]);
+          const obj = { val: 0 };
+          gsap.to(obj, {
+            val: n, duration: 1.4, ease: 'power2.out', roundProps: 'val',
+            scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+            onUpdate: function() { el.textContent = raw.replace(m[1], Math.round(obj.val)); }
+          });
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
