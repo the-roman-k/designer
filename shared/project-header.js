@@ -12,16 +12,26 @@
 (function () {
   'use strict';
 
-  /* ── Project order (matches Featured Projects on landing page) ── */
-  var PROJECTS = [
+  /* ── Featured Projects (AI-era — cycles within this group) ── */
+  var FEATURED = [
     { slug: 'voice-ai-assistant',         label: 'Voice AI Assistant',         page: 'case-study.html' },
     { slug: 'video-scenario-tool',        label: 'Video Scenarios Tool',       page: 'case-study.html' },
-    { slug: 'ai-video-production',        label: 'AI Video Production',       page: 'case-study.html' },
-    { slug: 'miro-mcp',                   label: 'Miro MCP Server',           page: 'case-study.html' },
-    { slug: 'image-to-ascii',             label: 'Image to ASCII',            page: 'case-study.html' },
-    { slug: 'image-to-json',              label: 'Image to JSON',             page: 'case-study.html' },
+    { slug: 'ai-video-production',        label: 'AI Video Production',        page: 'case-study.html' },
+    { slug: 'miro-mcp',                   label: 'Miro MCP Server',            page: 'case-study.html' },
+    { slug: 'image-to-ascii',             label: 'Image to ASCII',             page: 'case-study.html' },
+    { slug: 'image-to-json',              label: 'Image to JSON',              page: 'case-study.html' },
     { slug: 'infographics-decision-tree', label: 'Infographics Decision Tree', page: 'case-study.html' },
-    { slug: 'upscaler',                   label: 'AI Image Upscaler',         page: 'case-study.html' }
+    { slug: 'upscaler',                   label: 'AI Image Upscaler',          page: 'case-study.html' }
+  ];
+
+  /* ── Foundation Projects (pre-AI — cycles within this group) ── */
+  var FOUNDATION = [
+    { slug: 'onboarding-tool',            label: 'AI Onboarding Assistant',    page: 'case-study.html' },
+    { slug: 'trading-view-indicators',    label: 'TradingView Indicators',     page: 'case-study.html' },
+    { slug: 'motoshare',                  label: 'MotoShare',                   page: 'case-study.html' },
+    { slug: 'code-discovery-platform',    label: 'Code Discovery Platform',    page: 'case-study.html' },
+    { slug: 'vendor-portal',              label: 'Vendor Portal',              page: 'case-study.html' },
+    { slug: 'taxation-platform',          label: 'Taxation Platform',          page: 'case-study.html' }
   ];
 
   /* ── Detect current project from URL ── */
@@ -37,14 +47,22 @@
     return null;
   }
 
-  /* ── Get next project (wraps around) ── */
-  function getNextProject(currentSlug) {
-    for (var i = 0; i < PROJECTS.length; i++) {
-      if (PROJECTS[i].slug === currentSlug) {
-        var nextIdx = (i + 1) % PROJECTS.length;
-        return PROJECTS[nextIdx];
-      }
+  /* ── Find which group the project belongs to ── */
+  function findInGroup(slug, group) {
+    for (var i = 0; i < group.length; i++) {
+      if (group[i].slug === slug) return i;
     }
+    return -1;
+  }
+
+  /* ── Get next project (wraps around within the same group) ── */
+  function getNextProject(currentSlug) {
+    var idx = findInGroup(currentSlug, FEATURED);
+    if (idx >= 0) return FEATURED[(idx + 1) % FEATURED.length];
+
+    idx = findInGroup(currentSlug, FOUNDATION);
+    if (idx >= 0) return FOUNDATION[(idx + 1) % FOUNDATION.length];
+
     return null;
   }
 
