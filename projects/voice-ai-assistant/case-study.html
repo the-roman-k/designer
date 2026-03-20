@@ -703,6 +703,13 @@
     /* Principle cards */
     .principle-card {
       border-top: 2px solid var(--accent-lime);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .principle-card:hover {
+      background: var(--bg-card-hover);
+      border-top-color: var(--accent-lime);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     }
 
     .principle-card__number {
@@ -822,6 +829,13 @@
 
     .decision-card {
       border-left: 3px solid var(--accent-lime);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .decision-card:hover {
+      background: var(--bg-card-hover);
+      border-left-color: var(--accent-lime);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     }
 
     .decision-card__number {
