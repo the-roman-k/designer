@@ -18,8 +18,9 @@
   var prefersReducedMotion =
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Track the current active view ID
-  var currentTargetId = 'view-hero';
+  // Track the current active view ID (check hash for deep-link from project pages)
+  var currentTargetId = window.__initialTab && document.getElementById(window.__initialTab)
+    ? window.__initialTab : 'view-hero';
   var isAnimating = false;
 
   // Word flip state (pauseable)
@@ -40,11 +41,19 @@
 
     var questions = document.querySelectorAll('.sidebar .question');
 
+    // Sync sidebar active state with currentTargetId (for hash deep-links)
+    if (currentTargetId !== 'view-hero') {
+      questions.forEach(function (q) {
+        q.classList.toggle('question-active', q.getAttribute('data-target') === currentTargetId);
+      });
+    }
+
     // Hide all tab-contents except the active one on startup
     document.querySelectorAll('.tab-content').forEach(function (tab) {
       if (tab.id !== currentTargetId) {
         tab.style.display = 'none';
         tab.style.opacity = 0;
+        tab.classList.remove('active');
       } else {
         tab.style.display = 'flex';
         tab.style.opacity = 1;

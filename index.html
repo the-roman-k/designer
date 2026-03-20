@@ -215,6 +215,14 @@
 </head>
 
 <body>
+  <script>
+    // Instant hash-based tab switch — runs before paint to prevent flash
+    (function() {
+      var h = location.hash.replace('#', '');
+      if (!h || h === 'view-hero') return;
+      window.__initialTab = h;
+    })();
+  </script>
 
   <div class="desktop">
 

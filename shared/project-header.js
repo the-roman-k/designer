@@ -104,15 +104,15 @@
   }
 
   /* ── Build the header DOM ── */
-  function buildHeader(basePath, nextProject) {
+  function buildHeader(basePath, nextProject, backHash) {
     var bar = document.createElement('div');
     bar.className = 'project-header';
     bar.setAttribute('role', 'navigation');
     bar.setAttribute('aria-label', 'Project navigation');
 
-    // Back link (left)
+    // Back link (left) — returns to the section the user came from
     var backLink = document.createElement('a');
-    backLink.href = basePath + 'index.html';
+    backLink.href = basePath + 'index.html#' + backHash;
     backLink.className = 'project-header__back';
     backLink.innerHTML = '<span class="project-header__arrow" aria-hidden="true">&larr;</span> Back to main page';
 
@@ -140,7 +140,8 @@
     loadCSS();
 
     var basePath = resolveBasePath();
-    var header = buildHeader(basePath, nextProject);
+    var backHash = findInGroup(slug, FEATURED) >= 0 ? 'view-projects' : 'view-foundation';
+    var header = buildHeader(basePath, nextProject, backHash);
 
     // Apply theme
     var theme = detectTheme();
