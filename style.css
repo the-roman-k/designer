@@ -1746,24 +1746,37 @@ p em {
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  letter-spacing: 4px;
-  color: rgba(204, 255, 0, 0.35);
-  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   z-index: 10;
-  animation: hib-blink 2s ease-in-out infinite;
+  transition: opacity 0.4s ease;
 }
 
-@keyframes hib-blink {
+.hib-scroll-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: rgba(204, 255, 0, 0.5);
+  text-transform: uppercase;
+}
 
-  0%,
-  100% {
-    opacity: 0.35;
+.hib-scroll-arrow {
+  width: 14px;
+  height: 20px;
+  color: rgba(204, 255, 0, 0.5);
+  animation: hib-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes hib-bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
   }
-
   50% {
-    opacity: 0.9;
+    transform: translateY(8px);
+    opacity: 1;
   }
 }
 
@@ -1795,8 +1808,7 @@ p em {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hib-scroll-hint {
+  .hib-scroll-arrow {
     animation: none;
-    opacity: 0.6;
   }
 }
