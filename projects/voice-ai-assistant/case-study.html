@@ -1148,6 +1148,24 @@
       opacity: 1;
     }
 
+    .cta-button--outline {
+      background: transparent;
+      color: var(--accent-lime);
+    }
+
+    .cta-button--outline:hover {
+      background: var(--accent-lime);
+      color: #0A0A0A;
+      opacity: 1;
+    }
+
+    .hero-cta {
+      margin-top: var(--s-4);
+      display: flex;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+
     /* ============================================================
        IMAGE BLOCK
        ============================================================ */
@@ -2446,13 +2464,21 @@
         <p style="max-width: 560px; margin: 0 auto var(--s-4); color: var(--text-secondary);">I design and build
           AI-native tools — from voice interfaces to desktop utilities to automated workflows. If you need someone who
           can think through the UX and ship the code, let's talk.</p>
-        <a href="mailto:mailtotheroman@gmail.com" class="cta-button">
-          Get in Touch
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
+        <div style="display: flex; gap: var(--s-2); justify-content: center; flex-wrap: wrap;">
+          <a href="https://www.typerr.app/" class="cta-button cta-button--outline" target="_blank" rel="noopener noreferrer">
+            Visit Typerr.app
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+          <a href="mailto:mailtotheroman@gmail.com" class="cta-button">
+            Get in Touch
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
 
