@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Credit Hub: I unified 8+ disconnected financial apps into one ecosystem — redefining the brand, interaction model, and visual identity for a UK credit company.">
+  <meta property="og:title" content="Credit Hub — Unifying a Fragmented Financial Ecosystem">
+  <meta property="og:description" content="Design Engineer case study: ecosystem audit of 8+ apps, competitor benchmarking against Monzo/Revolut, AI-powered prototyping, and a bold new brand direction.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Credit Hub — Unified Financial Mobile App | Roman Kryzhanovskyi">
+  <meta name="keywords" content="fintech design, mobile app, credit app, UX case study, ecosystem unification, AI prototyping, branding, financial services">
+  <title>Credit Hub — Unified Financial Mobile App | Roman Kryzhanovskyi</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Light theme (default) */
+      --bg-primary: #EAEAEA;
+      --bg-secondary: #FFFFFF;
+      --bg-tertiary: #F5F5F5;
+      --text-primary: #050505;
+      --text-secondary: #4B5563;
+      --text-tertiary: #6B7280;
+      --accent-violet: #7C3AED;
+      --accent-blue: #2563EB;
+      --accent-lime: #CCFF00;
+      --accent-amber: #D97706;
+      --accent-green: #059669;
+      --border-primary: #D1D5DB;
+      --border-secondary: #E5E7EB;
+
+      --font-display: 'Inter', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-7: 32px;
+      --space-9: 48px;
+      --space-10: 60px;
+      --space-12: 80px;
+      --space-16: 120px;
+
+      --radius-small: 6px;
+      --radius-base: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: clamp(15px, 2vw, 18px);
+      line-height: 1.65;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(58px, 10vw, 116px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.5vw, 30px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+
+    h4 {
+      font-family: var(--font-mono);
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+
+    p { margin-bottom: var(--space-4); max-width: 65ch; }
+
+    a { color: var(--accent-violet); text-decoration: none; transition: color 200ms; }
+    a:hover { color: var(--accent-blue); }
+    a:focus-visible { outline: 3px solid var(--accent-violet); outline-offset: 2px; }
+
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+    .container--wide { width: 95%; max-width: 1440px; margin: 0 auto; }
+
+    /* Skip to content */
+    .skip-to-content {
+      position: absolute; top: -40px; left: 0;
+      background: var(--accent-violet); color: #fff;
+      padding: var(--space-3) var(--space-6);
+      z-index: 100; text-decoration: none; border-radius: var(--radius-small);
+    }
+    .skip-to-content:focus { top: 0; }
+
+    /* Section */
+    .section {
+      scroll-margin-top: 60px;
+      padding: clamp(60px, 10vw, 120px) 0;
+      border-bottom: 1px solid var(--border-secondary);
+    }
+    .section:last-child { border-bottom: none; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: var(--space-4);
+      display: block;
+    }
+
+    /* Hero */
+    #s-hero {
+      position: relative;
+      padding: clamp(80px, 12vw, 160px) 0 clamp(60px, 8vw, 100px);
+      overflow: hidden;
+    }
+
+    .hero-hook {
+      font-style: italic;
+      font-size: clamp(16px, 2vw, 22px);
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin-bottom: var(--space-9);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-6);
+      margin: var(--space-9) 0;
+    }
+
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-tertiary); font-weight: 700;
+    }
+    .meta-value { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+
+    /* Metric badges */
+    .metric-badges { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-6) 0; }
+    .metric-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: var(--text-primary); color: var(--bg-primary);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* Hero image */
+    .hero-image {
+      margin-top: var(--space-9);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .hero-image img { width: 100%; height: auto; display: block; }
+
+    /* Metrics strip */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-6);
+      margin: var(--space-9) 0;
+    }
+
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      text-align: center;
+      transition: border-color 200ms;
+    }
+    .metric-card:hover { border-color: var(--accent-violet); }
+    .metric-card--highlight {
+      background: var(--accent-lime);
+      border-color: var(--accent-lime);
+    }
+
+    .metric-number {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-context {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: var(--space-2);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      transition: border-color 200ms, box-shadow 200ms;
+    }
+    .card:hover { border-color: var(--accent-violet); box-shadow: 0 4px 20px rgba(124,58,237,0.08); }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+      margin: var(--space-6) 0;
+    }
+
+    .card h3 { font-size: clamp(16px, 2vw, 20px); margin-bottom: var(--space-3); }
+    .card p { font-size: 15px; color: var(--text-secondary); margin-bottom: 0; }
+
+    /* Insights list */
+    .insights-list {
+      list-style: none; padding: 0; margin: var(--space-6) 0;
+    }
+    .insights-list li {
+      position: relative;
+      padding: var(--space-4) var(--space-6);
+      padding-left: calc(var(--space-6) + 16px);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--radius-base);
+      margin-bottom: var(--space-3);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .insights-list li::before {
+      content: '';
+      position: absolute; left: var(--space-4); top: 50%;
+      transform: translateY(-50%);
+      width: 8px; height: 8px;
+      background: var(--accent-lime);
+      border-radius: 50%;
+    }
+
+    /* Decision cards */
+    .decision-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .decision-card__number {
+      font-family: var(--font-mono);
+      font-size: 12px; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: var(--space-3);
+    }
+    .decision-card__title {
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 700; margin-bottom: var(--space-3);
+    }
+    .decision-card__options {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--space-4); margin: var(--space-4) 0;
+    }
+    .decision-card__chosen {
+      padding: var(--space-3) var(--space-4);
+      background: rgba(124,58,237,0.08);
+      border: 1px solid var(--accent-violet);
+      border-radius: var(--radius-small);
+      font-size: 14px; font-weight: 600;
+    }
+    .decision-card__rejected {
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--radius-small);
+      font-size: 14px; color: var(--text-tertiary);
+      text-decoration: line-through;
+    }
+    .decision-card__rationale {
+      font-size: 14px; color: var(--text-secondary);
+      margin-top: var(--space-3);
+    }
+
+    /* Tool tags */
+    .tools-row {
+      display: flex; flex-wrap: wrap; gap: var(--space-2);
+      margin: var(--space-4) 0;
+    }
+    .tool-tag {
+      font-family: var(--font-mono);
+      font-size: 12px; font-weight: 700;
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-small);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    /* Two-column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-9);
+      align-items: start;
+      margin: var(--space-9) 0;
+    }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* Image containers */
+    .img-container {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+      margin: var(--space-6) 0;
+    }
+    .img-container img { width: 100%; height: auto; display: block; }
+
+    .img-full {
+      margin: var(--space-9) 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .img-full img { width: 100%; height: auto; display: block; }
+
+    /* Process cards */
+    .process-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+      margin: var(--space-9) 0;
+    }
+    .process-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      position: relative;
+    }
+    .process-card__number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-violet);
+      margin-bottom: var(--space-3);
+    }
+    .process-card__title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: var(--space-2);
+    }
+    .process-card__desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .process-card__icon {
+      display: inline-block; width: 24px; height: 24px;
+      margin-bottom: var(--space-3);
+      color: var(--accent-violet);
+    }
+
+    /* Reflection/Lesson cards */
+    .lesson-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+    }
+    .lesson-card__number {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent-violet);
+      margin-bottom: var(--space-3);
+    }
+    .lesson-card h3 { font-size: 18px; margin-bottom: var(--space-3); }
+    .lesson-card p { font-size: 15px; color: var(--text-secondary); margin-bottom: 0; }
+
+    /* AI Layer */
+    .ai-tool-card {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+    }
+    .ai-tool-card h3 { color: var(--accent-lime); font-size: 18px; }
+    .ai-tool-card p { color: rgba(234,234,234,0.8); margin-bottom: 0; }
+    .ai-tool-card .tool-tag {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      color: var(--accent-lime);
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: clamp(80px, 12vw, 160px) 0;
+    }
+    .cta-button {
+      display: inline-flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-4) var(--space-7);
+      background: var(--accent-violet); color: #fff;
+      border: none; border-radius: var(--radius-small);
+      font-family: var(--font-mono); font-weight: 700;
+      font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;
+      cursor: pointer; transition: all 200ms;
+      text-decoration: none; min-height: 44px;
+    }
+    .cta-button:hover { background: #8B5CF6; color: #fff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.3); }
+
+    .cta-secondary {
+      display: inline-block; margin-top: var(--space-4);
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Dot nav */
+    .dot-nav {
+      position: fixed; right: 24px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 14px;
+      z-index: 100;
+    }
+    .dot-nav__item {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--text-tertiary); border: none;
+      cursor: pointer; transition: all 200ms; position: relative; padding: 0;
+    }
+    .dot-nav__item--active { background: var(--accent-violet); transform: scale(1.5); }
+    .dot-nav__item:hover { background: var(--accent-blue); transform: scale(1.3); }
+    .dot-nav__tooltip {
+      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+      background: var(--text-primary); color: var(--bg-primary);
+      padding: 4px 10px; border-radius: var(--radius-small);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .dot-nav__item:hover .dot-nav__tooltip { opacity: 1; }
+    @media (max-width: 768px) { .dot-nav { display: none; } }
+
+    /* Lime highlight (light theme safe) */
+    .lime-highlight {
+      background: var(--accent-lime);
+      color: var(--text-primary);
+      padding: 0 0.2em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    /* Deliverables list */
+    .deliverables-list {
+      display: flex; flex-wrap: wrap; gap: var(--space-2);
+      margin-top: var(--space-4); padding-top: var(--space-4);
+      border-top: 1px solid var(--border-secondary);
+    }
+    .deliverable-tag {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 700;
+      padding: var(--space-2) var(--space-3);
+      background: rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: var(--radius-small);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-violet);
+    }
+
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+    }
+    .gallery-grid img {
+      width: 100%; height: auto;
+      border-radius: var(--radius-base);
+      border: 1px solid var(--border-primary);
+    }
+
+    /* Callout */
+    .callout {
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-violet);
+      border-radius: var(--radius-small);
+      padding: var(--space-6);
+      margin: var(--space-6) 0;
+    }
+    .callout--insight { border-left-color: var(--accent-green); }
+    .callout p { margin-bottom: 0; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .decision-card__options { grid-template-columns: 1fr; }
+      .metrics-strip { grid-template-columns: 1fr; }
+      .process-cards { grid-template-columns: 1fr; }
+    }
+
+    /* Scroll animations base */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+  <script src="../../../shared/project-header.js" defer></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+  <!-- Dot Navigation -->
+  <nav class="dot-nav" aria-label="Section navigation">
+    <button class="dot-nav__item dot-nav__item--active" aria-label="Hero" data-section="s-hero">
+      <span class="dot-nav__tooltip">Credit Hub</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Challenge" data-section="s-challenge">
+      <span class="dot-nav__tooltip">Challenge</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Ecosystem Audit" data-section="s-discovery">
+      <span class="dot-nav__tooltip">Discovery</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Insights" data-section="s-insights">
+      <span class="dot-nav__tooltip">Insights</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Strategy" data-section="s-strategy">
+      <span class="dot-nav__tooltip">Strategy</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Experimentation" data-section="s-experiments">
+      <span class="dot-nav__tooltip">Experimentation</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Solution" data-section="s-solution">
+      <span class="dot-nav__tooltip">Solution</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Process" data-section="s-process">
+      <span class="dot-nav__tooltip">Process</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Impact" data-section="s-impact">
+      <span class="dot-nav__tooltip">Impact</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Lessons" data-section="s-lessons">
+      <span class="dot-nav__tooltip">Lessons</span>
+    </button>
+    <button class="dot-nav__item" aria-label="AI Layer" data-section="s-ai">
+      <span class="dot-nav__tooltip">AI Layer</span>
+    </button>
+    <button class="dot-nav__item" aria-label="Get in Touch" data-section="s-cta">
+      <span class="dot-nav__tooltip">Get in Touch</span>
+    </button>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ============================================ -->
+    <!-- SECTION A: HERO                              -->
+    <!-- ============================================ -->
+    <section id="s-hero" class="section" data-section="s-hero">
+      <div class="container">
+        <span class="eyebrow">Case Study &middot; Financial Services &middot; 2026</span>
+        <h1>CREDIT HUB</h1>
+        <p class="hero-hook">Eight apps. Zero cohesion. I built the unified ecosystem that replaced them all.</p>
+
+        <p style="font-size:clamp(16px,2vw,20px); color:var(--text-secondary); max-width:680px;">
+          A UK credit company operated 8+ disconnected financial apps across different brands.
+          I audited the entire ecosystem, benchmarked against Monzo and Revolut, and designed a single app that unified every product under one bold new identity.</p>
+
+        <div class="metric-badges">
+          <span class="metric-badge">8+ Apps Unified</span>
+          <span class="metric-badge">4 User Personas</span>
+          <span class="metric-badge">15 Industry Benchmarks</span>
+          <span class="metric-badge">6 AI Prototypes</span>
+        </div>
+
+        <div class="hero-meta">
+          <div class="meta-item">
+            <span class="meta-label">Role</span>
+            <span class="meta-value">Lead Design Engineer</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Platform</span>
+            <span class="meta-value">iOS + Android</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Timeline</span>
+            <span class="meta-value">7 Weeks</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Industry</span>
+            <span class="meta-value">Fintech / Credit</span>
+          </div>
+        </div>
+      </div>
+      <div class="container--wide">
+        <div class="hero-image">
+          <img src="./assets/img/app-preview-section.png"
+               srcset="./assets/img/app-preview-section.png 1x, ./assets/img/app-preview-section@2x.png 2x"
+               alt="Credit Hub app preview showing the final design direction with bold purple branding and the 'Your Credit is Looking Good' messaging"
+               loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION B: CHALLENGE                         -->
+    <!-- ============================================ -->
+    <section id="s-challenge" class="section reveal" data-section="s-challenge">
+      <div class="container">
+        <span class="eyebrow">02 &mdash; The Challenge</span>
+        <h2>I inherited an ecosystem, not an app</h2>
+
+        <p>The client operated 8+ separate financial products &mdash; from consumer credit cards to BNPL, from credit-building tools to white-label partner apps.
+        Each had its own branding, navigation, and UX quality.</p>
+
+        <p>A user who held both a credit card and a credit-builder product had to download two separate apps, learn two different interfaces, and manage two separate logins.
+        Meanwhile, Monzo and Revolut offered everything in one screen.</p>
+
+        <div class="card-grid" style="margin-top:var(--space-9);">
+          <div class="card">
+            <h4>Business Risk</h4>
+            <h3>Fragmented identity</h3>
+            <p>8+ apps with different brand languages diluted recognition and prevented cross-selling between products.</p>
+          </div>
+          <div class="card">
+            <h4>User Impact</h4>
+            <h3>Broken trust loop</h3>
+            <p>Users managing credit &mdash; a high-anxiety domain &mdash; needed one calm, authoritative source of truth. They got 8 conflicting ones.</p>
+          </div>
+          <div class="card">
+            <h4>Opportunity Cost</h4>
+            <h3>Competitive gap widening</h3>
+            <p>Monzo's unified dashboard, Revolut's all-in-one platform, and Starling's insights model set expectations the client couldn't meet.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:var(--space-9);">
+          <h4>My Role</h4>
+          <p style="font-size:clamp(16px,2vw,20px); font-weight:600;">I led the full design engagement end-to-end &mdash; from ecosystem audit through final UI direction.</p>
+          <div class="tools-row">
+            <span class="tool-tag">Figma</span>
+            <span class="tool-tag">AI Prototyping</span>
+            <span class="tool-tag">Competitor Analysis</span>
+            <span class="tool-tag">Journey Mapping</span>
+            <span class="tool-tag">User Personas</span>
+            <span class="tool-tag">Brand Strategy</span>
+            <span class="tool-tag">Interaction Design</span>
+            <span class="tool-tag">Visual Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION C1: DISCOVERY — Ecosystem Audit      -->
+    <!-- ============================================ -->
+    <section id="s-discovery" class="section reveal" data-section="s-discovery">
+      <div class="container">
+        <span class="eyebrow">03 &mdash; Discovery</span>
+        <h2>I mapped an ecosystem nobody had seen whole</h2>
+
+        <p>Before designing anything, I needed to understand everything.
+        I audited every existing app, studied the business model, and mapped the entire product portfolio.</p>
+
+        <div class="two-col">
+          <div>
+            <h3>Ecosystem Mapping</h3>
+            <p>I built a complete product ecosystem mindmap covering every brand and product line: Corporate, B2B tech platform, B2C digital credit, credit-building brands, balance transfer products, BNPL partnerships, and legacy portfolios.</p>
+            <p>This map became the single source of truth for understanding which products served which users &mdash; and where the overlaps created confusion.</p>
+            <div class="deliverables-list">
+              <span class="deliverable-tag">Ecosystem Mindmap</span>
+              <span class="deliverable-tag">Product Portfolio Audit</span>
+            </div>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/product-ecosystem-mindmap.png"
+                   srcset="./assets/img/product-ecosystem-mindmap.png 1x, ./assets/img/product-ecosystem-mindmap@2x.png 2x"
+                   alt="Product ecosystem mindmap showing all brand connections across Corporate, B2B, B2C, partnership channels"
+                   loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:var(--space-9);">
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/current-business-research.png"
+                   srcset="./assets/img/current-business-research.png 1x, ./assets/img/current-business-research@2x.png 2x"
+                   alt="Business research spreadsheet analyzing each product's type, core user job, and key UX issues"
+                   loading="lazy">
+            </div>
+          </div>
+          <div>
+            <h3>Business Deep-Dive</h3>
+            <p>For each product I documented: brand identity, product type, core user job, and key UX issues discovered from public reviews and direct analysis.</p>
+            <p>The pattern was clear: every app duplicated basic credit management features (balance check, payment, alerts) with different quality levels and naming conventions.</p>
+            <div class="deliverables-list">
+              <span class="deliverable-tag">Business Research Matrix</span>
+              <span class="deliverable-tag">UX Pattern Audit</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="img-full" style="margin-top:var(--space-9);">
+          <img src="./assets/img/current-apps-audit.png"
+               srcset="./assets/img/current-apps-audit.png 1x, ./assets/img/current-apps-audit@2x.png 2x"
+               alt="Visual audit of all existing client apps showing 6+ different brand identities and inconsistent UI patterns"
+               loading="lazy">
+        </div>
+        <p style="font-size:14px; color:var(--text-tertiary); margin-top:var(--space-3);">Complete visual audit of all existing apps &mdash; 6+ brand identities, inconsistent navigation, duplicated features.</p>
+
+        <!-- Competitor Research -->
+        <div style="margin-top:clamp(60px,8vw,100px);">
+          <h3>I studied the best &mdash; and the closest</h3>
+
+          <p>I ran a two-tier competitive analysis. Tier 1: aspirational fintechs (Monzo, Revolut, Starling) that defined what "great" looks like.</p>
+          <p>Tier 2: direct category competitors (Vanquis, Capital One UK, Barclaycard, Klarna) fighting in the same credit space.</p>
+
+          <div class="two-col">
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/competitors-research.png"
+                     srcset="./assets/img/competitors-research.png 1x, ./assets/img/competitors-research@2x.png 2x"
+                     alt="Competitor analysis table comparing Monzo, Revolut, and Starling's UX archetypes with translation insights"
+                     loading="lazy">
+              </div>
+            </div>
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/top-10-competitors.png"
+                     srcset="./assets/img/top-10-competitors.png 1x, ./assets/img/top-10-competitors@2x.png 2x"
+                     alt="Top 10 competitor matrix analyzing type, segments, design rating, and key insights"
+                     loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <p>Beyond direct competitors, I analyzed the top 15 banking apps globally with the strongest UX design &mdash; creating a feature-by-feature comparison of what makes each one exceptional and how those patterns could transfer to our context.</p>
+
+          <div class="img-container">
+            <img src="./assets/img/list-of-15-banking-apps-with-top-ux-design.png"
+                 srcset="./assets/img/list-of-15-banking-apps-with-top-ux-design.png 1x, ./assets/img/list-of-15-banking-apps-with-top-ux-design@2x.png 2x"
+                 alt="Top 15 banking apps benchmark comparing UI strength, UX milestones, key features, and best-for categories"
+                 loading="lazy">
+          </div>
+
+          <div class="img-full" style="margin-top:var(--space-6);">
+            <img src="./assets/img/competitors-apps.png"
+                 srcset="./assets/img/competitors-apps.png 1x, ./assets/img/competitors-apps@2x.png 2x"
+                 alt="Screenshots from 8+ competitor apps analyzed during the research phase"
+                 loading="lazy">
+          </div>
+          <div class="deliverables-list">
+            <span class="deliverable-tag">Aspirational Benchmark Analysis</span>
+            <span class="deliverable-tag">Category Competitor Audit</span>
+            <span class="deliverable-tag">Top 15 UX Comparison Matrix</span>
+            <span class="deliverable-tag">Competitor App Screenshots</span>
+          </div>
+        </div>
+
+        <!-- User Personas -->
+        <div style="margin-top:clamp(60px,8vw,100px);">
+          <h3>I defined four people this app needed to serve</h3>
+          <p>From business research and competitor analysis, I synthesized 4 distinct user personas representing the full spectrum of the company's customer base.</p>
+
+          <div class="img-container">
+            <img src="./assets/img/user-personas.png"
+                 srcset="./assets/img/user-personas.png 1x, ./assets/img/user-personas@2x.png 2x"
+                 alt="Four user personas: The Credit Rehabilitator, The Digital Native, The Retail Loyalist, and The Legacy Transitioner with demographic profiles and UX needs"
+                 loading="lazy">
+          </div>
+          <div class="deliverables-list">
+            <span class="deliverable-tag">4 User Personas</span>
+            <span class="deliverable-tag">Needs & Goals Matrix</span>
+            <span class="deliverable-tag">UX Requirements Map</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION C2: KEY INSIGHTS                     -->
+    <!-- ============================================ -->
+    <section id="s-insights" class="section reveal" data-section="s-insights">
+      <div class="container">
+        <span class="eyebrow">04 &mdash; Key Insights</span>
+        <h2>Users weren't confused by credit &mdash; they were confused by us</h2>
+
+        <p>The research surfaced a core truth: users understood their finances. What they didn't understand was why they needed 8 different apps to manage them.</p>
+
+        <div class="insights-list">
+          <div class="card" style="padding:var(--space-4) var(--space-6); padding-left:calc(var(--space-6) + 16px); position:relative; margin-bottom:var(--space-3);">
+            <span style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:8px; height:8px; background:var(--accent-lime); border-radius:50%; display:block;" aria-hidden="true"></span>
+            <strong>Monzo's "one screen" model translated directly.</strong> A unified credit home showing balance, next payment, utilisation, alerts, and plans in one view eliminated the need for 3 separate apps.
+          </div>
+          <div class="card" style="padding:var(--space-4) var(--space-6); padding-left:calc(var(--space-6) + 16px); position:relative; margin-bottom:var(--space-3);">
+            <span style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:8px; height:8px; background:var(--accent-lime); border-radius:50%; display:block;" aria-hidden="true"></span>
+            <strong>Credit coaching was the missing trust mechanism.</strong> Confidence-building language ("Your credit is looking good") outperformed clinical status updates across Monzo and Revolut patterns.
+          </div>
+          <div class="card" style="padding:var(--space-4) var(--space-6); padding-left:calc(var(--space-6) + 16px); position:relative; margin-bottom:var(--space-3);">
+            <span style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:8px; height:8px; background:var(--accent-lime); border-radius:50%; display:block;" aria-hidden="true"></span>
+            <strong>Proactive alerts beat passive notifications.</strong> Starling's instant feedback loop (lock card, turn off alerts in one tap) proved that users want to feel in control, not just informed.
+          </div>
+          <div class="card" style="padding:var(--space-4) var(--space-6); padding-left:calc(var(--space-6) + 16px); position:relative; margin-bottom:var(--space-3);">
+            <span style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:8px; height:8px; background:var(--accent-lime); border-radius:50%; display:block;" aria-hidden="true"></span>
+            <strong>The credit-building audience needed dignity, not simplification.</strong> The Credit Rehabilitator persona revealed that "beginner-friendly" UX often felt patronising to users who wanted coaching, not hand-holding.
+          </div>
+          <div class="card" style="padding:var(--space-4) var(--space-6); padding-left:calc(var(--space-6) + 16px); position:relative; margin-bottom:var(--space-3);">
+            <span style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:8px; height:8px; background:var(--accent-lime); border-radius:50%; display:block;" aria-hidden="true"></span>
+            <strong>Table-stakes servicing wasn't enough.</strong> Users expected delight, coaching, and control on top of the balance checks and reminders that Vanquis and Barclaycard offered.
+          </div>
+        </div>
+
+        <div class="callout callout--insight">
+          <h4>Core Insight</h4>
+          <p style="font-size:clamp(16px,2vw,20px); font-weight:600;">
+            The problem wasn't that users had too many financial products.
+            It was that no single interface gave them a unified sense of control over all of them.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION C3: STRATEGY — Concept & Journeys    -->
+    <!-- ============================================ -->
+    <section id="s-strategy" class="section reveal" data-section="s-strategy">
+      <div class="container">
+        <span class="eyebrow">05 &mdash; Strategy</span>
+        <h2>I designed one concept to replace eight apps</h2>
+
+        <p>I defined the "Credit Hub" concept &mdash; a single app experience that works across all brands and products.
+        The design follows one North Star loop: <strong>Understand &rarr; Control &rarr; Improve &rarr; Reward &rarr; Repeat.</strong></p>
+
+        <div class="two-col">
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/concept-statement.png"
+                   srcset="./assets/img/concept-statement.png 1x, ./assets/img/concept-statement@2x.png 2x"
+                   alt="Credit Hub concept statement showing navigation model, North Star loop, and global UI patterns"
+                   loading="lazy">
+            </div>
+          </div>
+          <div>
+            <h3>The Architecture</h3>
+            <p>Bottom navigation with 4 tabs: <strong>Home</strong> (command centre), <strong>Activity</strong> (unified feed), <strong>Plans</strong> (simulator-first payoff planning), <strong>Controls</strong> (security and spending limits).</p>
+            <p>Every screen gets a top-right "?" for contextual help and chip-based navigation for sub-sections. The entire structure maps to the 4 user personas.</p>
+            <div class="deliverables-list">
+              <span class="deliverable-tag">Concept Statement</span>
+              <span class="deliverable-tag">Navigation Model</span>
+              <span class="deliverable-tag">North Star Loop</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voice & Tone -->
+        <div class="two-col" style="margin-top:var(--space-9);">
+          <div>
+            <h3>I rewrote how the app talks to people</h3>
+            <p>I established voice and tone rules that every screen follows: warm + calm, direct not corporate, no judgement, confidence-first, actionable, transparent.</p>
+            <p>I created a lexicon with specific word choices: "Credit use" not "utilisation", "Safe to spend" not "remaining credit", "Coach" not "advisor". Every word was chosen to build confidence, not anxiety.</p>
+            <div class="deliverables-list">
+              <span class="deliverable-tag">Voice & Tone Guidelines</span>
+              <span class="deliverable-tag">App Lexicon</span>
+            </div>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/voice-tone.png"
+                   srcset="./assets/img/voice-tone.png 1x, ./assets/img/voice-tone@2x.png 2x"
+                   alt="Voice and tone rules document showing principles (warm, direct, no judgement) and lexicon definitions"
+                   loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Journeys -->
+        <div style="margin-top:clamp(60px,8vw,100px);">
+          <h3>I mapped three flagship journeys screen-by-screen</h3>
+          <p>I designed detailed customer journey maps for the 3 core scenarios &mdash; each with hi-fidelity wireframes, step-by-step user flows, success criteria, and feature mapping from the competitor best practices I'd identified.</p>
+
+          <div class="img-full">
+            <img src="./assets/img/scenarios-together.png"
+                 srcset="./assets/img/scenarios-together.png 1x, ./assets/img/scenarios-together@2x.png 2x"
+                 alt="Three scenario specifications side by side: Credit Progress & Coaching, Repayment & Payoff Planning, Control Centre & Proactive Alerts"
+                 loading="lazy">
+          </div>
+
+          <div class="img-full" style="margin-top:var(--space-6);">
+            <img src="./assets/img/customer-journey-01.png"
+                 srcset="./assets/img/customer-journey-01.png 1x, ./assets/img/customer-journey-01@2x.png 2x"
+                 alt="Journey A: Credit Progress & Coaching — 9-step flow from Home through Dashboard, Coach Plan, to Reward"
+                 loading="lazy"
+                 style="width:100%; border-radius:var(--radius-base); border:1px solid var(--border-primary);">
+          </div>
+
+          <div class="gallery-grid" style="margin-top:var(--space-6); grid-template-columns: repeat(3, 1fr);">
+            <img src="./assets/img/customer-journey-02.png"
+                 srcset="./assets/img/customer-journey-02.png 1x, ./assets/img/customer-journey-02@2x.png 2x"
+                 alt="Journey B: Repayment & Payoff Planning — 7-step flow from Plans Hub through Payoff Planner to Success"
+                 loading="lazy">
+            <img src="./assets/img/customer-journey-03.png"
+                 srcset="./assets/img/customer-journey-03.png 1x, ./assets/img/customer-journey-03@2x.png 2x"
+                 alt="Journey C: Control Centre & Proactive Alerts — 8-step flow from Controls Hub through Alert Resolution"
+                 loading="lazy">
+            <img src="./assets/img/customer-journey-04.png"
+                 srcset="./assets/img/customer-journey-04.png 1x, ./assets/img/customer-journey-04@2x.png 2x"
+                 alt="Journey D: Alert Variants & Edge States — Due Soon, Payment Failed, Unusual Spend, Card Freeze scenarios"
+                 loading="lazy">
+          </div>
+          <div class="deliverables-list">
+            <span class="deliverable-tag">3 Scenario Specifications</span>
+            <span class="deliverable-tag">4 Customer Journey Maps</span>
+            <span class="deliverable-tag">Hi-Fi Wireframes</span>
+            <span class="deliverable-tag">Edge State Coverage</span>
+          </div>
+        </div>
+
+        <!-- Moodboard -->
+        <div style="margin-top:clamp(60px,8vw,100px);">
+          <h3>I built the visual vocabulary before touching pixels</h3>
+          <p>I curated an extensive moodboard and inspiration collection &mdash; studying fintech app patterns, bold typography treatments, dark/light theme executions, and device presentation styles that could elevate the Credit Hub brand above commodity competitors.</p>
+
+          <div class="gallery-grid">
+            <img src="./assets/img/visual-moodboard.png"
+                 srcset="./assets/img/visual-moodboard.png 1x, ./assets/img/visual-moodboard@2x.png 2x"
+                 alt="Visual moodboard with 60+ references spanning fintech, brand identity, and device mockup styles"
+                 loading="lazy">
+            <img src="./assets/img/inspiration-apps.png"
+                 srcset="./assets/img/inspiration-apps.png 1x, ./assets/img/inspiration-apps@2x.png 2x"
+                 alt="App inspiration board with favorites marked — dark themes, card-based layouts, bold typography"
+                 loading="lazy">
+          </div>
+          <div class="deliverables-list">
+            <span class="deliverable-tag">Visual Moodboard</span>
+            <span class="deliverable-tag">App Inspiration Board</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION C4: AI EXPERIMENTATION               -->
+    <!-- ============================================ -->
+    <section id="s-experiments" class="section reveal" data-section="s-experiments">
+      <div class="container">
+        <span class="eyebrow">06 &mdash; Experimentation</span>
+        <h2>I built 6 live prototypes before opening Figma</h2>
+
+        <p>Instead of starting in static design tools, I used AI coding assistants to rapidly generate live, interactive prototypes. Each explored a different visual direction and interaction model for the Credit Hub dashboard.</p>
+
+        <p>This approach produced testable interfaces in hours, not days. I identified the optimal information architecture and interaction patterns before investing in pixel-perfect design.</p>
+
+        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-01.png"
+                   srcset="./assets/img/code-experiment-01.png 1x, ./assets/img/code-experiment-01@2x.png 2x"
+                   alt="Code experiment 1: Light theme, minimal, blue accents — functional but clinical"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V1: Light + minimal</p>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-02.png"
+                   srcset="./assets/img/code-experiment-02.png 1x, ./assets/img/code-experiment-02@2x.png 2x"
+                   alt="Code experiment 2: Dark theme with gradient, neon accents"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V2: Dark + gradient</p>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-03.png"
+                   srcset="./assets/img/code-experiment-03.png 1x, ./assets/img/code-experiment-03@2x.png 2x"
+                   alt="Code experiment 3: Dark theme with green accent, personal greeting, confidence messaging"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V3: Dark + coaching</p>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-04.png"
+                   srcset="./assets/img/code-experiment-04.png 1x, ./assets/img/code-experiment-04@2x.png 2x"
+                   alt="Code experiment 4: Dark theme, refined data density, all key metrics visible"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V4: Dark + dense</p>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-05.png"
+                   srcset="./assets/img/code-experiment-05.png 1x, ./assets/img/code-experiment-05@2x.png 2x"
+                   alt="Code experiment 5: Light theme, teal accent, polished layout"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V5: Light + teal</p>
+          </div>
+          <div>
+            <div class="img-container">
+              <img src="./assets/img/code-experiment-06.png"
+                   srcset="./assets/img/code-experiment-06.png 1x, ./assets/img/code-experiment-06@2x.png 2x"
+                   alt="Code experiment 6: Dark theme with lime green accent, bold typography"
+                   loading="lazy">
+            </div>
+            <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">V6: Dark + lime</p>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:var(--space-9);">
+          <h4>What AI Solved vs. What It Couldn't</h4>
+          <p style="font-size:clamp(14px,1.5vw,16px);">
+            AI prototyping excelled at interaction model, information architecture, and layout hierarchy &mdash; I validated the optimal data density and navigation patterns across 6 variations in under a week.</p>
+          <p style="font-size:clamp(14px,1.5vw,16px);">
+            But achieving the precise visual craft and brand personality required Figma. AI generated the structure; I designed the soul.</p>
+        </div>
+
+        <!-- Figma Experiments -->
+        <div style="margin-top:clamp(60px,8vw,100px);">
+          <h3>I refined AI output into 4 distinct directions in Figma</h3>
+          <p>Taking the validated architecture from code prototypes, I created 4 unique visual directions in Figma &mdash; each exploring a different brand personality and color strategy for the new Credit Hub identity.</p>
+
+          <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/figma-experiment-01.png"
+                     srcset="./assets/img/figma-experiment-01.png 1x, ./assets/img/figma-experiment-01@2x.png 2x"
+                     alt="Figma direction 1: Bold purple/violet with green donut chart, 'Safe to Spend' focus"
+                     loading="lazy">
+              </div>
+              <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">Direction A: Purple bold</p>
+            </div>
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/figma-experiment-02.png"
+                     srcset="./assets/img/figma-experiment-02.png 1x, ./assets/img/figma-experiment-02@2x.png 2x"
+                     alt="Figma direction 2: Light gradient with purple accents, soft aesthetic"
+                     loading="lazy">
+              </div>
+              <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">Direction B: Light gradient</p>
+            </div>
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/figma-experiment-03.png"
+                     srcset="./assets/img/figma-experiment-03.png 1x, ./assets/img/figma-experiment-03@2x.png 2x"
+                     alt="Figma direction 3: Maximalist purple with lime accents, high visual impact"
+                     loading="lazy">
+              </div>
+              <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">Direction C: Maximalist</p>
+            </div>
+            <div>
+              <div class="img-container">
+                <img src="./assets/img/figma-experiment-04.png"
+                     srcset="./assets/img/figma-experiment-04.png 1x, ./assets/img/figma-experiment-04@2x.png 2x"
+                     alt="Figma direction 4: Refined dark purple with lime, strongest typography hierarchy"
+                     loading="lazy">
+              </div>
+              <p style="font-size:12px; color:var(--text-tertiary); margin-top:var(--space-2);">Direction D: Refined</p>
+            </div>
+          </div>
+          <div class="deliverables-list">
+            <span class="deliverable-tag">6 AI Code Prototypes</span>
+            <span class="deliverable-tag">4 Figma Visual Directions</span>
+            <span class="deliverable-tag">Interaction Model Validation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION C5: SOLUTION — Final Direction       -->
+    <!-- ============================================ -->
+    <section id="s-solution" class="section reveal" data-section="s-solution">
+      <div class="container--wide">
+        <div class="container">
+          <span class="eyebrow">07 &mdash; The Solution</span>
+          <h2>I chose the direction nobody expected &mdash; and it became the brand</h2>
+
+          <p>After client feedback across all 4 Figma directions, the winning concept combined bold purple/violet primary branding with lime green accents. A palette that broke completely from the client's existing apps and from every competitor in the category.</p>
+
+          <p>"Safe to Spend" became the hero metric, and "Your credit is looking good" became the confidence-building anchor. The bottom navigation (Home / Activity / Plans / Controls) unified every product function into one mental model.</p>
+        </div>
+
+        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:var(--space-9); padding: 0 var(--space-6);">
+          <img src="./assets/img/experiment-device-big-preview-01.png"
+               srcset="./assets/img/experiment-device-big-preview-01.png 1x, ./assets/img/experiment-device-big-preview-01@2x.png 2x"
+               alt="Final design on iPhone — light variant with credit score, safe to spend, and next step card"
+               loading="lazy"
+               style="border:none; border-radius:var(--radius-lg);">
+          <img src="./assets/img/experiment-device-big-preview-03.png"
+               srcset="./assets/img/experiment-device-big-preview-03.png 1x, ./assets/img/experiment-device-big-preview-03@2x.png 2x"
+               alt="Final design on iPhone — purple variant with lime donut chart and credit card preview"
+               loading="lazy"
+               style="border:none; border-radius:var(--radius-lg);">
+          <img src="./assets/img/experiment-device-big-preview-04.png"
+               srcset="./assets/img/experiment-device-big-preview-04.png 1x, ./assets/img/experiment-device-big-preview-04@2x.png 2x"
+               alt="Final design on iPhone — bold purple/lime with large Safe to Spend amount and credit score"
+               loading="lazy"
+               style="border:none; border-radius:var(--radius-lg);">
+          <img src="./assets/img/experiment-device-big-preview-05.png"
+               srcset="./assets/img/experiment-device-big-preview-05.png 1x, ./assets/img/experiment-device-big-preview-05@2x.png 2x"
+               alt="Final design on iPhone — dark variant with green donut, quick actions, and coaching card"
+               loading="lazy"
+               style="border:none; border-radius:var(--radius-lg);">
+        </div>
+
+        <div class="container" style="margin-top:var(--space-9);">
+          <div class="card-grid">
+            <div class="card">
+              <h4>Home = Command Centre</h4>
+              <h3>Everything in one glance</h3>
+              <p>Credit limit, safe to spend, next payment, credit score, coaching step, and quick actions &mdash; all visible without scrolling. The dashboard replaced 3 separate app home screens.</p>
+            </div>
+            <div class="card">
+              <h4>Coaching System</h4>
+              <h3>"Your credit is looking good"</h3>
+              <p>Confidence-building language replaces clinical status updates. The "Your next step" card provides one high-impact action with estimated time ("Pay on time &middot; 2 min") &mdash; users feel guided, not lectured.</p>
+            </div>
+            <div class="card">
+              <h4>Control + Safety</h4>
+              <h3>Freeze, alerts, payoff in one tap</h3>
+              <p>Quick actions (Freeze, Alerts, Payoff) are always accessible from the home screen. The Control Centre provides spending limits, alert preferences, and proactive notifications &mdash; bringing Revolut-level control to credit products.</p>
+            </div>
+          </div>
+
+          <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top:var(--space-9);">
+            <img src="./assets/img/experiment-device-big-preview-06.png"
+                 srcset="./assets/img/experiment-device-big-preview-06.png 1x, ./assets/img/experiment-device-big-preview-06@2x.png 2x"
+                 alt="Device preview — purple/lime variant showing full dashboard with card preview and coaching"
+                 loading="lazy"
+                 style="border:none; border-radius:var(--radius-lg);">
+            <img src="./assets/img/experiment-device-big-preview-07.png"
+                 srcset="./assets/img/experiment-device-big-preview-07.png 1x, ./assets/img/experiment-device-big-preview-07@2x.png 2x"
+                 alt="Device preview — purple frame variant with bold Safe to Spend and colour-coded quick action buttons"
+                 loading="lazy"
+                 style="border:none; border-radius:var(--radius-lg);">
+            <img src="./assets/img/experiment-device-big-preview-02.png"
+                 srcset="./assets/img/experiment-device-big-preview-02.png 1x, ./assets/img/experiment-device-big-preview-02@2x.png 2x"
+                 alt="Device preview — angled view showing refined light variant with credit score and next step"
+                 loading="lazy"
+                 style="border:none; border-radius:var(--radius-lg);">
+          </div>
+
+          <div class="deliverables-list" style="margin-top:var(--space-9);">
+            <span class="deliverable-tag">Final UI Direction</span>
+            <span class="deliverable-tag">Brand Color System</span>
+            <span class="deliverable-tag">Dashboard Design</span>
+            <span class="deliverable-tag">Navigation Model</span>
+            <span class="deliverable-tag">Coaching UX Pattern</span>
+            <span class="deliverable-tag">Device Mockups</span>
+            <span class="deliverable-tag">Marketing Assets</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION D: PROCESS STEPS                     -->
+    <!-- ============================================ -->
+    <section id="s-process" class="section reveal" data-section="s-process">
+      <div class="container">
+        <span class="eyebrow">08 &mdash; Process</span>
+        <h2>Seven weeks from audit to final direction</h2>
+
+        <div class="process-cards">
+          <div class="process-card">
+            <div class="process-card__number">Phase 01</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <div class="process-card__title">Ecosystem Audit</div>
+            <div class="process-card__desc">Mapped 8+ apps, documented every product, identified overlap and gaps across the portfolio.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 02</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <div class="process-card__title">Competitor Research</div>
+            <div class="process-card__desc">Analyzed 10 direct competitors + 15 industry benchmarks. Extracted translatable UX patterns.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 03</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <div class="process-card__title">User Personas</div>
+            <div class="process-card__desc">Defined 4 personas spanning credit rehabilitators to legacy transitioners. Mapped needs to features.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 04</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <div class="process-card__title">Concept & Journeys</div>
+            <div class="process-card__desc">Defined Credit Hub concept, navigation model, voice & tone rules, and 4 customer journey maps.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 05</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <div class="process-card__title">AI Prototyping</div>
+            <div class="process-card__desc">Built 6 live code prototypes exploring light/dark themes, data density, and coaching patterns.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 06</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <div class="process-card__title">Figma Refinement</div>
+            <div class="process-card__desc">Created 4 visual directions in Figma. Refined AI output into polished, brand-level UI concepts.</div>
+          </div>
+          <div class="process-card">
+            <div class="process-card__number">Phase 07</div>
+            <svg class="process-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+            <div class="process-card__title">Final Direction</div>
+            <div class="process-card__desc">Selected winning direction (purple/lime), created device mockups, and delivered marketing-ready assets.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION E: IMPACT / RESULTS                  -->
+    <!-- ============================================ -->
+    <section id="s-impact" class="section reveal" data-section="s-impact">
+      <div class="container">
+        <span class="eyebrow">09 &mdash; Impact</span>
+        <h2>From 8 fragmented apps to one unified brand</h2>
+
+        <div class="metrics-strip">
+          <div class="metric-card metric-card--highlight">
+            <div class="metric-number">8&rarr;1</div>
+            <div class="metric-label">Apps Consolidated</div>
+            <div class="metric-context">Single Credit Hub replacing fragmented portfolio</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">25+</div>
+            <div class="metric-label">Research Deliverables</div>
+            <div class="metric-context">Audits, personas, journeys, benchmarks</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">10</div>
+            <div class="metric-label">UI Directions Explored</div>
+            <div class="metric-context">6 AI prototypes + 4 Figma concepts</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">4</div>
+            <div class="metric-label">Personas Served</div>
+            <div class="metric-context">One interface for all user segments</div>
+          </div>
+        </div>
+
+        <p>The Credit Hub concept established a design foundation that unifies the company's entire consumer-facing product line under one brand identity, one navigation model, and one voice.</p>
+
+        <p>The winning direction &mdash; bold purple with lime accents &mdash; creates instant differentiation in a market where competitors default to blue-on-white. The coaching system ("Your credit is looking good") reframes credit management from anxiety to confidence.</p>
+
+        <div class="card-grid" style="margin-top:var(--space-9);">
+          <div class="card">
+            <h4>What Changed</h4>
+            <h3>Unified identity</h3>
+            <p>One app, one brand, one navigation model across all credit products &mdash; replacing 8+ separate apps with inconsistent UX.</p>
+          </div>
+          <div class="card">
+            <h4>What Changed</h4>
+            <h3>Competitive parity</h3>
+            <p>Feature mapping from Monzo, Revolut, and Starling ensures the Credit Hub meets or exceeds fintech-grade UX expectations.</p>
+          </div>
+          <div class="card">
+            <h4>What Changed</h4>
+            <h3>Design foundation for scale</h3>
+            <p>The concept, voice & tone rules, navigation model, and component patterns form a system that supports future product expansion without design fragmentation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION F: LESSONS                           -->
+    <!-- ============================================ -->
+    <section id="s-lessons" class="section reveal" data-section="s-lessons">
+      <div class="container">
+        <span class="eyebrow">10 &mdash; Lessons</span>
+        <h2>What this project taught me about ecosystem design</h2>
+
+        <div class="card-grid">
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 01</div>
+            <h3>Audit the ecosystem before designing the product</h3>
+            <p>Starting with the ecosystem map &mdash; not wireframes &mdash; revealed that the real problem was organisational fragmentation, not UI quality. The design strategy changed completely once I understood the product portfolio as a system.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 02</div>
+            <h3>AI prototyping validates architecture faster than Figma</h3>
+            <p>Building 6 live prototypes with AI let me test information density, navigation patterns, and coaching language interactively. Figma was essential for visual craft, but AI was essential for structural decisions. The two tools have different jobs.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-card__number">Lesson 03</div>
+            <h3>Credit users need confidence, not simplification</h3>
+            <p>The personas revealed that "making it easier" often meant "making it feel patronising." The coaching approach &mdash; "Things are looking good" with specific improvement steps &mdash; respected users' intelligence while guiding their behaviour.</p>
+          </div>
+        </div>
+
+        <!-- What I'd ship next -->
+        <div style="margin-top:var(--space-9);">
+          <h3>What I'd ship next</h3>
+          <p>The concept phase delivered a strong foundation, but two areas remain open for the implementation phase.</p>
+          <div class="card-grid">
+            <div class="card">
+              <h4>Ship Next</h4>
+              <h3>Micro-interaction specification</h3>
+              <p>The journey maps define screen-to-screen flows, but transition animations and haptic feedback patterns need detailed definition for the development handoff.</p>
+            </div>
+            <div class="card">
+              <h4>Ship Next</h4>
+              <h3>Component-level accessibility audit</h3>
+              <p>The bold purple/lime palette needs contrast verification at every component state (focus, hover, disabled) before build.</p>
+            </div>
+            <div class="card">
+              <h4>Ship Next</h4>
+              <h3>Multi-product onboarding flow</h3>
+              <p>The Credit Hub concept assumes users already hold products. A unified onboarding for first-time users hasn't been designed yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION G: AI LAYER                          -->
+    <!-- ============================================ -->
+    <section id="s-ai" class="section reveal" data-section="s-ai">
+      <div class="container">
+        <span class="eyebrow">11 &mdash; AI Layer</span>
+        <h2>AI built the skeleton. I designed the soul.</h2>
+
+        <p>AI tools were integral to the prototyping phase. I used them to explore structural hypotheses at a pace that traditional design tools can't match.</p>
+
+        <div class="card-grid">
+          <div class="ai-tool-card">
+            <div class="tools-row" style="margin-bottom:var(--space-4);">
+              <span class="tool-tag">AI Code Assistants</span>
+            </div>
+            <h3>Rapid Interactive Prototyping</h3>
+            <p>Generated 6 live HTML/CSS/JS prototypes exploring different dashboard layouts, data density levels, and light/dark theme variations. Each prototype was interactive and testable within hours of conception.</p>
+          </div>
+          <div class="ai-tool-card">
+            <div class="tools-row" style="margin-bottom:var(--space-4);">
+              <span class="tool-tag">AI + Human Split</span>
+            </div>
+            <h3>Structure vs. Craft</h3>
+            <p>AI excelled at information architecture, layout hierarchy, and interaction patterns. Visual brand identity, typography craft, and emotional design required human judgment in Figma. The split: AI for validation speed, Figma for brand precision.</p>
+          </div>
+          <div class="ai-tool-card">
+            <div class="tools-row" style="margin-bottom:var(--space-4);">
+              <span class="tool-tag">Research Synthesis</span>
+            </div>
+            <h3>Competitive Intelligence</h3>
+            <p>AI assisted in synthesizing patterns across 15 banking app analyses and structuring the competitive benchmark matrix. I directed the analysis criteria and made all strategic conclusions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION H: CTA                               -->
+    <!-- ============================================ -->
+    <section id="s-cta" class="section cta-section reveal" data-section="s-cta">
+      <div class="container">
+        <h2>I unify complexity into clarity.</h2>
+        <p style="color:var(--text-secondary); max-width:500px; margin:var(--space-4) auto var(--space-9);">
+          If your product ecosystem needs one coherent experience, I can design it.
+        </p>
+        <a href="mailto:mailtotheroman@gmail.com" class="cta-button">Get in Touch</a>
+        <br>
+        <a href="mailto:mailtotheroman@gmail.com" class="cta-secondary">mailtotheroman@gmail.com</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer role="contentinfo" style="text-align:center; padding:var(--space-6) 0; border-top:1px solid var(--border-secondary); font-size:0.72rem; color:var(--text-tertiary); letter-spacing:0.04em;">
+    <p>&copy; 2026 Roman Kryzhanovskyi. All rights reserved.</p>
+  </footer>
+
+  <!-- GSAP ScrollTrigger for reveal animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    // Register ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveal animations
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    });
+
+    // Dot navigation
+    const dots = document.querySelectorAll('.dot-nav__item');
+    const sections = document.querySelectorAll('.section[data-section]');
+
+    // Click handling
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const target = document.getElementById(dot.dataset.section);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Active state on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          dots.forEach(d => d.classList.remove('dot-nav__item--active'));
+          const active = document.querySelector(`.dot-nav__item[data-section="${entry.target.id}"]`);
+          if (active) active.classList.add('dot-nav__item--active');
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(s => observer.observe(s));
+
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+      reveals.forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  </script>
+</body>
+</html>

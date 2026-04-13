@@ -21,7 +21,8 @@
     { slug: 'image-to-ascii',             label: 'Image to ASCII',             page: 'case-study.html' },
     { slug: 'image-to-json',              label: 'Image to JSON',              page: 'case-study.html' },
     { slug: 'infographics-decision-tree', label: 'Infographics Decision Tree', page: 'case-study.html' },
-    { slug: 'upscaler',                   label: 'AI Image Upscaler',          page: 'case-study.html' }
+    { slug: 'upscaler',                   label: 'AI Image Upscaler',          page: 'case-study.html' },
+    { slug: 'financial-mobile-app',       label: 'Credit Hub',                 page: 'outputs/case-study.html' }
   ];
 
   /* ── Foundation Projects (pre-AI — cycles within this group) ── */
