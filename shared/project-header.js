@@ -14,6 +14,7 @@
 
   /* ── Featured Projects (AI-era — cycles within this group) ── */
   var FEATURED = [
+    { slug: 'grid-inspection',            label: 'Grid Inspection',            page: 'case-study.html' },
     { slug: 'voice-ai-assistant',         label: 'Voice AI Assistant',         page: 'case-study.html' },
     { slug: 'video-scenario-tool',        label: 'Video Scenarios Tool',       page: 'case-study.html' },
     { slug: 'ai-video-production',        label: 'AI Video Production',        page: 'case-study.html' },
